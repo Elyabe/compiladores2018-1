@@ -10,7 +10,7 @@ return
 .end method 
 
 .method public static main([Ljava/lang/String;)V 
-.limit stack 25 
+.limit stack 252 
 .limit locals 12
 ldc2_w 0.0
 dstore 5
@@ -34,12 +34,12 @@ dstore_1
 dload_1
 ldc2_w 1.0
 dcmpg 
-ifeq COLOCATRUE_1
+ifeq COLOCATRUEigual_1
 dconst_0 
-goto SAIDA_2
-COLOCATRUE_1:
+goto SAIDAigual_2
+COLOCATRUEigual_1:
 dconst_1 
-SAIDA_2:
+SAIDAigual_2:
 dconst_0 
 dcmpg 
 ifeq LABELFALSECASO_0
@@ -106,12 +106,12 @@ LABELFALSECASO_0:
 dload_1
 ldc2_w 2.0
 dcmpg 
-ifeq COLOCATRUE_4
+ifeq COLOCATRUEigual_4
 dconst_0 
-goto SAIDA_5
-COLOCATRUE_4:
+goto SAIDAigual_5
+COLOCATRUEigual_4:
 dconst_1 
-SAIDA_5:
+SAIDAigual_5:
 dconst_0 
 dcmpg 
 ifeq LABELFALSECASO_3

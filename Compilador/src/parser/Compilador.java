@@ -373,6 +373,7 @@ public class Compilador implements CompiladorConstants {
       case SEREPETE:
       case DUPLO:
       case MATRIX3D:
+      case COMENTLINHA:
       case NUMERO:
       case PALAVRA:
       case VAR:
@@ -428,6 +429,9 @@ public class Compilador implements CompiladorConstants {
       break;
     case MATRIX3D:
       matrix3D(listaComandosAltoNivel);
+      break;
+    case COMENTLINHA:
+      jj_consume_token(COMENTLINHA);
       break;
     default:
       jj_la1[12] = jj_gen;
@@ -817,10 +821,10 @@ public class Compilador implements CompiladorConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xaaa2a700,0xaaa2a700,0x80000000,0x0,0x0,0x0,0x800,0x0,0x0,0x0,0x80000,};
+      jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xaaa2a700,0xaaa2a700,0x0,0x0,0x0,0x0,0x800,0x0,0x0,0x0,0x80000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x100,0x200,0x6800,0x6800,0x1000,0x18,0x18,0x60,0x60,0x80,0x302001c,0x2000001,0x2000001,0x1,0x400,0x800000,0x400,0x0,0x800000,0x800000,0x1c,0x0,};
+      jj_la1_1 = new int[] {0x200,0x400,0xd000,0xd000,0x2000,0x30,0x30,0xc0,0xc0,0x100,0x6040038,0x4000003,0x4000003,0x3,0x800,0x1000000,0x800,0x0,0x1000000,0x1000000,0x38,0x0,};
    }
 
   /** Constructor with InputStream. */
@@ -958,7 +962,7 @@ public class Compilador implements CompiladorConstants {
   /** Generate ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[58];
+    boolean[] la1tokens = new boolean[59];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -975,7 +979,7 @@ public class Compilador implements CompiladorConstants {
         }
       }
     }
-    for (int i = 0; i < 58; i++) {
+    for (int i = 0; i < 59; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

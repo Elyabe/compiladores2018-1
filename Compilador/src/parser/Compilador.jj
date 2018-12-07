@@ -131,7 +131,8 @@ TOKEN [IGNORE_CASE] : {
 	<DUPLO: "duplo"> |
 	<FIMDUPLO: "fim-duplo"> |
 	<MATRIX3D : "matrix3D" > |
-	<FIMMATRIX3D: "fim-matrix3D" >
+	<FIMMATRIX3D: "fim-matrix3D" > |
+	< COMENTLINHA : "//" (~["\n"])* ("\n")? >  
 	
 }
 //TOKENS DE TIPOS 
@@ -442,6 +443,7 @@ void comando(ListaComandosAltoNivel listaComandosAltoNivel):
 	  | seRepete(listaComandosAltoNivel)
 	  | duplo(listaComandosAltoNivel)
 	  | matrix3D( listaComandosAltoNivel )
+	  | < COMENTLINHA > 
 	)	
 }
 

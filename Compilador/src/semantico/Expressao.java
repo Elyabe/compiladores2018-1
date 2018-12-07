@@ -44,140 +44,138 @@ public class Expressao {
 	public String geraCodigoDestino(){
 
 		String codigoDestinoExpressao = "";
-		for(Item item : this.listaExpPosFixa) {
+		int referencia;
+		
+		for(Item item : this.listaExpPosFixa) 
+		{
 			// se for operando
-			if(item instanceof Operando) {
+			if(item instanceof Operando) 
+			{
 				Operando operando = (Operando)item;
 				// se for numero
-				if(operando.getTipoDado() == TipoDado.NUMERO) {
-					if(operando.getTipoElemento() == TipoElemento.CTE){
-						codigoDestinoExpressao += "ldc2_w " + operando.getLexema() + "\r\n";
-
-					}
-					if(operando.getTipoElemento() == TipoElemento.VAR){
-						int referencia = Compilador.tabela.pesquisaTabela(operando.getLexema()). getReferencia();
-						if(referencia >= 4) {
-							codigoDestinoExpressao += "dload " + referencia + "\r\n";
-						}else {
-							codigoDestinoExpressao += "dload_" + referencia + "\r\n";
-						}
-
-					}
-					//calculo da stack
-					CodigoDestino.tamanhoPilha += 2;
-					if(CodigoDestino.tamanhoPilha > CodigoDestino.tamanhoTotalPilha)
-						CodigoDestino.tamanhoTotalPilha = CodigoDestino.tamanhoPilha;
-				}
-				// se for string
-				if(operando.getTipoDado() == TipoDado.PALAVRA) {
-					if(operando.getTipoElemento() == TipoElemento.CTE){
-						codigoDestinoExpressao += "ldc " + operando.getLexema() + "\r\n";
-					}
-					if(operando.getTipoElemento() == TipoElemento.VAR){
-						int referencia = Compilador.tabela.pesquisaTabela(operando.getLexema()).getReferencia();						
-						codigoDestinoExpressao += "aload " + referencia + "\r\n";
-					}
-					//calculo da stack
-					CodigoDestino.tamanhoPilha += 1;
-					if(CodigoDestino.tamanhoPilha > CodigoDestino.tamanhoTotalPilha)
-						CodigoDestino.tamanhoTotalPilha = CodigoDestino.tamanhoPilha;
-				}
+				char separador = ' ';
+				switch ( operando.getTipoDado() )
+	    		{
+	    			case NUMERO:
+	    				switch ( operando.getTipoElemento() )
+	    				{
+	    					case VAR:
+	    						referencia = Compilador.tabela.pesquisaTabela(operando.getLexema()). getReferencia();
+	    						separador = ( referencia < 4 ) ? '_' : ' ';
+	    						codigoDestinoExpressao += "dload" + separador + referencia + "\r\n";
+	    						break;
+	    					case CTE:
+	    						codigoDestinoExpressao += "ldc2_w " + operando.getLexema() + "\r\n";
+	    						break;
+	    				}
+	    				
+	    				CodigoDestino.tamanhoPilha += 2;
+						CodigoDestino.tamanhoTotalPilha = Integer.max( CodigoDestino.tamanhoPilha , CodigoDestino.tamanhoTotalPilha );
+						
+	    				break;
+	    			case PALAVRA:
+	    				switch ( operando.getTipoElemento() )
+	    				{
+	    					case VAR:
+	    						referencia = Compilador.tabela.pesquisaTabela(operando.getLexema()). getReferencia();
+	    						separador = ( referencia < 4 ) ? '_' : ' ';
+	    						codigoDestinoExpressao += "aload" + separador + referencia + "\r\n";
+	    						break;
+	    					case CTE:
+	    						codigoDestinoExpressao += "ldc " + operando.getLexema() + "\r\n";
+	    						break;
+	    				}
+	    				CodigoDestino.tamanhoPilha += 1;
+						CodigoDestino.tamanhoTotalPilha = Integer.max( CodigoDestino.tamanhoPilha , CodigoDestino.tamanhoTotalPilha );
+	    				break;
+	    		}
+		
 			}
 			// se for operador
-			if(item instanceof Operador) {
+			if(item instanceof Operador) 
+			{
 				Operador operador = (Operador)item;
 
-				if(operador.getTipoOperador() == TipoOperador.SOMA) {
-					codigoDestinoExpressao += "dadd \r\n";
-				}
+				switch ( operador.getTipoOperador() )
+				{
+					case SOMA:
+						codigoDestinoExpressao += "dadd \r\n";
+						break;
+					case SUB:
+						codigoDestinoExpressao += "dsub \r\n";
+						break;
+					case MUL:
+						codigoDestinoExpressao += "dmul \r\n";
+						break;
+					case DIV:
+						codigoDestinoExpressao += "ddiv \r\n";	
+						break;
+					case POT:
+						codigoDestinoExpressao += "invokestatic java/lang/Math/pow(DD)D \r\n";
+						break;
+					case OU:
+						PrimitivoLabel labelSAIDAou = new PrimitivoLabel("SAIDAou");
+	
+						codigoDestinoExpressao += "dconst_0 \r\n"	//Primeiro empilha 0 e compara com a expressao
+						+"dcmpg \r\n"								//se o resultado for igual, quer dizer que
+						+"ifeq " + labelSAIDAou.getLabel()			//a expressao eh falsa, portanto deve sair
+						+"pop2 \r\n"	
+						+"dconst_1 \r\n"							//Sendo a expressao verdadeira, basta desempilhar 
+						+ labelSAIDAou.geraCodigoDestino();			//a expressao e empilhar 1 como resultado valido
+						break;
+					case E:
+						PrimitivoLabel labelSAIDAe = new PrimitivoLabel("SAIDAe");
+						
+						codigoDestinoExpressao += "dconst_1 \r\n"			//Primeiro empilha 1 e compara com o topo
+								+"dcmpg \r\n"								//se o resultado for igual, quer dizer que 
+																			//o segundo que decide o resultado
+								+"ifeq " + labelSAIDAe.getLabel()			//portanto deve sair
+								+"pop2 \r\n"								//se nao for 1, ele desempilha e empilha 0
+								+"dconst_0 \r\n"							//Sai
+								+ labelSAIDAe.geraCodigoDestino();
+						break;
+					case IGUAL:
+						PrimitivoLabel labelCOLOCATRUEigual = new PrimitivoLabel("COLOCATRUEigual");
+						PrimitivoLabel labelSAIDAigual = new PrimitivoLabel("SAIDAigual");
 
-				if(operador.getTipoOperador() == TipoOperador.SUB) {
-					codigoDestinoExpressao += "dsub \r\n";
-				}
-
-				if(operador.getTipoOperador() == TipoOperador.MUL) {
-					codigoDestinoExpressao += "dmul \r\n";
-				}
-				if(operador.getTipoOperador() == TipoOperador.POT) {
-					
-					codigoDestinoExpressao += "invokestatic java/lang/Math/pow(DD)D \r\n";
-				}
-
-				if(operador.getTipoOperador() == TipoOperador.DIV) {
-					codigoDestinoExpressao += "ddiv \r\n";
+						codigoDestinoExpressao += "dcmpg \r\n"
+								+ "ifeq "+labelCOLOCATRUEigual.getLabel() 
+								+ "dconst_0 \r\n"
+								+ "goto "+labelSAIDAigual.getLabel()
+								+ labelCOLOCATRUEigual.geraCodigoDestino()
+								+ "dconst_1 \r\n"
+								+ labelSAIDAigual.geraCodigoDestino();
+						break;
+					case MENOR:
+						PrimitivoLabel labelCOLOCATRUEmenor = new PrimitivoLabel("COLOCATRUEmenor");
+						PrimitivoLabel labelSAIDAmenor = new PrimitivoLabel("SAIDAmenor");
+						
+						codigoDestinoExpressao += "dcmpg \r\n"
+								+ "iflt "+labelCOLOCATRUEmenor.getLabel() 
+								+ "dconst_0 \r\n"
+								+ "goto "+labelSAIDAmenor.getLabel()
+								+ labelCOLOCATRUEmenor.geraCodigoDestino()
+								+ "dconst_1 \r\n"
+								+ labelSAIDAmenor.geraCodigoDestino();
+						break;
+					case MAIORIGUAL:
+						PrimitivoLabel labelCOLOCATRUEmaiorIgual = new PrimitivoLabel("COLOCATRUEmaiorIgual");
+						PrimitivoLabel labelSAIDAmaiorIgual = new PrimitivoLabel("SAIDAmaiorIgual");
+						
+						codigoDestinoExpressao += "dcmpg \r\n"
+								+ "ifge " + labelCOLOCATRUEmaiorIgual.getLabel() 
+								+ "dconst_0 \r\n"
+								+ "goto "+labelSAIDAmaiorIgual.getLabel()
+								+ labelCOLOCATRUEmaiorIgual.geraCodigoDestino()
+								+ "dconst_1 \r\n"
+								+ labelSAIDAmaiorIgual.geraCodigoDestino();
+						break;
 				}
 				
-				if(operador.getTipoOperador() == TipoOperador.OU) {
-					PrimitivoLabel labelSAIDA = new PrimitivoLabel("SAIDA");
-
-					codigoDestinoExpressao += "dconst_0 \r\n"	//Primeiro empilha 0 e compara com a expressao
-					+"dcmpg \r\n"								//se o resultado for igual, quer dizer que
-					+"ifeq " + labelSAIDA.getLabel()			//a expressao eh falsa, portanto deve sair
-					+"pop2 \r\n"	
-					+"dconst_1 \r\n"							//Sendo a expressao verdadeira, basta desempilhar 
-					+ labelSAIDA.geraCodigoDestino();			//a expressao e empilhar 1 como resultado valido
-					
-				}
-				
-				if(operador.getTipoOperador() == TipoOperador.E) {
-					PrimitivoLabel labelSAIDA = new PrimitivoLabel("SAIDA");
-					
-					codigoDestinoExpressao += "dconst_1 \r\n"			//Primeiro empilha 1 e compara com o topo
-							+"dcmpg \r\n"								//se o resultado for igual, quer dizer que 
-																		//o segundo que decide o resultado
-							+"ifeq " + labelSAIDA.getLabel()			//portanto deve sair
-							+"pop2 \r\n"								//se nao for 1, ele desempilha e empilha 0
-							+"dconst_0 \r\n"							//Sai
-							+ labelSAIDA.geraCodigoDestino();			
-				}
-
-				if(operador.getTipoOperador() == TipoOperador.IGUAL) {
-					PrimitivoLabel labelCOLOCATRUE = new PrimitivoLabel("COLOCATRUE");
-					PrimitivoLabel labelSAIDA = new PrimitivoLabel("SAIDA");
-
-					codigoDestinoExpressao += "dcmpg \r\n"
-							+ "ifeq "+labelCOLOCATRUE.getLabel() 
-							+ "dconst_0 \r\n"
-							+ "goto "+labelSAIDA.getLabel()
-							+ labelCOLOCATRUE.geraCodigoDestino()
-							+ "dconst_1 \r\n"
-							+ labelSAIDA.geraCodigoDestino();
-				}
-				
-				//Analogo ao caso igual, porem diferenciado no uso do iflt que pega se for menor
-				//que eh o caso do do operador relacional menor 
-				if(operador.getTipoOperador() == TipoOperador.MENOR) {
-					PrimitivoLabel labelCOLOCATRUE = new PrimitivoLabel("COLOCATRUE");
-					PrimitivoLabel labelSAIDA = new PrimitivoLabel("SAIDA");
-					
-					codigoDestinoExpressao += "dcmpg \r\n"
-							+ "iflt "+labelCOLOCATRUE.getLabel() 
-							+ "dconst_0 \r\n"
-							+ "goto "+labelSAIDA.getLabel()
-							+ labelCOLOCATRUE.geraCodigoDestino()
-							+ "dconst_1 \r\n"
-							+ labelSAIDA.geraCodigoDestino();
-				}
-				
-				//compara e se for maior ou igual, entao eh verdadeiro e empilha 0
-				//caso falso, empilha 1 e sai do programa
-				if(operador.getTipoOperador() == TipoOperador.MAIORIGUAL) {
-					PrimitivoLabel labelCOLOCATRUE = new PrimitivoLabel("COLOCATRUE");
-					PrimitivoLabel labelSAIDA = new PrimitivoLabel("SAIDA");
-					
-					codigoDestinoExpressao += "dcmpg \r\n"
-							+ "ifge " + labelCOLOCATRUE.getLabel() 
-							+ "dconst_0 \r\n"
-							+ "goto "+labelSAIDA.getLabel()
-							+ labelCOLOCATRUE.geraCodigoDestino()
-							+ "dconst_1 \r\n"
-							+ labelSAIDA.geraCodigoDestino();
-				}
-				
-				//calculo da stack
 				CodigoDestino.tamanhoPilha -= 2;
-			}			
-		}		
+			}	
+		}	
+			
 		return codigoDestinoExpressao;	
 	}
 

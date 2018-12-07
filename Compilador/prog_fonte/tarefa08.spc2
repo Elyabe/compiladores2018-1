@@ -3,7 +3,7 @@ Teste para a Tarefa 8  - Grupo 11:
 Otimizacao de codigo tipo elemento neutro envolvendo a constante 1.
 */
 
-numero a <- -14.56, b, c;
+numero a <- -14.56, b <- 9, c <- 8;
 
 /* 1 a esquerda do * e uma variavel sendo divida por 1  */
 c <- 1*(a/1);

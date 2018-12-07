@@ -14,6 +14,10 @@ return
 .limit locals 11
 ldc2_w -14.56
 dstore_1
+ldc2_w 9.0
+dstore_3
+ldc2_w 8.0
+dstore 5
 dload_1
 dstore 5
 dload_3

@@ -57,59 +57,61 @@ public interface CompiladorConstants {
   /** RegularExpression Id. */
   int FIMMATRIX3D = 30;
   /** RegularExpression Id. */
-  int NUMERO = 31;
+  int COMENTLINHA = 31;
   /** RegularExpression Id. */
-  int PALAVRA = 32;
+  int NUMERO = 32;
   /** RegularExpression Id. */
-  int DIGIT = 33;
+  int PALAVRA = 33;
   /** RegularExpression Id. */
-  int NUM = 34;
+  int DIGIT = 34;
   /** RegularExpression Id. */
-  int SOMA = 35;
+  int NUM = 35;
   /** RegularExpression Id. */
-  int SUB = 36;
+  int SOMA = 36;
   /** RegularExpression Id. */
-  int MUL = 37;
+  int SUB = 37;
   /** RegularExpression Id. */
-  int DIV = 38;
+  int MUL = 38;
   /** RegularExpression Id. */
-  int POT = 39;
+  int DIV = 39;
   /** RegularExpression Id. */
-  int OU = 40;
+  int POT = 40;
   /** RegularExpression Id. */
-  int E = 41;
+  int OU = 41;
   /** RegularExpression Id. */
-  int ATRIB = 42;
+  int E = 42;
   /** RegularExpression Id. */
-  int IGUAL = 43;
+  int ATRIB = 43;
   /** RegularExpression Id. */
-  int CONCAT = 44;
+  int IGUAL = 44;
   /** RegularExpression Id. */
-  int MENOR = 45;
+  int CONCAT = 45;
   /** RegularExpression Id. */
-  int MAIORIGUAL = 46;
+  int MENOR = 46;
   /** RegularExpression Id. */
-  int TO = 47;
+  int MAIORIGUAL = 47;
   /** RegularExpression Id. */
-  int CHAR = 48;
+  int TO = 48;
   /** RegularExpression Id. */
-  int AP = 49;
+  int CHAR = 49;
   /** RegularExpression Id. */
-  int FP = 50;
+  int AP = 50;
   /** RegularExpression Id. */
-  int AC = 51;
+  int FP = 51;
   /** RegularExpression Id. */
-  int FC = 52;
+  int AC = 52;
   /** RegularExpression Id. */
-  int PV = 53;
+  int FC = 53;
   /** RegularExpression Id. */
-  int DP = 54;
+  int PV = 54;
   /** RegularExpression Id. */
-  int VIRGULA = 55;
+  int DP = 55;
   /** RegularExpression Id. */
-  int STRING = 56;
+  int VIRGULA = 56;
   /** RegularExpression Id. */
-  int VAR = 57;
+  int STRING = 57;
+  /** RegularExpression Id. */
+  int VAR = 58;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -149,6 +151,7 @@ public interface CompiladorConstants {
     "\"fim-duplo\"",
     "\"matrix3D\"",
     "\"fim-matrix3D\"",
+    "<COMENTLINHA>",
     "\"numero\"",
     "\"palavra\"",
     "<DIGIT>",

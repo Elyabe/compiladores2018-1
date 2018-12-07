@@ -287,15 +287,14 @@ public class Expressao {
 				if( tipoOp == TipoOperador.DIV )
 				{
 					itemB = this.listaExpPosFixa.get(idItem-1);
-					if ( itemB instanceof Operando && ((Operando)itemB).getTipoElemento() == TipoElemento.CTE )
+					if ( itemB instanceof Operando && ((Operando)itemB).getTipoElemento() == TipoElemento.CTE 
+												   && Double.parseDouble( ((Operando)itemB).getLexema() ) == 1.0 )
 					{
-						if ( Double.parseDouble( ((Operando)itemB).getLexema() ) == 1.0 )
-						{
-							this.getListaExpPosFixa().remove( idItem );
-							this.getListaExpPosFixa().remove( idItem - 1 );
-							idItem -= 2;
-						}
+						this.getListaExpPosFixa().remove( idItem );
+						this.getListaExpPosFixa().remove( idItem - 1 );
+						idItem -= 2;
 					}
+
 				} else 
 				{
 					if ( tipoOp == TipoOperador.MUL )
@@ -313,7 +312,8 @@ public class Expressao {
 								{ 
 									// Analise o segundo operando 
 									itemA = this.listaExpPosFixa.get(idItem-2);
-									if ( itemA instanceof Operando && ((Operando)itemA).getTipoElemento() == TipoElemento.CTE && Double.parseDouble( ((Operando)itemA).getLexema() ) == 1.0)
+									if ( itemA instanceof Operando && ((Operando)itemA).getTipoElemento() == TipoElemento.CTE 
+																   && Double.parseDouble( ((Operando)itemA).getLexema() ) == 1.0)
 									{
 										
 										this.getListaExpPosFixa().remove( idItem );
@@ -326,9 +326,10 @@ public class Expressao {
 						{
 							// Caso o primeiro elemento seja um operador 
 							// Procura o segundo operando do * com base na quantidade de operandos que cada operador requer.
-							qtdOperandosPendentes = 2;
+							qtdOperandosPendentes = 1;
 							itemA = null;
-							for ( i = idItem - 1; i > 0 && qtdOperandosPendentes > 0; i-- )
+							i = idItem - 1;
+							do
 							{
 								itemA = this.listaExpPosFixa.get(i);
 										
@@ -336,14 +337,13 @@ public class Expressao {
 									qtdOperandosPendentes--;
 								else if ( itemA instanceof Operador )
 									qtdOperandosPendentes++;
-							}
+								i--;
+							} while ( qtdOperandosPendentes > 0 );
 							
+							itemA = this.getListaExpPosFixa().get(i);
 							
 							// i guarda o indice do primeiro elemento que compoe o segundo operando de *
-							if ( !( this.listaExpPosFixa.get(i) instanceof Operando && 
-									this.listaExpPosFixa.get(i+1) instanceof Operando && this.listaExpPosFixa.get(i+2) instanceof Operador ) )
-							{
-							// se e possivel otimizar remove o operador * e o operando localizado.
+							// se eh possivel otimizar remove o operador * e o operando localizado.
 								if ( itemA instanceof Operando && ((Operando)itemA).getTipoElemento() == TipoElemento.CTE && 
 										Double.parseDouble( ((Operando)itemA).getLexema() ) == 1.0)
 								{
@@ -351,8 +351,6 @@ public class Expressao {
 										this.getListaExpPosFixa().remove( i );
 										idItem -= 2;
 								} 
-							}
-
 						}
 					}
 				}

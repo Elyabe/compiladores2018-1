@@ -10,7 +10,7 @@ return
 .end method 
 
 .method public static main([Ljava/lang/String;)V 
-.limit stack 106 
+.limit stack 1062 
 .limit locals 45
 ldc2_w 0.0
 dstore_1

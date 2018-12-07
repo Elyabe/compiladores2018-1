@@ -123,6 +123,33 @@ public class Expressao {
 						+"dconst_1 \r\n"							//Sendo a expressao verdadeira, basta desempilhar 
 						+ labelSAIDAou.geraCodigoDestino();			//a expressao e empilhar 1 como resultado valido
 						break;
+					case OUEXCLUSIVO:
+						PrimitivoLabel labelSAIDAouExclusivo = new PrimitivoLabel("SAIDAouExclusivo");
+						PrimitivoLabel labelComparaSegundo0 = new PrimitivoLabel("ComparaSegundo0");
+						PrimitivoLabel labelComparaSegundo1 = new PrimitivoLabel("ComparaSegundo1");
+						PrimitivoLabel labelCOLOCATRUEXOR = new PrimitivoLabel("COLOCATRUEXOR");
+						PrimitivoLabel labelCOLOCAFALSEXOR = new PrimitivoLabel("COLOCAFALSEXOR");
+						
+						codigoDestinoExpressao += "dconst_0 \r\n"	
+						+ "dcmpg \r\n"								
+						+ "ifeq " + labelComparaSegundo0.getLabel()	
+						+ "goto " + labelComparaSegundo1.getLabel()
+						+ labelComparaSegundo0.geraCodigoDestino()
+						+ "dconst_0 \r\n"
+						+ "dcmpg \r\n"								
+						+ "ifeq " + labelCOLOCAFALSEXOR.getLabel()	
+						+ "goto " + labelCOLOCATRUEXOR.getLabel()
+						+ labelComparaSegundo1.geraCodigoDestino()	
+						+"dconst_0 \r\n"							 
+						+ "dcmpg \r\n"								
+						+ "ifeq " + labelCOLOCATRUEXOR.getLabel()	
+						+ labelCOLOCAFALSEXOR.geraCodigoDestino()
+						+ "dconst_0 \r\n"
+						+ "goto " + labelSAIDAouExclusivo.getLabel()
+						+ labelCOLOCATRUEXOR.geraCodigoDestino()
+						+ "dconst_1 \r\n"
+						+ labelSAIDAouExclusivo.geraCodigoDestino();	
+						break;
 					case E:
 						PrimitivoLabel labelSAIDAe = new PrimitivoLabel("SAIDAe");
 						

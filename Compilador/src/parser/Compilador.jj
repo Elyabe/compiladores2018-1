@@ -154,6 +154,7 @@ TOKEN : {
 	< DIV: "/" > |
 	< POT : "**" >|
 	< OU: "OU" > |
+	< OUEXCLUSIVO: "XOU" > |
 	< E: "E" > |
 	< ATRIB: "<-"  > |
 	< IGUAL: "=" > |
@@ -202,9 +203,10 @@ void expressao(Expressao exp):
 }
 {
 	termo(exp)
-	(t = <OU> 
+	( ( t = <OU> { item = new Operador(TipoOperador.OU,t); } |
+	    t = < OUEXCLUSIVO > {  item = new Operador(TipoOperador.OUEXCLUSIVO,t); }
+	   ) 
 		{
-			item = new Operador(TipoOperador.OU,t);
 			exp.addListaExpInfixa(item);
 		}
 		termo(exp)

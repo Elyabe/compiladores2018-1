@@ -2,9 +2,12 @@
 numero x;
 
 //le x;
-se ( 10 != 10 )
+se ( 10 E 1 )
 	exibe "Diferente\n";
 senao
 	exibe "Iguais\n";
 fim-se
 
+se ( 1 XOU 1.5 )
+ exibe "Verdeiro\n";
+fim-se

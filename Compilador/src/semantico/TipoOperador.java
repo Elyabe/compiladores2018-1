@@ -8,6 +8,7 @@ public enum TipoOperador
 	DIV,
 	POT,
 	OU,
+	OUEXCLUSIVO,
 	E,
 	IGUAL,
 	DIFERENTE,

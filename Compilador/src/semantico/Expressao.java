@@ -152,13 +152,23 @@ public class Expressao {
 						break;
 					case E:
 						PrimitivoLabel labelSAIDAe = new PrimitivoLabel("SAIDAe");
-						
+						PrimitivoLabel labelTestaSegundo1e = new PrimitivoLabel("TestaSegundo1e");
+						PrimitivoLabel labelColocaTrueE = new PrimitivoLabel("ColocaTrueE");
 						codigoDestinoExpressao += "dconst_0 \r\n"			//Primeiro empilha 1 e compara com o topo
-								+"dcmpg \r\n"								//se o resultado for igual, quer dizer que 
+								+ "dcmpg \r\n"								//se o resultado for igual, quer dizer que 
 																			//o segundo que decide o resultado
-								+"ifne " + labelSAIDAe.getLabel()			//portanto deve sair
-								+"pop2 \r\n"								//se nao for 1, ele desempilha e empilha 0
-								+"dconst_0 \r\n"							//Sai
+								+ "ifne " + labelTestaSegundo1e.getLabel()			//portanto deve sair
+								+ "pop2 \r\n"								//se nao for 1, ele desempilha e empilha 0
+								+ "dconst_0 \r\n"							//Sai
+								+ "goto " + labelSAIDAe.getLabel()
+								+ labelTestaSegundo1e.geraCodigoDestino()
+								+ "dconst_0 \r\n"			
+								+ "dcmpg \r\n"				 
+								+ "ifne " + labelColocaTrueE.getLabel()
+								+  "dconst_0 \r\n"
+								+  "goto " + labelSAIDAe.getLabel()
+								+ labelColocaTrueE.geraCodigoDestino()
+								+ "dconst_1 \r\n"
 								+ labelSAIDAe.geraCodigoDestino();
 						break;
 					case IGUAL:
@@ -184,6 +194,19 @@ public class Expressao {
 								+ labelCOLOCATRUEdiferente.geraCodigoDestino()
 								+ "dconst_0 \r\n"
 								+ labelSAIDAdiferente.geraCodigoDestino();
+						break;
+					case NEGACAO:
+						PrimitivoLabel labelCOLOCATRUEnegacao = new PrimitivoLabel("COLOCATRUEnegacao");
+						PrimitivoLabel labelSAIDAnegacao = new PrimitivoLabel("SAIDAnegacao");
+
+						codigoDestinoExpressao += "dconst_0 \r\n"
+								+ "dcmpg \r\n"
+								+ "ifeq " + labelCOLOCATRUEnegacao.getLabel() 
+								+ "dconst_0 \r\n"
+								+ "goto " + labelSAIDAnegacao.getLabel()
+								+ labelCOLOCATRUEnegacao.geraCodigoDestino()
+								+ "dconst_1 \r\n"
+								+ labelSAIDAnegacao.geraCodigoDestino();
 						break;
 					case MENOR:
 						PrimitivoLabel labelCOLOCATRUEmenor = new PrimitivoLabel("COLOCATRUEmenor");

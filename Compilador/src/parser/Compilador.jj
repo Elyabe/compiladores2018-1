@@ -155,6 +155,7 @@ TOKEN : {
 	< POT : "**" >|
 	< OU: "OU" > |
 	< OUEXCLUSIVO: "XOU" > |
+	< NEGACAO : "NAO" > |
 	< E: "E" > |
 	< ATRIB: "<-"  > |
 	< IGUAL: "=" > |
@@ -242,7 +243,7 @@ void  termo1(Expressao exp):
 	TipoOperador operador;
 }
 {
-	termo2(exp)
+	negacao(exp)
 	(	  
 	    (
 	         t = <IGUAL> { operador = TipoOperador.IGUAL; } 
@@ -254,13 +255,33 @@ void  termo1(Expressao exp):
 			item = new Operador(operador,t);
 			exp.addListaExpInfixa(item);
 		}
-		termo2(exp)
+		negacao(exp)
 		{
 			item = new Operador(operador,t);
 			exp.addListaExpPosFixa(item);
 		}
 	)?
 }
+
+void negacao( Expressao exp ) :
+{
+	Token t;
+	Item item = null;
+}
+{
+	termo2(exp) |
+	(t = <NEGACAO>
+		{
+			item = new Operador(TipoOperador.NEGACAO,t);
+			exp.addListaExpInfixa(item);
+		}
+		negacao(exp)
+		{
+			exp.addListaExpPosFixa(item);
+		}
+	) 
+}
+
 
 void termo2(Expressao exp):
 {

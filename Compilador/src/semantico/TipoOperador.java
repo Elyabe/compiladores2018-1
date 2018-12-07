@@ -12,6 +12,7 @@ public enum TipoOperador
 	E,
 	IGUAL,
 	DIFERENTE,
+	NEGACAO,
 	CONCAT,
 	MENOR,
 	MAIORIGUAL,

@@ -1,5 +1,5 @@
 
-numero x;
+numero x, a <- 2**2, z <-0, b <- 8;
 
 //le x;
 se ( 10 E 1 )
@@ -11,3 +11,32 @@ fim-se
 se ( 1 XOU 1.5 )
  exibe "Verdeiro\n";
 fim-se
+
+
+exibe "\n\n******Teste do negação **********\n";
+
+exibe NAO a, " ", NAO z,"\n";
+
+se ( NAO NAO NAO ( a OU z ) )
+	exibe "Primeiro bloco\n";
+senao
+	exibe "Bloco do senão\n";
+fim-se
+
+
+exibe "\n\n******Teste de otimizacao**********\n";
+exibe "NAO NAO NAO NAO  23\n ";
+exibe  NAO NAO NAO NAO  23, "\n";
+
+exibe "NAO NAO NAO  23\n ";
+exibe NAO NAO NAO  23, "\n";
+
+exibe "\nTestando Identidade DeMorgan\n";
+exibe "NAO ( NAO a OU NAO b ) = NAO NAO (a E b) \n";
+
+exibe NAO ( NAO a OU NAO b ) =  (a E b), "\n";
+
+exibe "\nCancelamento\n";
+exibe (NAO NAO a OU NAO NAO b) = ( a OU b), "\n"; 
+
+exibe "\n", a E b, "\n";

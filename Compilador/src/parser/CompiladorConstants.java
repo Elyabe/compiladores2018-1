@@ -81,41 +81,43 @@ public interface CompiladorConstants {
   /** RegularExpression Id. */
   int OUEXCLUSIVO = 42;
   /** RegularExpression Id. */
-  int E = 43;
+  int NEGACAO = 43;
   /** RegularExpression Id. */
-  int ATRIB = 44;
+  int E = 44;
   /** RegularExpression Id. */
-  int IGUAL = 45;
+  int ATRIB = 45;
   /** RegularExpression Id. */
-  int DIFERENTE = 46;
+  int IGUAL = 46;
   /** RegularExpression Id. */
-  int CONCAT = 47;
+  int DIFERENTE = 47;
   /** RegularExpression Id. */
-  int MENOR = 48;
+  int CONCAT = 48;
   /** RegularExpression Id. */
-  int MAIORIGUAL = 49;
+  int MENOR = 49;
   /** RegularExpression Id. */
-  int TO = 50;
+  int MAIORIGUAL = 50;
   /** RegularExpression Id. */
-  int CHAR = 51;
+  int TO = 51;
   /** RegularExpression Id. */
-  int AP = 52;
+  int CHAR = 52;
   /** RegularExpression Id. */
-  int FP = 53;
+  int AP = 53;
   /** RegularExpression Id. */
-  int AC = 54;
+  int FP = 54;
   /** RegularExpression Id. */
-  int FC = 55;
+  int AC = 55;
   /** RegularExpression Id. */
-  int PV = 56;
+  int FC = 56;
   /** RegularExpression Id. */
-  int DP = 57;
+  int PV = 57;
   /** RegularExpression Id. */
-  int VIRGULA = 58;
+  int DP = 58;
   /** RegularExpression Id. */
-  int STRING = 59;
+  int VIRGULA = 59;
   /** RegularExpression Id. */
-  int VAR = 60;
+  int STRING = 60;
+  /** RegularExpression Id. */
+  int VAR = 61;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -167,6 +169,7 @@ public interface CompiladorConstants {
     "\"**\"",
     "\"OU\"",
     "\"XOU\"",
+    "\"NAO\"",
     "\"E\"",
     "\"<-\"",
     "\"=\"",

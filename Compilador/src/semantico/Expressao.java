@@ -240,6 +240,40 @@ public class Expressao {
 			
 		return codigoDestinoExpressao;	
 	}
+	
+	public void otimizarNegacao()
+	{
+		Item itemAtual;
+		Operador operador;
+		int qtdNegacoesConsecutivas = 0;
+
+		for ( int idItem = 0; idItem < this.getListaExpPosFixa().size(); idItem++ )
+		{
+			itemAtual = this.getListaExpPosFixa().get(idItem);
+			
+			if ( itemAtual instanceof Operador )
+			{
+				operador = (Operador)itemAtual;
+				if ( operador.getTipoOperador() == TipoOperador.NEGACAO )
+				{
+					qtdNegacoesConsecutivas++;
+					if ( qtdNegacoesConsecutivas == 2 ) 
+					{
+						this.getListaExpPosFixa().remove(idItem);
+						this.getListaExpPosFixa().remove(idItem-1);
+						idItem -= 2;
+						qtdNegacoesConsecutivas = 0;
+					}
+				} else
+					qtdNegacoesConsecutivas = 0;
+					
+			} else
+			{
+				qtdNegacoesConsecutivas = 0;
+			}
+		}
+	}
+
 
 	public String toString() {
 		return "[infixa: "+this.getListaExpInfixa() +

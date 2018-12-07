@@ -193,6 +193,7 @@ Expressao iniciaExpressao():
 	{
 	    exp.otimizarPosFixaConst1();
         exp.otimizaPosfixa();
+        exp.otimizarNegacao();
 		return exp;
 	}	
 }

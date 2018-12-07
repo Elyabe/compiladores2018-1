@@ -157,6 +157,7 @@ TOKEN : {
 	< E: "E" > |
 	< ATRIB: "<-"  > |
 	< IGUAL: "=" > |
+	< DIFERENTE: "!=" > |
 	< CONCAT: "&" > |
 	< MENOR: "<" > |
 	< MAIORIGUAL: ">=" > |
@@ -243,6 +244,7 @@ void  termo1(Expressao exp):
 	(	  
 	    (
 	         t = <IGUAL> { operador = TipoOperador.IGUAL; } 
+		   | t = <DIFERENTE> { operador = TipoOperador.DIFERENTE; }	
 		   | t = <MENOR> { operador = TipoOperador.MENOR; } 
 		   | t = <MAIORIGUAL> {operador = TipoOperador.MAIORIGUAL; }
 	    )

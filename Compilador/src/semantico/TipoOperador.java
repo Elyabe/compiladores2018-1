@@ -10,6 +10,7 @@ public enum TipoOperador
 	OU,
 	E,
 	IGUAL,
+	DIFERENTE,
 	CONCAT,
 	MENOR,
 	MAIORIGUAL,

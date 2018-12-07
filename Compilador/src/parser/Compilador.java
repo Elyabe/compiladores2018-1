@@ -141,12 +141,17 @@ public class Compilador implements CompiladorConstants {
     termo2(exp);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IGUAL:
+    case DIFERENTE:
     case MENOR:
     case MAIORIGUAL:
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case IGUAL:
         t = jj_consume_token(IGUAL);
                                operador = TipoOperador.IGUAL;
+        break;
+      case DIFERENTE:
+        t = jj_consume_token(DIFERENTE);
+                                       operador = TipoOperador.DIFERENTE;
         break;
       case MENOR:
         t = jj_consume_token(MENOR);
@@ -824,7 +829,7 @@ public class Compilador implements CompiladorConstants {
       jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xaaa2a700,0xaaa2a700,0x0,0x0,0x0,0x0,0x800,0x0,0x0,0x0,0x80000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x200,0x400,0xd000,0xd000,0x2000,0x30,0x30,0xc0,0xc0,0x100,0x6040038,0x4000003,0x4000003,0x3,0x800,0x1000000,0x800,0x0,0x1000000,0x1000000,0x38,0x0,};
+      jj_la1_1 = new int[] {0x200,0x400,0x1b000,0x1b000,0x4000,0x30,0x30,0xc0,0xc0,0x100,0xc080038,0x8000003,0x8000003,0x3,0x800,0x2000000,0x800,0x0,0x2000000,0x2000000,0x38,0x0,};
    }
 
   /** Constructor with InputStream. */
@@ -962,7 +967,7 @@ public class Compilador implements CompiladorConstants {
   /** Generate ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[59];
+    boolean[] la1tokens = new boolean[60];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -979,7 +984,7 @@ public class Compilador implements CompiladorConstants {
         }
       }
     }
-    for (int i = 0; i < 59; i++) {
+    for (int i = 0; i < 60; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

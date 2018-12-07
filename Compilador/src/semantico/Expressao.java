@@ -126,10 +126,10 @@ public class Expressao {
 					case E:
 						PrimitivoLabel labelSAIDAe = new PrimitivoLabel("SAIDAe");
 						
-						codigoDestinoExpressao += "dconst_1 \r\n"			//Primeiro empilha 1 e compara com o topo
+						codigoDestinoExpressao += "dconst_0 \r\n"			//Primeiro empilha 1 e compara com o topo
 								+"dcmpg \r\n"								//se o resultado for igual, quer dizer que 
 																			//o segundo que decide o resultado
-								+"ifeq " + labelSAIDAe.getLabel()			//portanto deve sair
+								+"ifne " + labelSAIDAe.getLabel()			//portanto deve sair
 								+"pop2 \r\n"								//se nao for 1, ele desempilha e empilha 0
 								+"dconst_0 \r\n"							//Sai
 								+ labelSAIDAe.geraCodigoDestino();
@@ -145,6 +145,18 @@ public class Expressao {
 								+ labelCOLOCATRUEigual.geraCodigoDestino()
 								+ "dconst_1 \r\n"
 								+ labelSAIDAigual.geraCodigoDestino();
+						break;
+					case DIFERENTE:
+						PrimitivoLabel labelCOLOCATRUEdiferente = new PrimitivoLabel("COLOCATRUEdiferente");
+						PrimitivoLabel labelSAIDAdiferente = new PrimitivoLabel("SAIDAdiferente");
+
+						codigoDestinoExpressao += "dcmpg \r\n"
+								+ "ifeq "+labelCOLOCATRUEdiferente.getLabel() 
+								+ "dconst_1 \r\n"
+								+ "goto "+labelSAIDAdiferente.getLabel()
+								+ labelCOLOCATRUEdiferente.geraCodigoDestino()
+								+ "dconst_0 \r\n"
+								+ labelSAIDAdiferente.geraCodigoDestino();
 						break;
 					case MENOR:
 						PrimitivoLabel labelCOLOCATRUEmenor = new PrimitivoLabel("COLOCATRUEmenor");

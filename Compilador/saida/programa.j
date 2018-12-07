@@ -10,76 +10,137 @@ return
 .end method 
 
 .method public static main([Ljava/lang/String;)V 
-.limit stack 272 
-.limit locals 11
-ldc2_w 2.0
-ldc2_w 2.0
-invokestatic java/lang/Math/pow(DD)D 
-dstore_3
+.limit stack 422 
+.limit locals 13
 ldc2_w 0.0
 dstore 5
 ldc2_w 8.0
 dstore 7
+ldc2_w 2.0
+dstore_3
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+ldc "\n******Teste de atribuicao multipla**********\n"
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
+ldc2_w 1.0
+dload_3
+ldc2_w 2.0
+invokestatic java/lang/Math/pow(DD)D 
+dadd 
+dstore_3
+ldc2_w 1.0
+dstore 7
+ldc2_w 0.0
+dconst_0 
+dcmpg 
+ifeq COLOCATRUEnegacao_0
+dconst_0 
+goto SAIDAnegacao_1
+COLOCATRUEnegacao_0:
+dconst_1 
+SAIDAnegacao_1:
+ldc2_w 0.0
+dconst_0 
+dcmpg 
+ifeq SAIDAou_2
+pop2 
+dconst_1 
+SAIDAou_2:
+dstore_1
+dload 5
+dstore 9
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+ldc " a "
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+dload_3
+invokevirtual java/io/PrintStream/print(D)V 
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+ldc "\n b "
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+dload 7
+invokevirtual java/io/PrintStream/print(D)V 
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+ldc "\n x "
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+dload_1
+invokevirtual java/io/PrintStream/print(D)V 
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+ldc "\n y "
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+dload 9
+invokevirtual java/io/PrintStream/print(D)V 
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+ldc "\n z "
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+dload 5
+invokevirtual java/io/PrintStream/print(D)V 
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+ldc "\n"
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
 ldc2_w 10.0
 ldc2_w 1.0
 dconst_0 
 dcmpg 
-ifne TestaSegundo1e_3
+ifne TestaSegundo1e_6
 pop2 
 dconst_0 
-goto SAIDAe_2
-TestaSegundo1e_3:
+goto SAIDAe_5
+TestaSegundo1e_6:
 dconst_0 
 dcmpg 
-ifne ColocaTrueE_4
+ifne ColocaTrueE_7
 dconst_0 
-goto SAIDAe_2
-ColocaTrueE_4:
+goto SAIDAe_5
+ColocaTrueE_7:
 dconst_1 
-SAIDAe_2:
+SAIDAe_5:
 dconst_0 
 dcmpg 
-ifeq LABELFALSE_0
+ifeq LABELFALSE_3
 
 getstatic java/lang/System/out Ljava/io/PrintStream; 
 ldc "Diferente\n"
 invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
-goto LABELSAIDA_1
+goto LABELSAIDA_4
 
-LABELFALSE_0:
+LABELFALSE_3:
 getstatic java/lang/System/out Ljava/io/PrintStream; 
 ldc "Iguais\n"
 invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
-LABELSAIDA_1:
+LABELSAIDA_4:
 ldc2_w 1.0
 ldc2_w 1.5
 dconst_0 
 dcmpg 
-ifeq ComparaSegundo0_7
-goto ComparaSegundo1_8
-ComparaSegundo0_7:
+ifeq ComparaSegundo0_10
+goto ComparaSegundo1_11
+ComparaSegundo0_10:
 dconst_0 
 dcmpg 
-ifeq COLOCAFALSEXOR_10
-goto COLOCATRUEXOR_9
-ComparaSegundo1_8:
+ifeq COLOCAFALSEXOR_13
+goto COLOCATRUEXOR_12
+ComparaSegundo1_11:
 dconst_0 
 dcmpg 
-ifeq COLOCATRUEXOR_9
-COLOCAFALSEXOR_10:
+ifeq COLOCATRUEXOR_12
+COLOCAFALSEXOR_13:
 dconst_0 
-goto SAIDAouExclusivo_6
-COLOCATRUEXOR_9:
+goto SAIDAouExclusivo_9
+COLOCATRUEXOR_12:
 dconst_1 
-SAIDAouExclusivo_6:
+SAIDAouExclusivo_9:
 dconst_0 
 dcmpg 
-ifeq LABELFALSE_5
+ifeq LABELFALSE_8
 
 getstatic java/lang/System/out Ljava/io/PrintStream; 
 ldc "Verdeiro\n"
 invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
-LABELFALSE_5:
+LABELFALSE_8:
 getstatic java/lang/System/out Ljava/io/PrintStream; 
 ldc "\n\n******Teste do negação **********\n"
 invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
@@ -87,12 +148,12 @@ getstatic java/lang/System/out Ljava/io/PrintStream;
 dload_3
 dconst_0 
 dcmpg 
-ifeq COLOCATRUEnegacao_11
+ifeq COLOCATRUEnegacao_14
 dconst_0 
-goto SAIDAnegacao_12
-COLOCATRUEnegacao_11:
+goto SAIDAnegacao_15
+COLOCATRUEnegacao_14:
 dconst_1 
-SAIDAnegacao_12:
+SAIDAnegacao_15:
 invokevirtual java/io/PrintStream/print(D)V 
 getstatic java/lang/System/out Ljava/io/PrintStream; 
 ldc " "
@@ -101,12 +162,12 @@ getstatic java/lang/System/out Ljava/io/PrintStream;
 dload 5
 dconst_0 
 dcmpg 
-ifeq COLOCATRUEnegacao_13
+ifeq COLOCATRUEnegacao_16
 dconst_0 
-goto SAIDAnegacao_14
-COLOCATRUEnegacao_13:
+goto SAIDAnegacao_17
+COLOCATRUEnegacao_16:
 dconst_1 
-SAIDAnegacao_14:
+SAIDAnegacao_17:
 invokevirtual java/io/PrintStream/print(D)V 
 getstatic java/lang/System/out Ljava/io/PrintStream; 
 ldc "\n"
@@ -115,32 +176,32 @@ dload_3
 dload 5
 dconst_0 
 dcmpg 
-ifeq SAIDAou_17
+ifeq SAIDAou_20
 pop2 
 dconst_1 
-SAIDAou_17:
+SAIDAou_20:
 dconst_0 
 dcmpg 
-ifeq COLOCATRUEnegacao_18
+ifeq COLOCATRUEnegacao_21
 dconst_0 
-goto SAIDAnegacao_19
-COLOCATRUEnegacao_18:
+goto SAIDAnegacao_22
+COLOCATRUEnegacao_21:
 dconst_1 
-SAIDAnegacao_19:
+SAIDAnegacao_22:
 dconst_0 
 dcmpg 
-ifeq LABELFALSE_15
+ifeq LABELFALSE_18
 
 getstatic java/lang/System/out Ljava/io/PrintStream; 
 ldc "Primeiro bloco\n"
 invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
-goto LABELSAIDA_16
+goto LABELSAIDA_19
 
-LABELFALSE_15:
+LABELFALSE_18:
 getstatic java/lang/System/out Ljava/io/PrintStream; 
 ldc "Bloco do senão\n"
 invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
-LABELSAIDA_16:
+LABELSAIDA_19:
 getstatic java/lang/System/out Ljava/io/PrintStream; 
 ldc "\n\n******Teste de otimizacao**********\n"
 invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
@@ -160,12 +221,12 @@ getstatic java/lang/System/out Ljava/io/PrintStream;
 ldc2_w 23.0
 dconst_0 
 dcmpg 
-ifeq COLOCATRUEnegacao_20
+ifeq COLOCATRUEnegacao_23
 dconst_0 
-goto SAIDAnegacao_21
-COLOCATRUEnegacao_20:
+goto SAIDAnegacao_24
+COLOCATRUEnegacao_23:
 dconst_1 
-SAIDAnegacao_21:
+SAIDAnegacao_24:
 invokevirtual java/io/PrintStream/print(D)V 
 getstatic java/lang/System/out Ljava/io/PrintStream; 
 ldc "\n"
@@ -180,27 +241,13 @@ getstatic java/lang/System/out Ljava/io/PrintStream;
 dload_3
 dconst_0 
 dcmpg 
-ifeq COLOCATRUEnegacao_22
+ifeq COLOCATRUEnegacao_25
 dconst_0 
-goto SAIDAnegacao_23
-COLOCATRUEnegacao_22:
+goto SAIDAnegacao_26
+COLOCATRUEnegacao_25:
 dconst_1 
-SAIDAnegacao_23:
+SAIDAnegacao_26:
 dload 7
-dconst_0 
-dcmpg 
-ifeq COLOCATRUEnegacao_24
-dconst_0 
-goto SAIDAnegacao_25
-COLOCATRUEnegacao_24:
-dconst_1 
-SAIDAnegacao_25:
-dconst_0 
-dcmpg 
-ifeq SAIDAou_26
-pop2 
-dconst_1 
-SAIDAou_26:
 dconst_0 
 dcmpg 
 ifeq COLOCATRUEnegacao_27
@@ -209,30 +256,44 @@ goto SAIDAnegacao_28
 COLOCATRUEnegacao_27:
 dconst_1 
 SAIDAnegacao_28:
+dconst_0 
+dcmpg 
+ifeq SAIDAou_29
+pop2 
+dconst_1 
+SAIDAou_29:
+dconst_0 
+dcmpg 
+ifeq COLOCATRUEnegacao_30
+dconst_0 
+goto SAIDAnegacao_31
+COLOCATRUEnegacao_30:
+dconst_1 
+SAIDAnegacao_31:
 dload_3
 dload 7
 dconst_0 
 dcmpg 
-ifne TestaSegundo1e_30
+ifne TestaSegundo1e_33
 pop2 
 dconst_0 
-goto SAIDAe_29
-TestaSegundo1e_30:
+goto SAIDAe_32
+TestaSegundo1e_33:
 dconst_0 
 dcmpg 
-ifne ColocaTrueE_31
+ifne ColocaTrueE_34
 dconst_0 
-goto SAIDAe_29
-ColocaTrueE_31:
+goto SAIDAe_32
+ColocaTrueE_34:
 dconst_1 
-SAIDAe_29:
+SAIDAe_32:
 dcmpg 
-ifeq COLOCATRUEigual_32
+ifeq COLOCATRUEigual_35
 dconst_0 
-goto SAIDAigual_33
-COLOCATRUEigual_32:
+goto SAIDAigual_36
+COLOCATRUEigual_35:
 dconst_1 
-SAIDAigual_33:
+SAIDAigual_36:
 invokevirtual java/io/PrintStream/print(D)V 
 getstatic java/lang/System/out Ljava/io/PrintStream; 
 ldc "\n"
@@ -245,25 +306,25 @@ dload_3
 dload 7
 dconst_0 
 dcmpg 
-ifeq SAIDAou_34
+ifeq SAIDAou_37
 pop2 
 dconst_1 
-SAIDAou_34:
+SAIDAou_37:
 dload_3
 dload 7
 dconst_0 
 dcmpg 
-ifeq SAIDAou_35
+ifeq SAIDAou_38
 pop2 
 dconst_1 
-SAIDAou_35:
+SAIDAou_38:
 dcmpg 
-ifeq COLOCATRUEigual_36
+ifeq COLOCATRUEigual_39
 dconst_0 
-goto SAIDAigual_37
-COLOCATRUEigual_36:
+goto SAIDAigual_40
+COLOCATRUEigual_39:
 dconst_1 
-SAIDAigual_37:
+SAIDAigual_40:
 invokevirtual java/io/PrintStream/print(D)V 
 getstatic java/lang/System/out Ljava/io/PrintStream; 
 ldc "\n"
@@ -276,19 +337,19 @@ dload_3
 dload 7
 dconst_0 
 dcmpg 
-ifne TestaSegundo1e_39
+ifne TestaSegundo1e_42
 pop2 
 dconst_0 
-goto SAIDAe_38
-TestaSegundo1e_39:
+goto SAIDAe_41
+TestaSegundo1e_42:
 dconst_0 
 dcmpg 
-ifne ColocaTrueE_40
+ifne ColocaTrueE_43
 dconst_0 
-goto SAIDAe_38
-ColocaTrueE_40:
+goto SAIDAe_41
+ColocaTrueE_43:
 dconst_1 
-SAIDAe_38:
+SAIDAe_41:
 invokevirtual java/io/PrintStream/print(D)V 
 getstatic java/lang/System/out Ljava/io/PrintStream; 
 ldc "\n"

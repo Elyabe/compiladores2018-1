@@ -158,6 +158,7 @@ TOKEN : {
 	< NEGACAO : "NAO" > |
 	< E: "E" > |
 	< ATRIB: "<-"  > |
+	< ATRIBMULT: "<=="  > |
 	< IGUAL: "=" > |
 	< DIFERENTE: "!=" > |
 	< CONCAT: "&" > |
@@ -478,20 +479,27 @@ void atribuicao(ListaComandosAltoNivel listaComandosAltoNivel):
 	Token atrib, var;
 	ComandoAltoNivel comando = null;
 	Expressao expressao = null;
+	LinkedList<Token > listaVar = new LinkedList<Token >();
+	LinkedList<Expressao > listaExp = new LinkedList<Expressao >();
 }
 {
 	var = <VAR>
 	{
 		tabela.verificaVariavelDeclarada(var.image);
+		listaVar.add(var);
 	}
-		atrib = <ATRIB> expressao = iniciaExpressao()
-	{
-		AcoesSemanticas.incompatibilidadeTipoAtribuicao (tabela.pesquisaTabela(var.image), expressao, var);
-		comando = new ComandoAtribuicao(tabela.pesquisaTabela(var.image), expressao, atrib);
-		tabela.pesquisaTabela(var.image).setIsInicializada(true);
-		AcoesSemanticas.faltaInicializacaoVariavel(expressao,var);
-		listaComandosAltoNivel.addComando(comando);
-	}
+   (
+     atrib = <ATRIB> expressao = iniciaExpressao() { listaExp.add( expressao); } |
+
+     ( < VIRGULA > var = < VAR > {  tabela.verificaVariavelDeclarada(var.image); listaVar.add(var); } )* 
+	 atrib = < ATRIBMULT >
+	               expressao = iniciaExpressao() { listaExp.add( expressao ); }
+	 ( < VIRGULA > expressao = iniciaExpressao() {  listaExp.add( expressao ); } )*
+   )
+   {
+	 AcoesSemanticas.verificarParesAtribuicaoMultipla( listaVar, listaExp, atrib );  
+	 AcoesSemanticas.gerarAtribuicoesMultiplas( listaComandosAltoNivel, listaVar, listaExp, atrib );
+   }
 }
 
 void declaracao(ListaComandosAltoNivel listaComandosAltoNivel):

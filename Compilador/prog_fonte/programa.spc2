@@ -1,5 +1,15 @@
 
-numero x, a <- 2**2, z <-0, b <- 8;
+numero x, a, z <-0, b <- 8, y;
+
+
+a <- 2;
+
+exibe "\n******Teste de atribuicao multipla**********\n";
+a, b, x, y  <==  1 + 1*(a**2) , 1, NAO 0 OU 0, z;
+
+
+exibe " a ", a, "\n b ", b, "\n x ", x, "\n y ", y, "\n z ", z,"\n";
+
 
 //le x;
 se ( 10 E 1 )

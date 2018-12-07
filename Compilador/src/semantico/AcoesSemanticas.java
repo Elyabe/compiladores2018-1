@@ -1,13 +1,32 @@
 package semantico;
 
 
-import parser.Compilador;
-import parser.Token;
-import tratamentoErro.ErroSemantico;
+import java.util.LinkedList;
+import comandoAltoNivel.*;
+import parser.*;
+import tratamentoErro.*;
 
 public class AcoesSemanticas {
 	
 	public static int qtdWarnings = 0;
+	
+	public static void verificarParesAtribuicaoMultipla( LinkedList<Token> lstVar, LinkedList<Expressao> lstExp, Token atrib )
+	{
+		if ( lstVar.size() != lstExp.size() ) throw new ErroSemantico( "Os numeros de variaveis e expressoes sao diferentes na linha " + atrib.beginLine + "\n" );
+	}
+	
+	
+	public static void gerarAtribuicoesMultiplas( ListaComandosAltoNivel listaComandosAltoNivel, LinkedList<Token> listaVar, LinkedList<Expressao> listaExp, Token atrib  )
+	{
+		ComandoAltoNivel comando = null;
+		for ( int k = 0; k < listaVar.size(); k++ )
+		{
+			comando = new ComandoAtribuicao(Compilador.tabela.pesquisaTabela( listaVar.get(k).image), listaExp.get(k), atrib);
+			listaComandosAltoNivel.addComando( comando );
+			Compilador.tabela.pesquisaTabela(listaVar.get(k).image).setIsInicializada(true);
+		}
+	}
+
 	
 	public static void incompatibilidadeTipoExpressao (Item item, Expressao expressao, Token token) {
 		Operando operando = (Operando) item;

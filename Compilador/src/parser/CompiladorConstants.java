@@ -87,37 +87,39 @@ public interface CompiladorConstants {
   /** RegularExpression Id. */
   int ATRIB = 45;
   /** RegularExpression Id. */
-  int IGUAL = 46;
+  int ATRIBMULT = 46;
   /** RegularExpression Id. */
-  int DIFERENTE = 47;
+  int IGUAL = 47;
   /** RegularExpression Id. */
-  int CONCAT = 48;
+  int DIFERENTE = 48;
   /** RegularExpression Id. */
-  int MENOR = 49;
+  int CONCAT = 49;
   /** RegularExpression Id. */
-  int MAIORIGUAL = 50;
+  int MENOR = 50;
   /** RegularExpression Id. */
-  int TO = 51;
+  int MAIORIGUAL = 51;
   /** RegularExpression Id. */
-  int CHAR = 52;
+  int TO = 52;
   /** RegularExpression Id. */
-  int AP = 53;
+  int CHAR = 53;
   /** RegularExpression Id. */
-  int FP = 54;
+  int AP = 54;
   /** RegularExpression Id. */
-  int AC = 55;
+  int FP = 55;
   /** RegularExpression Id. */
-  int FC = 56;
+  int AC = 56;
   /** RegularExpression Id. */
-  int PV = 57;
+  int FC = 57;
   /** RegularExpression Id. */
-  int DP = 58;
+  int PV = 58;
   /** RegularExpression Id. */
-  int VIRGULA = 59;
+  int DP = 59;
   /** RegularExpression Id. */
-  int STRING = 60;
+  int VIRGULA = 60;
   /** RegularExpression Id. */
-  int VAR = 61;
+  int STRING = 61;
+  /** RegularExpression Id. */
+  int VAR = 62;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -172,6 +174,7 @@ public interface CompiladorConstants {
     "\"NAO\"",
     "\"E\"",
     "\"<-\"",
+    "\"<==\"",
     "\"=\"",
     "\"!=\"",
     "\"&\"",

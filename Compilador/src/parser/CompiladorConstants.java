@@ -15,115 +15,117 @@ public interface CompiladorConstants {
   /** RegularExpression Id. */
   int LEITURA = 9;
   /** RegularExpression Id. */
-  int SE = 10;
+  int LEITURACOMPLETA = 10;
   /** RegularExpression Id. */
-  int SENAO = 11;
+  int SE = 11;
   /** RegularExpression Id. */
-  int FIMSE = 12;
+  int SENAO = 12;
   /** RegularExpression Id. */
-  int ENQUANTO = 13;
+  int FIMSE = 13;
   /** RegularExpression Id. */
-  int FIMENQUANTO = 14;
+  int ENQUANTO = 14;
   /** RegularExpression Id. */
-  int PARA = 15;
+  int FIMENQUANTO = 15;
   /** RegularExpression Id. */
-  int FIMPARA = 16;
+  int PARA = 16;
   /** RegularExpression Id. */
-  int SELETOR = 17;
+  int FIMPARA = 17;
   /** RegularExpression Id. */
-  int FIMSELETOR = 18;
+  int SELETOR = 18;
   /** RegularExpression Id. */
-  int CASO = 19;
+  int FIMSELETOR = 19;
   /** RegularExpression Id. */
-  int FIMCASO = 20;
+  int CASO = 20;
   /** RegularExpression Id. */
-  int FACA = 21;
+  int FIMCASO = 21;
   /** RegularExpression Id. */
-  int FAZERENQUANTO = 22;
+  int FACA = 22;
   /** RegularExpression Id. */
-  int REPEAT = 23;
+  int FAZERENQUANTO = 23;
   /** RegularExpression Id. */
-  int FIMREPEAT = 24;
+  int REPEAT = 24;
   /** RegularExpression Id. */
-  int SEREPETE = 25;
+  int FIMREPEAT = 25;
   /** RegularExpression Id. */
-  int FIMSEREPETE = 26;
+  int SEREPETE = 26;
   /** RegularExpression Id. */
-  int DUPLO = 27;
+  int FIMSEREPETE = 27;
   /** RegularExpression Id. */
-  int FIMDUPLO = 28;
+  int DUPLO = 28;
   /** RegularExpression Id. */
-  int MATRIX3D = 29;
+  int FIMDUPLO = 29;
   /** RegularExpression Id. */
-  int FIMMATRIX3D = 30;
+  int MATRIX3D = 30;
   /** RegularExpression Id. */
-  int COMENTLINHA = 31;
+  int FIMMATRIX3D = 31;
   /** RegularExpression Id. */
-  int NUMERO = 32;
+  int COMENTLINHA = 32;
   /** RegularExpression Id. */
-  int PALAVRA = 33;
+  int NUMERO = 33;
   /** RegularExpression Id. */
-  int DIGIT = 34;
+  int PALAVRA = 34;
   /** RegularExpression Id. */
-  int NUM = 35;
+  int DIGIT = 35;
   /** RegularExpression Id. */
-  int SOMA = 36;
+  int NUM = 36;
   /** RegularExpression Id. */
-  int SUB = 37;
+  int SOMA = 37;
   /** RegularExpression Id. */
-  int MUL = 38;
+  int SUB = 38;
   /** RegularExpression Id. */
-  int DIV = 39;
+  int MUL = 39;
   /** RegularExpression Id. */
-  int POT = 40;
+  int DIV = 40;
   /** RegularExpression Id. */
-  int LOG = 41;
+  int POT = 41;
   /** RegularExpression Id. */
-  int OU = 42;
+  int LOG = 42;
   /** RegularExpression Id. */
-  int OUEXCLUSIVO = 43;
+  int OU = 43;
   /** RegularExpression Id. */
-  int NEGACAO = 44;
+  int OUEXCLUSIVO = 44;
   /** RegularExpression Id. */
-  int E = 45;
+  int NEGACAO = 45;
   /** RegularExpression Id. */
-  int ATRIB = 46;
+  int E = 46;
   /** RegularExpression Id. */
-  int ATRIBMULT = 47;
+  int ATRIB = 47;
   /** RegularExpression Id. */
-  int IGUAL = 48;
+  int ATRIBMULT = 48;
   /** RegularExpression Id. */
-  int DIFERENTE = 49;
+  int IGUAL = 49;
   /** RegularExpression Id. */
-  int CONCAT = 50;
+  int DIFERENTE = 50;
   /** RegularExpression Id. */
-  int MENOR = 51;
+  int CONCAT = 51;
   /** RegularExpression Id. */
-  int MAIORIGUAL = 52;
+  int MENOR = 52;
   /** RegularExpression Id. */
-  int TO = 53;
+  int MAIORIGUAL = 53;
   /** RegularExpression Id. */
-  int EXIBELN = 54;
+  int TO = 54;
   /** RegularExpression Id. */
-  int CHAR = 55;
+  int EXIBELN = 55;
   /** RegularExpression Id. */
-  int AP = 56;
+  int CHAR = 56;
   /** RegularExpression Id. */
-  int FP = 57;
+  int AP = 57;
   /** RegularExpression Id. */
-  int AC = 58;
+  int FP = 58;
   /** RegularExpression Id. */
-  int FC = 59;
+  int AC = 59;
   /** RegularExpression Id. */
-  int PV = 60;
+  int FC = 60;
   /** RegularExpression Id. */
-  int DP = 61;
+  int PV = 61;
   /** RegularExpression Id. */
-  int VIRGULA = 62;
+  int DP = 62;
   /** RegularExpression Id. */
-  int STRING = 63;
+  int VIRGULA = 63;
   /** RegularExpression Id. */
-  int VAR = 64;
+  int STRING = 64;
+  /** RegularExpression Id. */
+  int VAR = 65;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -142,6 +144,7 @@ public interface CompiladorConstants {
     "<token of kind 7>",
     "\"exibe\"",
     "\"le\"",
+    "\"lecompleto\"",
     "\"se\"",
     "\"senao\"",
     "\"fim-se\"",

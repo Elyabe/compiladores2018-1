@@ -110,7 +110,8 @@ SKIP : { "/*" : comentarioGeral }
 //TOKENS DE COMANDOS 
 TOKEN [IGNORE_CASE] : {
 	<EXIBE: "exibe" >  |
-	<LEITURA: "le" > | 
+	<LEITURA: "le" > |
+	<LEITURACOMPLETA: "lecompleto" > | 
 	<SE: "se" > |
 	<SENAO: "senao" > |
 	<FIMSE: "fim-se" > |
@@ -630,10 +631,21 @@ void  enquanto(ListaComandosAltoNivel listaComandosAltoNivel):
 void le(ListaComandosAltoNivel listaComandosAltoNivel):
 {
 	Token le, t;
-	ComandoEntrada comando = null;
+	ComandoAltoNivel comando = null;
 }
 {
-	le = <LEITURA> t = <VAR>
+	  (   le = <LEITURA> |
+		  le = <LEITURACOMPLETA> t = <STRING> <VIRGULA> 
+		  {
+			Expressao expressao = new Expressao();
+			Item string = new Operando( TipoDado.PALAVRA, TipoElemento.CTE, t, Sinal.POS );
+			expressao.addListaExpInfixa( string );
+			expressao.addListaExpPosFixa( string );
+		    comando  = new ComandoSaida( expressao, le );
+		    listaComandosAltoNivel.addComando( comando );
+		  }
+	  )
+	t = <VAR>
 	{
 		comando = new ComandoEntrada(tabela.pesquisaTabela(t.image), le);
 		tabela.pesquisaTabela(t.image).setIsInicializada(true);

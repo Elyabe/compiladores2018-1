@@ -1,0 +1,12 @@
+// Teste para comando LECOMPLETO
+
+numero a,b;
+
+lecompleto "Insira dois numeros: ", a,b; 
+
+exibeln a;
+exibeln b;
+
+faca
+	lecompleto "Digite 1 para sair :", a;
+fazer-enquanto ( a != 1 );

@@ -7,6 +7,7 @@ public enum TipoOperador
 	MUL, 
 	DIV,
 	POT,
+	LOG,
 	OU,
 	OUEXCLUSIVO,
 	E,

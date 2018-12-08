@@ -153,6 +153,7 @@ TOKEN : {
 	< MUL: "*" > |
 	< DIV: "/" > |
 	< POT : "**" >|
+	< LOG: "log" > |
 	< OU: "OU" > |
 	< OUEXCLUSIVO: "XOU" > |
 	< NEGACAO : "NAO" > |
@@ -361,7 +362,7 @@ void pot(Expressao exp) :
 	TipoOperador operador;
 	Item item = null;}
 {
-	termo5(exp)
+	log(exp)
 	(
 	  t=<POT> { operador = TipoOperador.POT; }
 	  {  
@@ -376,7 +377,24 @@ void pot(Expressao exp) :
 	)?
 }
 
-
+void log(Expressao exp) :
+{
+	Token t;
+	TipoOperador operador;
+	Item item = null;
+}
+{
+  	termo5(exp) |
+	( t=<LOG> <AP> expressao(exp) <FP>
+	  	{
+	  	    operador = TipoOperador.LOG;
+	        item = new Operador(operador, t);
+            exp.addListaExpInfixa(item);
+            exp.addListaExpPosFixa(item);
+	    }
+	)
+	
+}
 
 void termo5(Expressao exp):
 {

@@ -1,0 +1,16 @@
+// Teste da função log
+
+numero a, b;
+
+a, b <== 10, 2;
+
+exibeln "log(",a,")=", log( a );
+
+exibeln "****Testando propriedades Matemáticas:****";
+exibeln log( a*b )," = ", log(a) + log(b);
+
+exibeln log( a/b )," = ", log(a) - log(b);
+
+exibeln log( 10**a), " = ", a;
+
+exibeln log( b )/log(2), "= lg(2)";

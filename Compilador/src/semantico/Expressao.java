@@ -113,6 +113,9 @@ public class Expressao {
 					case POT:
 						codigoDestinoExpressao += "invokestatic java/lang/Math/pow(DD)D \r\n";
 						break;
+					case LOG:
+						codigoDestinoExpressao += "invokestatic java/lang/Math/log10(D)D \r\n";
+						break;
 					case OU:
 						PrimitivoLabel labelSAIDAou = new PrimitivoLabel("SAIDAou");
 	

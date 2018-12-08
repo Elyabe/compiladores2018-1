@@ -1,0 +1,14 @@
+// Teste Operadores +=, -=, /=, *=
+
+numero a, b;
+
+a, b <== 0, 0 OU 0 XOU NAO NAO 3;
+para ( a <- 2; a < 5000 E b; a *= b + log(10) )
+ 	exibeln a;
+fim-para
+
+a -= 2;
+b /= 3;
+exibeln "\n", a," ", b;
+ 
+ 

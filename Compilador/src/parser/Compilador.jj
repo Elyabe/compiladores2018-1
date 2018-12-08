@@ -34,7 +34,8 @@ import java.util.LinkedList;
 
 public class Compilador {
 	public static Tabela tabela = new Tabela();
-	public static String arquivo[] = { Config.pathSaida + Config.nomeArquivo + Config.extensaoCodigoDestino };
+	// Argumentos para o jasmin gerar automaticamente o .class na pasta saida
+	public static String arquivo[] = { "-d", Config.pathSaida, Config.pathSaida + Config.nomeArquivo + Config.extensaoCodigoDestino };
 	 
 	public static void main(String args[])  throws ParseException  {
 		Compilador compilador = null;
@@ -87,6 +88,7 @@ public class Compilador {
 			Main.main(arquivo);
 			
 		}
+		
 		catch(FileNotFoundException e) {
 			System.err.println("\nErro: arquivo nao encontrado");
 		}
@@ -419,23 +421,6 @@ void termo5(Expressao exp):
 		item = new Operador(TipoOperador.FP, tokenEntrada);
 		exp.addListaExpInfixa(item);
 	}
-
-	/*| tokenEntrada = <NUM>
-	{
-		item = new Operando(TipoDado.NUMERO,TipoElemento.CTE, tokenEntrada, Sinal.POS);
-		AcoesSemanticas.incompatibilidadeTipoExpressao(item,exp,tokenEntrada);
-		exp.addListaExpInfixa(item);
-		exp.addListaExpPosFixa(item);
-	}
-
-	| <SOMA> tokenEntrada = <NUM>
-	{
-		item = new Operando(TipoDado.NUMERO,TipoElemento.CTE, tokenEntrada, Sinal.POS);
-		AcoesSemanticas.incompatibilidadeTipoExpressao(item,exp,tokenEntrada);
-		exp.addListaExpInfixa(item);
-		exp.addListaExpPosFixa(item);
-	}*/
-
 	|  ( <SUB > { sinal = Sinal.NEG; } | <SOMA> { sinal = Sinal.POS; } )?
 		( tokenEntrada = <NUM>
 			{
@@ -503,6 +488,8 @@ void comando(ListaComandosAltoNivel listaComandosAltoNivel):
 void atribuicao(ListaComandosAltoNivel listaComandosAltoNivel):
 {
 	Token atrib, var;
+	TipoOperador tpOperador;
+	Item operando, operador;
 	ComandoAltoNivel comando = null;
 	Expressao expressao = null;
 	LinkedList<Token > listaVar = new LinkedList<Token >();
@@ -514,18 +501,38 @@ void atribuicao(ListaComandosAltoNivel listaComandosAltoNivel):
 		tabela.verificaVariavelDeclarada(var.image);
 		listaVar.add(var);
 	}
-   (
-     atrib = <ATRIB> expressao = iniciaExpressao() { listaExp.add( expressao); } |
-
-     ( < VIRGULA > var = < VAR > {  tabela.verificaVariavelDeclarada(var.image); listaVar.add(var); } )* 
-	 atrib = < ATRIBMULT >
-	               expressao = iniciaExpressao() { listaExp.add( expressao ); }
-	 ( < VIRGULA > expressao = iniciaExpressao() {  listaExp.add( expressao ); } )*
-   )
-   {
-	 AcoesSemanticas.verificarParesAtribuicaoMultipla( listaVar, listaExp, atrib );  
-	 AcoesSemanticas.gerarAtribuicoesMultiplas( listaComandosAltoNivel, listaVar, listaExp, atrib );
-   }
+   (     (
+	     atrib = <ATRIB> expressao = iniciaExpressao() { listaExp.add( expressao); } |
+	
+	     ( < VIRGULA > var = < VAR > {  tabela.verificaVariavelDeclarada(var.image); listaVar.add(var); } )* 
+		 atrib = < ATRIBMULT >
+		               expressao = iniciaExpressao() { listaExp.add( expressao ); }
+		 ( < VIRGULA > expressao = iniciaExpressao() {  listaExp.add( expressao ); } )*
+   	 )
+	 {
+		 AcoesSemanticas.verificarParesAtribuicaoMultipla( listaVar, listaExp, atrib );  
+		 AcoesSemanticas.gerarAtribuicoesMultiplas( listaComandosAltoNivel, listaVar, listaExp, atrib );
+	 } |
+		
+	 ( atrib =  <SOMA> { tpOperador = TipoOperador.SOMA; } |
+	   atrib = <SUB> { tpOperador = TipoOperador.SUB; } |
+	   atrib = <MUL> { tpOperador = TipoOperador.MUL; } |
+	   atrib = <DIV> { tpOperador = TipoOperador.DIV; }
+	 )
+	 {
+	   operador = new Operador( tpOperador, atrib );
+       operando = new Operando( tabela.tipoVariavel(var.image), TipoElemento.VAR, var, Sinal.POS );
+       expressao = new Expressao();
+       expressao.addListaExpInfixa( operando );
+       expressao.addListaExpInfixa( operador );
+       expressao.addListaExpPosFixa( operando );
+	 } 
+	 <IGUAL> expressao( expressao )
+	 {
+		expressao.addListaExpPosFixa( operador );
+		listaComandosAltoNivel.addComando( new ComandoAtribuicao( tabela.pesquisaTabela(var.image), expressao, atrib ) );
+	 }
+ )
 }
 
 void declaracao(ListaComandosAltoNivel listaComandosAltoNivel):

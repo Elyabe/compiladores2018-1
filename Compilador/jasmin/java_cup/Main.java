@@ -123,7 +123,7 @@ public class Main {
   /* Additional timing information is also collected in emit */
 
   /** Path to create output files */
-  private static String out_path = null;
+  private static String out_path = "./saida/";
 
   /*-----------------------------------------------------------*/
   /*--- Main Program ------------------------------------------*/

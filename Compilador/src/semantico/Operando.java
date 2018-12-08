@@ -27,7 +27,7 @@ public class Operando extends Item {
 		StringBuilder operandoCompleto = new StringBuilder();
 
 		// coloca o sinal negativo, se for numero negativo
-		if(this.sinal == Sinal.NEG)
+		if( this.getTipoElemento() == TipoElemento.CTE && this.sinal == Sinal.NEG)
 			operandoCompleto.append("-");
 		
 		// se for constante numerica e inteira, coloca uma casa decimal com zero (devido a exigencia do comando assembler ldc2_w)

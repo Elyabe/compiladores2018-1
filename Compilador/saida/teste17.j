@@ -10,7 +10,7 @@ return
 .end method 
 
 .method public static main([Ljava/lang/String;)V 
-.limit stack 62 
+.limit stack 102 
 .limit locals 7
 getstatic java/lang/System/out Ljava/io/PrintStream; 
 ldc "Insira dois numeros: "
@@ -67,5 +67,80 @@ ifeq LABELFALSE_0
 goto LABELINICIOFAZERENQUANTO_1
 
 LABELFALSE_0:
+ldc2_w 10.0
+invokestatic java/lang/Math/log10(D)D 
+ldc2_w 1.0
+invokestatic java/lang/Math/log10(D)D 
+dconst_0 
+dcmpg 
+ifeq ComparaSegundo0_7
+goto ComparaSegundo1_8
+ComparaSegundo0_7:
+dconst_0 
+dcmpg 
+ifeq COLOCAFALSEXOR_10
+goto COLOCATRUEXOR_9
+ComparaSegundo1_8:
+dconst_0 
+dcmpg 
+ifeq COLOCATRUEXOR_9
+COLOCAFALSEXOR_10:
+dconst_0 
+goto SAIDAouExclusivo_6
+COLOCATRUEXOR_9:
+dconst_1 
+SAIDAouExclusivo_6:
+dconst_0 
+dcmpg 
+ifeq COLOCATRUEnegacao_11
+dconst_0 
+goto SAIDAnegacao_12
+COLOCATRUEnegacao_11:
+dconst_1 
+SAIDAnegacao_12:
+ldc2_w 10.0
+invokestatic java/lang/Math/log10(D)D 
+invokestatic java/lang/Math/log10(D)D 
+dconst_0 
+dcmpg 
+ifeq ComparaSegundo0_14
+goto ComparaSegundo1_15
+ComparaSegundo0_14:
+dconst_0 
+dcmpg 
+ifeq COLOCAFALSEXOR_17
+goto COLOCATRUEXOR_16
+ComparaSegundo1_15:
+dconst_0 
+dcmpg 
+ifeq COLOCATRUEXOR_16
+COLOCAFALSEXOR_17:
+dconst_0 
+goto SAIDAouExclusivo_13
+COLOCATRUEXOR_16:
+dconst_1 
+SAIDAouExclusivo_13:
+dconst_0 
+dcmpg 
+ifeq LABELFALSE_4
+
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+ldc "Expressao verdadeira"
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+ldc "
+"
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
+goto LABELSAIDA_5
+
+LABELFALSE_4:
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+ldc "Expressao falsa"
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+ldc "
+"
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
+LABELSAIDA_5:
 return 
 .end method 

@@ -10,3 +10,12 @@ exibeln b;
 faca
 	lecompleto "Digite 1 para sair :", a;
 fazer-enquanto ( a != 1 );
+
+
+// teste de integracao com outros comandos
+se ( NAO ( log( 10 ) XOU log(1) )  XOU log( log(10) ) )
+	exibeln "Expressao verdadeira";
+senao
+	exibeln "Expressao falsa";
+fim-se
+

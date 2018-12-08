@@ -63,6 +63,14 @@ public class Expressao {
 	    						referencia = Compilador.tabela.pesquisaTabela(operando.getLexema()). getReferencia();
 	    						separador = ( referencia < 4 ) ? '_' : ' ';
 	    						codigoDestinoExpressao += "dload" + separador + referencia + "\r\n";
+	    						
+	    						// Possibilidade de sinal nas variaveis
+	    						if ( operando.sinal == Sinal.NEG )
+	    						{
+	    							codigoDestinoExpressao += "ldc2_w -1.0 \r\n";
+	    							codigoDestinoExpressao += "dmul \r\n";
+	    						}
+	    						
 	    						break;
 	    					case CTE:
 	    						codigoDestinoExpressao += "ldc2_w " + operando.getLexema() + "\r\n";

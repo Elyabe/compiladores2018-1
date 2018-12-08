@@ -401,6 +401,7 @@ void termo5(Expressao exp):
 {
 	Token tokenVar, tokenEntrada;
 	Item item = null;
+	Sinal sinal = Sinal.POS;
 }
 {
 	tokenEntrada = <AP>
@@ -415,7 +416,7 @@ void termo5(Expressao exp):
 		exp.addListaExpInfixa(item);
 	}
 
-	| tokenEntrada = <NUM>
+	/*| tokenEntrada = <NUM>
 	{
 		item = new Operando(TipoDado.NUMERO,TipoElemento.CTE, tokenEntrada, Sinal.POS);
 		AcoesSemanticas.incompatibilidadeTipoExpressao(item,exp,tokenEntrada);
@@ -429,26 +430,27 @@ void termo5(Expressao exp):
 		AcoesSemanticas.incompatibilidadeTipoExpressao(item,exp,tokenEntrada);
 		exp.addListaExpInfixa(item);
 		exp.addListaExpPosFixa(item);
-	}
+	}*/
 
-	| <SUB> tokenEntrada = <NUM>
-	{
-		item = new Operando(TipoDado.NUMERO,TipoElemento.CTE, tokenEntrada, Sinal.NEG);
-		AcoesSemanticas.incompatibilidadeTipoExpressao(item,exp,tokenEntrada);
-		exp.addListaExpInfixa(item);
-		exp.addListaExpPosFixa(item);
-	}
-
-	| tokenVar = <VAR>
-	{
-		tabela.verificaVariavelDeclarada(tokenVar.image);
-		item = new Operando(tabela.tipoVariavel(tokenVar.image),TipoElemento.VAR, tokenVar, Sinal.POS);
-		AcoesSemanticas.incompatibilidadeTipoExpressao(item,exp,tokenVar);
-		tabela.pesquisaTabela(tokenVar.image).setIsUtilizada(true);
-		exp.addListaExpInfixa(item);
-		exp.addListaExpPosFixa(item);
-	}
-
+	|  ( <SUB > { sinal = Sinal.NEG; } | <SOMA> { sinal = Sinal.POS; } )?
+		( tokenEntrada = <NUM>
+			{
+				item = new Operando(TipoDado.NUMERO,TipoElemento.CTE, tokenEntrada, sinal);
+				AcoesSemanticas.incompatibilidadeTipoExpressao(item,exp,tokenEntrada);
+				exp.addListaExpInfixa(item);
+				exp.addListaExpPosFixa(item);
+			}
+		
+			|  tokenVar = <VAR>
+			{
+				tabela.verificaVariavelDeclarada(tokenVar.image);
+				item = new Operando(tabela.tipoVariavel(tokenVar.image),TipoElemento.VAR, tokenVar, sinal);
+				AcoesSemanticas.incompatibilidadeTipoExpressao(item,exp,tokenVar);
+				tabela.pesquisaTabela(tokenVar.image).setIsUtilizada(true);
+				exp.addListaExpInfixa(item);
+				exp.addListaExpPosFixa(item);
+			}
+	    )
 	| tokenEntrada = <STRING>
 	{
 		item = new Operando(TipoDado.PALAVRA,TipoElemento.CTE, tokenEntrada, Sinal.POS);

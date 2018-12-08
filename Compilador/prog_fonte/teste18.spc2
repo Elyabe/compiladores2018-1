@@ -1,0 +1,27 @@
+// Teste da possibilidade de sinal negativo na variável
+
+numero a, b, c;
+
+b, c <== -5, -b;
+exibeln b, " ", c;
+
+exibeln log( 3**2 + log( -1*b/-b) - b/-b );  
+
+exibeln log( 3**2 + log( -1*b/-b) + b/+b );
+
+lecompleto "Entre com os coeficientes da equacao de 2o grau:", a,b,c;
+
+numero delta <- b**2-4*a*c;
+numero x_1, x_2;
+
+se ( a != 0 )
+	se ( delta < 0 )
+		exibeln "Não existem raizes reais.";
+	senao
+		x_1, x_2 <== ( -b + delta**(1/2) ) / (2*a), ( -b - delta**(1/2) ) / (2*a);
+		exibeln "x_1 = ", x_1;
+		exibeln "x_2 = ", x_2;
+	fim-se  
+senao
+	exibeln "Nao eh equacao do 2o grau!";
+fim-se

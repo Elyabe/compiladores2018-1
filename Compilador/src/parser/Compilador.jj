@@ -132,7 +132,7 @@ TOKEN [IGNORE_CASE] : {
 	<FIMDUPLO: "fim-duplo"> |
 	<MATRIX3D : "matrix3D" > |
 	<FIMMATRIX3D: "fim-matrix3D" > |
-	< COMENTLINHA : "//" (~["\n"])* ("\n")? >  
+	<COMENTLINHA : "//" (~["\n"])* ("\n")? >  
 	
 }
 //TOKENS DE TIPOS 
@@ -164,7 +164,8 @@ TOKEN : {
 	< CONCAT: "&" > |
 	< MENOR: "<" > |
 	< MAIORIGUAL: ">=" > |
-	< TO: "to" >
+	< TO: "to" > |
+	< EXIBELN : "exibeln" >
 }
 //----------CARACTERES----------
 TOKEN : {
@@ -176,7 +177,7 @@ TOKEN : {
 	< PV: ";" > |
 	< DP: ":" > |
 	< VIRGULA: "," > |
-	< STRING: "\"" (~["\""])* "\"" >     	
+	< STRING: "\"" (~["\""])* "\"" >      	
 }
 //----------VARIAVEL---------
 TOKEN : {
@@ -633,11 +634,12 @@ void le(ListaComandosAltoNivel listaComandosAltoNivel):
 void exibe(ListaComandosAltoNivel listaExibe):
 {
 	Token exibe;
+	boolean novaLinha = false;
 	Expressao expressao = null;
 	ComandoSaida comando = null;
 }
 {
-	exibe = <EXIBE> expressao = iniciaExpressao()
+	( exibe = <EXIBE> | exibe = <EXIBELN> { novaLinha = true; })  expressao = iniciaExpressao()
 	{
 		comando = new ComandoSaida(expressao, exibe);
 		AcoesSemanticas.faltaInicializacaoVariavel(expressao,exibe);
@@ -650,6 +652,9 @@ void exibe(ListaComandosAltoNivel listaExibe):
 			listaExibe.addComando(comando);   
 		}
 	)* <PV>
+	{
+		if ( novaLinha ) AcoesSemanticas.adicionarQuebraLinha( listaExibe, exibe );
+	}
 }
 
 void para(ListaComandosAltoNivel listaComandosAltoNivel):

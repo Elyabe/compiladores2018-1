@@ -10,8 +10,8 @@ return
 .end method 
 
 .method public static main([Ljava/lang/String;)V 
-.limit stack 422 
-.limit locals 13
+.limit stack 542 
+.limit locals 15
 ldc2_w 0.0
 dstore 5
 ldc2_w 8.0
@@ -103,13 +103,27 @@ dcmpg
 ifeq LABELFALSE_3
 
 getstatic java/lang/System/out Ljava/io/PrintStream; 
-ldc "Diferente\n"
+ldc "Diferente com quebra de linha"
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+ldc "
+"
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+ldc "Diferente sem quebra"
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+ldc "Teste da quebra de linha"
 invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
 goto LABELSAIDA_4
 
 LABELFALSE_3:
 getstatic java/lang/System/out Ljava/io/PrintStream; 
 ldc "Iguais\n"
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+ldc "
+"
 invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
 LABELSAIDA_4:
 ldc2_w 1.0
@@ -142,7 +156,11 @@ ldc "Verdeiro\n"
 invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
 LABELFALSE_8:
 getstatic java/lang/System/out Ljava/io/PrintStream; 
-ldc "\n\n******Teste do negação **********\n"
+ldc "\n\n******Teste do negação **********"
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+ldc "
+"
 invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
 getstatic java/lang/System/out Ljava/io/PrintStream; 
 dload_3
@@ -170,7 +188,8 @@ dconst_1
 SAIDAnegacao_17:
 invokevirtual java/io/PrintStream/print(D)V 
 getstatic java/lang/System/out Ljava/io/PrintStream; 
-ldc "\n"
+ldc "
+"
 invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
 dload_3
 dload 5
@@ -353,6 +372,72 @@ SAIDAe_41:
 invokevirtual java/io/PrintStream/print(D)V 
 getstatic java/lang/System/out Ljava/io/PrintStream; 
 ldc "\n"
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
+ldc2_w -2.0
+ldc2_w 25.0
+invokestatic java/lang/Math/pow(DD)D 
+dstore 11
+ldc2_w 0.0
+dstore_3
+LABELINICIOENQUANTO_48:
+dload_3
+ldc2_w 3.0
+dcmpg 
+iflt COLOCATRUEmenor_49
+dconst_0 
+goto SAIDAmenor_50
+COLOCATRUEmenor_49:
+dconst_1 
+SAIDAmenor_50:
+dconst_0 
+dcmpg 
+ifeq LABELFALSE_47
+
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+ldc "Digite um número:"
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+ldc "
+"
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
+new java/util/Scanner 
+dup 
+getstatic java/lang/System.in Ljava/io/InputStream; 
+invokespecial java/util/Scanner/<init>(Ljava/io/InputStream;)V 
+invokevirtual java/util/Scanner.nextDouble()D 
+dstore_1
+dload_1
+dload 11
+dcmpg 
+ifge COLOCATRUEmaiorIgual_45
+dconst_0 
+goto SAIDAmaiorIgual_46
+COLOCATRUEmaiorIgual_45:
+dconst_1 
+SAIDAmaiorIgual_46:
+dconst_0 
+dcmpg 
+ifeq LABELFALSE_44
+
+dload_1
+dstore 11
+LABELFALSE_44:
+dload_3
+ldc2_w 1.0
+dadd 
+dstore_3
+goto LABELINICIOENQUANTO_48
+
+LABELFALSE_47:
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+ldc "O maior numero eh "
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+dload 11
+invokevirtual java/io/PrintStream/print(D)V 
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+ldc "
+"
 invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
 return 
 .end method 

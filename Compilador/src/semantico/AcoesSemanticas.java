@@ -10,6 +10,14 @@ public class AcoesSemanticas {
 	
 	public static int qtdWarnings = 0;
 	
+	public static void adicionarQuebraLinha( ListaComandosAltoNivel listaExibe, Token tokenLn )
+	{
+		Expressao expressao = new Expressao();
+		expressao.addListaExpInfixa( new Operando( TipoDado.PALAVRA, TipoElemento.CTE, new Token(0, "\"\n\""), Sinal.POS  ) );
+		expressao.addListaExpPosFixa( expressao.getListaExpInfixa().getFirst() );
+		listaExibe.addComando( new ComandoSaida(expressao, tokenLn) );
+	}
+	
 	public static void verificarParesAtribuicaoMultipla( LinkedList<Token> lstVar, LinkedList<Expressao> lstExp, Token atrib )
 	{
 		if ( lstVar.size() != lstExp.size() ) throw new ErroSemantico( "Os numeros de variaveis e expressoes sao diferentes na linha " + atrib.beginLine + "\n" );

@@ -101,25 +101,27 @@ public interface CompiladorConstants {
   /** RegularExpression Id. */
   int TO = 52;
   /** RegularExpression Id. */
-  int CHAR = 53;
+  int EXIBELN = 53;
   /** RegularExpression Id. */
-  int AP = 54;
+  int CHAR = 54;
   /** RegularExpression Id. */
-  int FP = 55;
+  int AP = 55;
   /** RegularExpression Id. */
-  int AC = 56;
+  int FP = 56;
   /** RegularExpression Id. */
-  int FC = 57;
+  int AC = 57;
   /** RegularExpression Id. */
-  int PV = 58;
+  int FC = 58;
   /** RegularExpression Id. */
-  int DP = 59;
+  int PV = 59;
   /** RegularExpression Id. */
-  int VIRGULA = 60;
+  int DP = 60;
   /** RegularExpression Id. */
-  int STRING = 61;
+  int VIRGULA = 61;
   /** RegularExpression Id. */
-  int VAR = 62;
+  int STRING = 62;
+  /** RegularExpression Id. */
+  int VAR = 63;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -181,6 +183,7 @@ public interface CompiladorConstants {
     "\"<\"",
     "\">=\"",
     "\"to\"",
+    "\"exibeln\"",
     "<CHAR>",
     "\"(\"",
     "\")\"",

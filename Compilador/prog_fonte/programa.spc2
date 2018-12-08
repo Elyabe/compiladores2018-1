@@ -13,9 +13,11 @@ exibe " a ", a, "\n b ", b, "\n x ", x, "\n y ", y, "\n z ", z,"\n";
 
 //le x;
 se ( 10 E 1 )
-	exibe "Diferente\n";
+	exibeln "Diferente com quebra de linha";
+	exibe "Diferente sem quebra";
+	exibe "Teste da quebra de linha"; 
 senao
-	exibe "Iguais\n";
+	exibeln "Iguais\n";
 fim-se
 
 se ( 1 XOU 1.5 )
@@ -23,9 +25,9 @@ se ( 1 XOU 1.5 )
 fim-se
 
 
-exibe "\n\n******Teste do negação **********\n";
+exibeln "\n\n******Teste do negação **********";
 
-exibe NAO a, " ", NAO z,"\n";
+exibeln NAO a, " ", NAO z;
 
 se ( NAO NAO NAO ( a OU z ) )
 	exibe "Primeiro bloco\n";
@@ -50,3 +52,17 @@ exibe "\nCancelamento\n";
 exibe (NAO NAO a OU NAO NAO b) = ( a OU b), "\n"; 
 
 exibe "\n", a E b, "\n";
+
+numero maior <- -2**25;
+
+
+para ( a <- 0; a < 3; a <- a + 1 )
+	exibeln "Digite um número:";
+	le x;
+	se ( x >= maior )
+		maior <- x;
+	fim-se
+fim-para
+
+exibeln "O maior numero eh ", maior;
+ 

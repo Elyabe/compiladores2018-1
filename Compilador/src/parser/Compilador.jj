@@ -21,6 +21,7 @@ PARSER_BEGIN(Compilador)
 
 package parser;
 
+import jasmin.*; 
 import java.io.*;
 import semantico.*;
 import apoio.*;
@@ -33,7 +34,8 @@ import java.util.LinkedList;
 
 public class Compilador {
 	public static Tabela tabela = new Tabela();
-
+	public static String arquivo[] = { Config.pathSaida + Config.nomeArquivo + Config.extensaoCodigoDestino };
+	 
 	public static void main(String args[])  throws ParseException  {
 		Compilador compilador = null;
 		try {
@@ -80,8 +82,10 @@ public class Compilador {
 			}else {
 				System.out.println("\n\n***** Compilacao bem sucedida! *****");
 			}
-			
 
+			// Geracao automatizada do .class na pasta saida
+			Main.main(arquivo);
+			
 		}
 		catch(FileNotFoundException e) {
 			System.err.println("\nErro: arquivo nao encontrado");

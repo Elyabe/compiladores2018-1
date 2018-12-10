@@ -124,6 +124,12 @@ public class Expressao {
 					case LOG:
 						codigoDestinoExpressao += "invokestatic java/lang/Math/log10(D)D \r\n";
 						break;
+					case MAX:
+						codigoDestinoExpressao += "invokestatic java/lang/Double/max(DD)D \r\n";
+						break;
+					case MIN:
+						codigoDestinoExpressao += "invokestatic java/lang/Double/min(DD)D \r\n";
+						break;
 					case OU:
 						PrimitivoLabel labelSAIDAou = new PrimitivoLabel("SAIDAou");
 	

@@ -17,6 +17,8 @@ public enum TipoOperador
 	CONCAT,
 	MENOR,
 	MAIORIGUAL,
+	MAX,
+	MIN,
 	AP,
 	FP;
 }

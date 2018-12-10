@@ -139,8 +139,9 @@ TOKEN [IGNORE_CASE] : {
 	<FIMDUPLO: "fim-duplo"> |
 	<MATRIX3D : "matrix3D" > |
 	<FIMMATRIX3D: "fim-matrix3D" > |
+	<MAX : "max" > |
+	<MIN : "min" > |
 	<COMENTLINHA : "//" (~["\n"])* ("\n")? >  
-	
 }
 //TOKENS DE TIPOS 
 TOKEN [IGNORE_CASE] : {
@@ -392,15 +393,15 @@ void log(Expressao exp) :
 }
 {
   	termo5(exp) |
-	( t=<LOG> <AP> expressao(exp) <FP>
-	  	{
-	  	    operador = TipoOperador.LOG;
-	        item = new Operador(operador, t);
-            exp.addListaExpInfixa(item);
-            exp.addListaExpPosFixa(item);
-	    }
-	)
-	
+	(
+	  t = <LOG> <AP> expressao(exp) <FP>  { operador = TipoOperador.LOG; } |
+	  ( t = <MAX> | t = <MIN> ) <AP> expressao(exp) <VIRGULA> expressao(exp) <FP> { operador = TipoOperador.MAX; }
+	) 
+  	{
+        item = new Operador(operador, t);
+        exp.addListaExpInfixa(item);
+        exp.addListaExpPosFixa(item);
+    }
 }
 
 void termo5(Expressao exp):
@@ -527,12 +528,12 @@ void atribuicao(ListaComandosAltoNivel listaComandosAltoNivel):
        expressao.addListaExpInfixa( operador );
        expressao.addListaExpPosFixa( operando );
 	 } 
-	 <IGUAL> expressao( expressao )
+     <IGUAL> expressao( expressao )
 	 {
 		expressao.addListaExpPosFixa( operador );
 		listaComandosAltoNivel.addComando( new ComandoAtribuicao( tabela.pesquisaTabela(var.image), expressao, atrib ) );
-	 }
- )
+	 }  	 
+   )
 }
 
 void declaracao(ListaComandosAltoNivel listaComandosAltoNivel):

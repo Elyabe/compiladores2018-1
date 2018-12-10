@@ -11,6 +11,8 @@ lecompleto "Digite a quantidade de numeros que deseja testar: ", qtd_num;
 para ( maior, menor <== -1*(2**10), 2**10 ; qtd_num >= 0; qtd_num -= 1 )
 	lecompleto "Digite um numero:", num;
 	maior <- max( maior, num );
+	menor <- min( menor, num );
 fim-para
 
 exibeln "Maior: ", maior;
+exibeln "Menor: ", menor;

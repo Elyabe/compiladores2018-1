@@ -10,7 +10,7 @@ return
 .end method 
 
 .method public static main([Ljava/lang/String;)V 
-.limit stack 62 
+.limit stack 92 
 .limit locals 15
 getstatic java/lang/System/out Ljava/io/PrintStream; 
 ldc2_w 2.0
@@ -72,6 +72,10 @@ dload 5
 dload 11
 invokestatic java/lang/Double/max(DD)D 
 dstore 5
+dload 7
+dload 11
+invokestatic java/lang/Double/min(DD)D 
+dstore 7
 dload 9
 ldc2_w 1.0
 dsub 
@@ -84,6 +88,16 @@ ldc "Maior: "
 invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
 getstatic java/lang/System/out Ljava/io/PrintStream; 
 dload 5
+invokevirtual java/io/PrintStream/print(D)V 
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+ldc "
+"
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+ldc "Menor: "
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+dload 7
 invokevirtual java/io/PrintStream/print(D)V 
 getstatic java/lang/System/out Ljava/io/PrintStream; 
 ldc "

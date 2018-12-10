@@ -395,7 +395,10 @@ void log(Expressao exp) :
   	termo5(exp) |
 	(
 	  t = <LOG> <AP> expressao(exp) <FP>  { operador = TipoOperador.LOG; } |
-	  ( t = <MAX> | t = <MIN> ) <AP> expressao(exp) <VIRGULA> expressao(exp) <FP> { operador = TipoOperador.MAX; }
+	  (
+	    t = <MAX> { operador = TipoOperador.MAX; } |
+	    t = <MIN> { operador = TipoOperador.MIN; }
+	   ) <AP> expressao(exp) <VIRGULA> expressao(exp) <FP> 
 	) 
   	{
         item = new Operador(operador, t);

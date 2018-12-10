@@ -376,9 +376,11 @@ public class Compilador implements CompiladorConstants {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case MAX:
           t = jj_consume_token(MAX);
+                        operador = TipoOperador.MAX;
           break;
         case MIN:
           t = jj_consume_token(MIN);
+                        operador = TipoOperador.MIN;
           break;
         default:
           jj_la1[12] = jj_gen;
@@ -390,7 +392,6 @@ public class Compilador implements CompiladorConstants {
         jj_consume_token(VIRGULA);
         expressao(exp);
         jj_consume_token(FP);
-                                                                                        operador = TipoOperador.MAX;
         break;
       default:
         jj_la1[13] = jj_gen;

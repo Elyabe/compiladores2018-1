@@ -1,0 +1,21 @@
+// Teste com igualdade de Strings
+
+palavra a, b;
+
+lecompleto "Digite as duas palavras que desejas testar: ", a, b;
+
+se ( a = b )
+	exibeln "Palavras iguais!";
+senao se ( NAO ( a = b ) )
+		exibeln "Palavras diferentes!";
+	fim-se
+fim-se
+
+
+a, b <== "Sensitive Case", "sensitive Case";
+exibeln a, "\n", b ;
+
+
+exibeln a = b;
+
+exibeln log( max( 10, 1) + min( 0, 10));

@@ -16,7 +16,7 @@ public class ComandoSaida extends ComandoAltoNivel {
 	@Override
 	public ListaComandosPrimitivos geraListaComandosPrimitivos() {
 		ListaComandosPrimitivos lista = new ListaComandosPrimitivos();
-		PrimitivoSaida comando = new PrimitivoSaida(expressao.getTipo(),expressao.geraCodigoDestino());
+		PrimitivoSaida comando = new PrimitivoSaida(expressao.getTipoResultado(),expressao.geraCodigoDestino());
 		lista.addComando(comando);			
 		return lista;
 	}

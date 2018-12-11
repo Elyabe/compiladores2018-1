@@ -305,7 +305,7 @@ void termo2(Expressao exp):
 	( t = <CONCAT>
 		{
 			item = new Operador(TipoOperador.CONCAT,t);
-			exp.addListaExpInfixa(item); 
+			exp.addListaExpInfixa(item);
 		}
 		termo3(exp)
 		{

@@ -9,13 +9,23 @@ public class Expressao {
 
 	LinkedList<Item> listaExpInfixa;
 	LinkedList<Item> listaExpPosFixa;
+	private TipoDado tipoResultado;
 	public int tam = 0;
 
 	static LinkedList<String> listaOperandoString =  new LinkedList<String>();
 
+//	TIPO da expressao: Tipo dos elementos que ela contem
+//	TIPO DO RESULTADO: O que ela deixa na pilha apos a aplicacao do operador, se existir
 	public Expressao() {
 		this.listaExpInfixa = new LinkedList<Item>();
 		this.listaExpPosFixa = new LinkedList<Item>();
+	}
+	
+	public Expressao( TipoDado tipoResultado ) 
+	{
+		this.listaExpInfixa = new LinkedList<Item>();
+		this.listaExpPosFixa = new LinkedList<Item>();
+		this.tipoResultado = tipoResultado;
 	}
 
 	public LinkedList<Item> getListaExpInfixa() {
@@ -29,12 +39,28 @@ public class Expressao {
 	public TipoDado getTipo() {
 		return ((Operando)(this.listaExpPosFixa.getFirst())).tipoDado;
 	}
+	
+	public TipoDado getTipoResultado() {
+		return tipoResultado;
+	}
+
+	public void setTipoResultado(TipoDado tipoResultado) {
+		this.tipoResultado = tipoResultado;
+	}
 
 	public void addListaExpInfixa(Item item) {
 		this.listaExpInfixa.add(item);
 	}
-	public void addListaExpPosFixa(Item item) {
+
+//	O tipo resultado da expressao eh o mesmo tipo dos elementos que ela contem
+//	Até que um operador que nao retorne um resultado numerico nao seja inserido na expressao
+	public void addListaExpPosFixa(Item item) 
+	{
 		this.listaExpPosFixa.add(item);
+		if ( item instanceof Operador && ((Operador)item).tipoOperador != TipoOperador.CONCAT )
+			this.tipoResultado = TipoDado.NUMERO;
+		else
+			this.tipoResultado = this.getTipo();
 	}
 
 	public void imprimeExpressao() {
@@ -171,12 +197,11 @@ public class Expressao {
 						PrimitivoLabel labelSAIDAe = new PrimitivoLabel("SAIDAe");
 						PrimitivoLabel labelTestaSegundo1e = new PrimitivoLabel("TestaSegundo1e");
 						PrimitivoLabel labelColocaTrueE = new PrimitivoLabel("ColocaTrueE");
-						codigoDestinoExpressao += "dconst_0 \r\n"			//Primeiro empilha 1 e compara com o topo
-								+ "dcmpg \r\n"								//se o resultado for igual, quer dizer que 
-																			//o segundo que decide o resultado
-								+ "ifne " + labelTestaSegundo1e.getLabel()			//portanto deve sair
-								+ "pop2 \r\n"								//se nao for 1, ele desempilha e empilha 0
-								+ "dconst_0 \r\n"							//Sai
+						codigoDestinoExpressao += "dconst_0 \r\n"			
+								+ "dcmpg \r\n"								 
+								+ "ifne " + labelTestaSegundo1e.getLabel()	
+								+ "pop2 \r\n"								
+								+ "dconst_0 \r\n"							
 								+ "goto " + labelSAIDAe.getLabel()
 								+ labelTestaSegundo1e.geraCodigoDestino()
 								+ "dconst_0 \r\n"			
@@ -192,13 +217,27 @@ public class Expressao {
 						PrimitivoLabel labelCOLOCATRUEigual = new PrimitivoLabel("COLOCATRUEigual");
 						PrimitivoLabel labelSAIDAigual = new PrimitivoLabel("SAIDAigual");
 
-						codigoDestinoExpressao += "dcmpg \r\n"
+						if ( this.getTipo() == TipoDado.NUMERO )
+						{
+							codigoDestinoExpressao += "dcmpg \r\n"
 								+ "ifeq "+labelCOLOCATRUEigual.getLabel() 
 								+ "dconst_0 \r\n"
 								+ "goto "+labelSAIDAigual.getLabel()
 								+ labelCOLOCATRUEigual.geraCodigoDestino()
 								+ "dconst_1 \r\n"
 								+ labelSAIDAigual.geraCodigoDestino();
+						} else if ( this.getTipo() == TipoDado.PALAVRA )
+						{
+							codigoDestinoExpressao += ""
+								+ "invokevirtual java/lang/String/compareTo(Ljava/lang/String;)I \r\n"
+								+ "iconst_0 \r\n"
+								+ "if_icmpeq " + labelCOLOCATRUEigual.getLabel()
+								+ "dconst_0 \r\n"
+								+ "goto " + labelSAIDAigual.getLabel()
+								+ labelCOLOCATRUEigual.geraCodigoDestino()
+								+ "dconst_1 \r\n"
+								+ labelSAIDAigual.geraCodigoDestino();
+						}
 						break;
 					case DIFERENTE:
 						PrimitivoLabel labelCOLOCATRUEdiferente = new PrimitivoLabel("COLOCATRUEdiferente");

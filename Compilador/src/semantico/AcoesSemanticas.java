@@ -13,6 +13,7 @@ public class AcoesSemanticas {
 	public static void adicionarQuebraLinha( ListaComandosAltoNivel listaExibe, Token tokenLn )
 	{
 		Expressao expressao = new Expressao();
+		expressao.setTipoResultado( TipoDado.PALAVRA );
 		Item stringNovaLinha = new Operando( TipoDado.PALAVRA, TipoElemento.CTE, new Token(0, "\"\n\""), Sinal.POS  );
 		expressao.addListaExpInfixa( stringNovaLinha );
 		expressao.addListaExpPosFixa( stringNovaLinha );

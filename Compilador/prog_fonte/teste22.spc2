@@ -1,0 +1,10 @@
+// Teste de Concatenacao de Strings
+
+exibeln "Teste " & " de " & " Concatenacao";
+
+palavra a <- "Hello ", b, c;
+b, c <== "World", ":)";
+
+se ( a & b = "Hello World" ) 
+	exibeln "Concatenacao boa, hein!";
+fim-se

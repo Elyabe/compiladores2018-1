@@ -228,8 +228,7 @@ public class Expressao {
 								+ labelSAIDAigual.geraCodigoDestino();
 						} else if ( this.getTipo() == TipoDado.PALAVRA )
 						{
-							codigoDestinoExpressao += ""
-								+ "invokevirtual java/lang/String/compareTo(Ljava/lang/String;)I \r\n"
+							codigoDestinoExpressao += "invokevirtual java/lang/String/compareTo(Ljava/lang/String;)I \r\n"
 								+ "iconst_0 \r\n"
 								+ "if_icmpeq " + labelCOLOCATRUEigual.getLabel()
 								+ "dconst_0 \r\n"
@@ -238,6 +237,9 @@ public class Expressao {
 								+ "dconst_1 \r\n"
 								+ labelSAIDAigual.geraCodigoDestino();
 						}
+						break;
+					case CONCAT:
+							codigoDestinoExpressao += "invokevirtual java/lang/String/concat(Ljava/lang/String;)Ljava/lang/String; \r\n";
 						break;
 					case DIFERENTE:
 						PrimitivoLabel labelCOLOCATRUEdiferente = new PrimitivoLabel("COLOCATRUEdiferente");

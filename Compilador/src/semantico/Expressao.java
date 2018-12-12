@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import codigoDestino.*;
 import comandoPrimitivo.*;
 import parser.Compilador;
+import parser.Token;
 
 public class Expressao {
 
@@ -332,7 +333,102 @@ public class Expressao {
 		}
 	}
 
+	public void otimizarOperacoesConstantes()
+	{
+		Item itemAtual, itemA, itemB;
+		Operando operandoA, operandoB;
+		Operador operador;
+		double A, B;
+		
+		for( int idItem = 0; idItem < this.getListaExpPosFixa().size(); idItem++ )
+		{
+			itemAtual = this.getListaExpPosFixa().get(idItem);
+			
+			// Se for um operador binario
+			if ( itemAtual instanceof Operador )
+			{
+				operador = (Operador)itemAtual;
+				
+				if ( operador.getTipoOperador() == TipoOperador.LOG || operador.getTipoOperador() == TipoOperador.NEGACAO )
+				{
+					itemA = this.getListaExpPosFixa().get(idItem-1);
+					
+					if ( itemA instanceof Operando )
+					{
+						operandoA = (Operando)itemA;
+						A = Double.parseDouble( operandoA.getLexema() );
+						switch( operador.getTipoOperador() )
+						{
+							case LOG:
+								A = Math.log10( A );
+								break;
+						}
+						
+						this.listaExpPosFixa.remove( idItem );
+						this.listaExpPosFixa.remove( idItem - 1 );
+						// Calcula o indice que o novo elemento ocupará na lista
+						idItem--;
+						
+						// Adiciona o elemento resultado da otimizacao na lista da expressao
+						Item valorOtimizado = new Operando( TipoDado.NUMERO, TipoElemento.CTE, new Token(0, Double.toString(A) ), Sinal.POS );
+						this.listaExpPosFixa.add( idItem, valorOtimizado );
+					}
 
+				} else 
+				{
+					itemA = this.getListaExpPosFixa().get(idItem-2);
+					itemB = this.getListaExpPosFixa().get(idItem-1);
+					
+					if ( itemA instanceof Operando && itemB instanceof Operando )
+					{
+						operandoA = (Operando)itemA;
+						operandoB = (Operando)itemB;
+						
+						if ( operandoA.getTipoDado() == TipoDado.NUMERO && operandoA.getTipoElemento() == TipoElemento.CTE &&
+								operandoB.getTipoDado() == TipoDado.NUMERO && operandoB.getTipoElemento() == TipoElemento.CTE )
+						{
+							A = Double.parseDouble( operandoA.getLexema() );
+							B = Double.parseDouble( operandoB.getLexema() );
+							switch( operador.getTipoOperador() )
+							{
+								case SOMA:
+									A += B;
+									break;
+								case SUB:
+									A -= B;
+									break;
+								case MUL:
+									A *= B;
+									break;
+								case DIV: 
+									A /= B;
+									break;
+								case POT:
+									A = Math.pow( A, B );
+									break;
+							}
+							
+							// Remove os 3 elementos otimizados
+							this.listaExpPosFixa.remove( idItem );
+							this.listaExpPosFixa.remove( idItem - 1 );
+							this.listaExpPosFixa.remove( idItem - 2 );
+							
+							// Calcula a posicao do novo valor otimizado na lista
+							idItem -= 2;
+							
+							// Adiciona o elemento resultado da otimizacao na lista da expressao
+							Item valorOtimizado = new Operando( TipoDado.NUMERO, TipoElemento.CTE, new Token(0, Double.toString(A) ), Sinal.POS );
+							this.listaExpPosFixa.add( idItem, valorOtimizado );
+						}
+					}
+				}
+				
+			}
+				
+		}
+	}
+	
+	
 	public String toString() {
 		return "[infixa: "+this.getListaExpInfixa() +
 				"]; posfixa: ["+this.getListaExpPosFixa()+"]";

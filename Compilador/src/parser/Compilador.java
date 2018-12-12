@@ -93,6 +93,7 @@ public class Compilador implements CompiladorConstants {
             exp.otimizarPosFixaConst1();
         exp.otimizaPosfixa();
         exp.otimizarNegacao();
+        exp.otimizarOperacoesConstantes();
                 {if (true) return exp;}
     throw new Error("Missing return statement in function");
   }

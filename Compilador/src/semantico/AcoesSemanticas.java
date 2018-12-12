@@ -13,7 +13,7 @@ public class AcoesSemanticas {
 	public static void adicionarQuebraLinha( ListaComandosAltoNivel listaExibe, Token tokenLn )
 	{
 		Expressao expressao = new Expressao();
-		Item stringNovaLinha = new Operando( TipoDado.PALAVRA, TipoElemento.CTE, new Token(0, "\"\n\""), Sinal.POS  );
+		Item stringNovaLinha = new Operando( TipoDado.PALAVRA, TipoElemento.CTE, new Token(0, "\"\\n\""), Sinal.POS  );
 		expressao.addListaExpInfixa( stringNovaLinha );
 		expressao.addListaExpPosFixa( stringNovaLinha );
 		listaExibe.addComando( new ComandoSaida(expressao, tokenLn) );
@@ -98,13 +98,13 @@ public class AcoesSemanticas {
 		Compilador.tabela.tab.forEach((key, value) -> {
 			//verificar se isInicializada == false, a variavel n�o foi inicializada
 			if(value.getIsInicializada() == false) {
-				System.out.println("Warning: Vari�vel declarada "+value.getNome()+" declarada, mas n�o inicializada.");
+				System.out.println("Warning: Variavel declarada "+value.getNome()+" declarada, mas nao inicializada.");
 				qtdWarnings++;
 			}
 			
-			//verificar se isInicializada == true isUtilizada == false, variavel foi inicializada por�m n�o foi utilizada
+			//verificar se isInicializada == true isUtilizada == false, variavel foi inicializada porem nao foi utilizada
 			if(value.getIsInicializada() == true && value.getIsUtilizada() == false) {
-				System.out.println("Warning: Vari�vel "+value.getNome()+" declarada, inicializada, mas n�o utilizada.");
+				System.out.println("Warning: Variavel "+value.getNome()+" declarada, inicializada, mas nao utilizada.");
 				qtdWarnings++;
 			}
 		});

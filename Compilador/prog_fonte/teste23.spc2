@@ -1,0 +1,8 @@
+// Teste com a otimizacao com constantes em expressoes numericas
+
+exibeln 2 + 4 - 1 + 45;
+
+numero x,y <- log(3**2 + 1), b;
+
+x, b <== 2**y, y+1+2*9/3;
+

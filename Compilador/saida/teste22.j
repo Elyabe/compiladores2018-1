@@ -20,8 +20,7 @@ ldc " Concatenacao"
 invokevirtual java/lang/String/concat(Ljava/lang/String;)Ljava/lang/String; 
 invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
 getstatic java/lang/System/out Ljava/io/PrintStream; 
-ldc "
-"
+ldc "\n"
 invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
 ldc "Hello "
 astore_1
@@ -49,8 +48,7 @@ getstatic java/lang/System/out Ljava/io/PrintStream;
 ldc "Concatenacao boa, hein!"
 invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
 getstatic java/lang/System/out Ljava/io/PrintStream; 
-ldc "
-"
+ldc "\n"
 invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
 LABELFALSE_0:
 return 

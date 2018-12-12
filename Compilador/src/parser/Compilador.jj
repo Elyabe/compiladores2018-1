@@ -205,6 +205,7 @@ Expressao iniciaExpressao():
 	    exp.otimizarPosFixaConst1();
         exp.otimizaPosfixa();
         exp.otimizarNegacao();
+        exp.otimizarOperacoesConstantes();
 		return exp;
 	}	
 }

@@ -21,7 +21,7 @@ public class AcoesSemanticas {
 		{
 			comando = listaComandosAltoNivel.getListaComandosAltoNivel().get( idComando );
 			
-			if ( comando instanceof ComandoCondicionalSimples || comando instanceof ComandoCondicionalCompleto )
+			if ( comando instanceof ComandoCondicional )
 			{
 				comandoCondicional = (ComandoCondicional)comando;
 				
@@ -29,6 +29,7 @@ public class AcoesSemanticas {
 				{
 					Operando operando = (Operando)comandoCondicional.getExpressao().getListaExpPosFixa().getFirst();
 							
+					// Se eh possível otimizar
 					if ( operando.getTipoDado() == TipoDado.NUMERO && operando.getTipoElemento() == TipoElemento.CTE )
 					{
 						// Se o resultado da expressao eh falso
@@ -61,8 +62,8 @@ public class AcoesSemanticas {
 							// Remove o comando Condicional Completo da lista programa
 							listaComandosAltoNivel.getListaComandosAltoNivel().remove( idComando + k );
 						}
+						idComando--;
 					}
-					idComando--;
 				}
 			}
 		}

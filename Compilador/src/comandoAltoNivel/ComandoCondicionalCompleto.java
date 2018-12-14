@@ -43,6 +43,12 @@ public class ComandoCondicionalCompleto extends ComandoCondicional {
 		return lista;
 	}
 	
+	
+	
+	public ListaComandosAltoNivel getListaComandosAltoNivelFalse() {
+		return listaComandosAltoNivelFalse;
+	}
+
 	public String getLexemaSenao() {
 		return " Senao ";
 	}

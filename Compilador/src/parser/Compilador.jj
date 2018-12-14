@@ -460,7 +460,7 @@ void termo5(Expressao exp):
 void inicio(ListaComandosAltoNivel listaComandosAltoNivel):
 {}
 {
-	programa(listaComandosAltoNivel) <EOF>
+	programa(listaComandosAltoNivel) { AcoesSemanticas.otimizarComandosCondicionais( listaComandosAltoNivel ); } <EOF>
 }
 
 void programa(ListaComandosAltoNivel listaComandosAltoNivel) :

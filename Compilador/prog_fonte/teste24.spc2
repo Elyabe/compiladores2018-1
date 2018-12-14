@@ -1,0 +1,24 @@
+// Teste para otimizacao para comandos condicionais
+
+//palavra x <- "Verdadeiro";
+
+
+// Teste com primeira expressao verdadeira após a otimizacao de constantes
+se ( 2+5*7-2**0 )
+	se( 2 + 3*1-10/2 + log(10) )
+		exibeln "Hello World!";
+	fim-se
+senao 
+	exibeln "Falso";
+fim-se
+
+exibeln "*****Segundo teste de otimizacao******";
+
+// Teste com primeira expressao verdadeira após a otimizacao de constantes
+se ( log( 2*5/10 ) )
+	se( 2 + 3*1-10/2 + log(10) )
+		exibeln "Hello World!";
+	fim-se
+senao 
+	exibeln "Falso";
+fim-se

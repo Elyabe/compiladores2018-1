@@ -10,6 +10,64 @@ public class AcoesSemanticas {
 	
 	public static int qtdWarnings = 0;
 	
+	public static void otimizarComandosCondicionais( ListaComandosAltoNivel listaComandosAltoNivel )
+	{
+		int k;
+		ComandoAltoNivel comando;
+		ComandoCondicional comandoCondicional;
+		ComandoCondicionalCompleto comandoCondicionalCompleto;
+		
+		for ( int idComando = 0; idComando < listaComandosAltoNivel.getListaComandosAltoNivel().size(); idComando++ )
+		{
+			comando = listaComandosAltoNivel.getListaComandosAltoNivel().get( idComando );
+			
+			if ( comando instanceof ComandoCondicionalSimples || comando instanceof ComandoCondicionalCompleto )
+			{
+				comandoCondicional = (ComandoCondicional)comando;
+				
+				if ( comandoCondicional.getExpressao().getListaExpPosFixa().size() == 1 )
+				{
+					Operando operando = (Operando)comandoCondicional.getExpressao().getListaExpPosFixa().getFirst();
+							
+					if ( operando.getTipoDado() == TipoDado.NUMERO && operando.getTipoElemento() == TipoElemento.CTE )
+					{
+						// Se o resultado da expressao eh falso
+						if ( Double.parseDouble( operando.getLexema() ) == 0.0 )
+						{
+							if ( comandoCondicional instanceof ComandoCondicionalSimples )
+								listaComandosAltoNivel.getListaComandosAltoNivel().remove( idComando );
+							else
+							{
+								// Adiciona os comandos que compoem o bloco false na lista principal
+								comandoCondicionalCompleto = (ComandoCondicionalCompleto)comandoCondicional;
+								for( k = 0 ; k < comandoCondicionalCompleto.getListaComandosAltoNivelFalse().getListaComandosAltoNivel().size(); k++ )
+								{
+									ListaComandosAltoNivel listaTrue = comandoCondicionalCompleto.getListaComandosAltoNivelFalse();
+									listaComandosAltoNivel.getListaComandosAltoNivel().add(idComando + k, listaTrue.getListaComandosAltoNivel().get(k) );
+								}
+								
+								// Remove o comando Condicional Completo da lista programa
+								listaComandosAltoNivel.getListaComandosAltoNivel().remove( idComando + k );
+							}
+							
+						} else // O resultado da expressao eh verdadeiro
+						{
+							// Adiciona os comandos que compoem o bloco verdadeiro na lista principal
+							for( k = 0 ; k < comandoCondicional.getListaComandosAltoNivelTrue().getListaComandosAltoNivel().size(); k++ )
+							{
+								ListaComandosAltoNivel listaTrue = comandoCondicional.getListaComandosAltoNivelTrue();
+								listaComandosAltoNivel.getListaComandosAltoNivel().add(idComando + k, listaTrue.getListaComandosAltoNivel().get(k) );
+							}
+							// Remove o comando Condicional Completo da lista programa
+							listaComandosAltoNivel.getListaComandosAltoNivel().remove( idComando + k );
+						}
+					}
+					idComando--;
+				}
+			}
+		}
+	}
+	
 	public static void adicionarQuebraLinha( ListaComandosAltoNivel listaExibe, Token tokenLn )
 	{
 		Expressao expressao = new Expressao();

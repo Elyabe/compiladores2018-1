@@ -13,6 +13,22 @@ public abstract class ComandoCondicional extends ComandoAltoNivel{
 		this.listaComandosAltoNivelTrue = listaComandosAltoNivelTrue;
 	}
 	
+	public ListaComandosAltoNivel getListaComandosAltoNivelTrue() {
+		return listaComandosAltoNivelTrue;
+	}
+
+	public void setListaComandosAltoNivelTrue(ListaComandosAltoNivel listaComandosAltoNivelTrue) {
+		this.listaComandosAltoNivelTrue = listaComandosAltoNivelTrue;
+	}
+
+	public Expressao getExpressao() {
+		return expressao;
+	}
+
+	public void setExpressao(Expressao expressao) {
+		this.expressao = expressao;
+	}
+
 	@Override
 	public abstract ListaComandosPrimitivos geraListaComandosPrimitivos();
 	

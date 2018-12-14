@@ -490,6 +490,7 @@ public class Compilador implements CompiladorConstants {
 //GRAMATICA COMPLETA
   static final public void inicio(ListaComandosAltoNivel listaComandosAltoNivel) throws ParseException {
     programa(listaComandosAltoNivel);
+                                           AcoesSemanticas.otimizarComandosCondicionais( listaComandosAltoNivel );
     jj_consume_token(0);
   }
 

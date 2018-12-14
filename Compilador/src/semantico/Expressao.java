@@ -364,6 +364,10 @@ public class Expressao {
 								case LOG:
 									A = Math.log10( A );
 									break;
+								case NEGACAO:
+									A = Double.parseDouble( operandoA.getLexema() );
+									A = ( A != 0 ) ? 0.0 : 1.0; 
+									break;
 							}
 							
 							this.listaExpPosFixa.remove( idItem );

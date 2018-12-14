@@ -353,27 +353,30 @@ public class Expressao {
 				{
 					itemA = this.getListaExpPosFixa().get(idItem-1);
 					
-					if ( itemA instanceof Operando )
+					if ( itemA instanceof Operando)
 					{
 						operandoA = (Operando)itemA;
-						A = Double.parseDouble( operandoA.getLexema() );
-						switch( operador.getTipoOperador() )
+						if ( operandoA.getTipoDado() == TipoDado.NUMERO && operandoA.getTipoElemento() == TipoElemento.CTE )
 						{
-							case LOG:
-								A = Math.log10( A );
-								break;
+							A = Double.parseDouble( operandoA.getLexema() );
+							switch( operador.getTipoOperador() )
+							{
+								case LOG:
+									A = Math.log10( A );
+									break;
+							}
+							
+							this.listaExpPosFixa.remove( idItem );
+							this.listaExpPosFixa.remove( idItem - 1 );
+							// Calcula o indice que o novo elemento ocupará na lista
+							idItem--;
+							
+							// Adiciona o elemento resultado da otimizacao na lista da expressao
+							Item valorOtimizado = new Operando( TipoDado.NUMERO, TipoElemento.CTE, new Token(0, Double.toString(A) ), Sinal.POS );
+							this.listaExpPosFixa.add( idItem, valorOtimizado );	
 						}
-						
-						this.listaExpPosFixa.remove( idItem );
-						this.listaExpPosFixa.remove( idItem - 1 );
-						// Calcula o indice que o novo elemento ocupará na lista
-						idItem--;
-						
-						// Adiciona o elemento resultado da otimizacao na lista da expressao
-						Item valorOtimizado = new Operando( TipoDado.NUMERO, TipoElemento.CTE, new Token(0, Double.toString(A) ), Sinal.POS );
-						this.listaExpPosFixa.add( idItem, valorOtimizado );
 					}
-
+					
 				} else 
 				{
 					itemA = this.getListaExpPosFixa().get(idItem-2);

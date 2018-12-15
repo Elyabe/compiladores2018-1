@@ -174,7 +174,8 @@ TOKEN : {
 	< MENOR: "<" > |
 	< MAIORIGUAL: ">=" > |
 	< TO: "to" > |
-	< EXIBELN : "exibeln" >
+	< EXIBELN : "exibeln" >|
+	< TERNARIO : "?" >
 }
 //----------CARACTERES----------
 TOKEN : {
@@ -486,6 +487,7 @@ void comando(ListaComandosAltoNivel listaComandosAltoNivel):
 	  | seRepete(listaComandosAltoNivel)
 	  | duplo(listaComandosAltoNivel)
 	  | matrix3D( listaComandosAltoNivel )
+	  | ternario( listaComandosAltoNivel ) 
 	  | < COMENTLINHA > 
 	)	
 }
@@ -860,4 +862,22 @@ void matrix3D(ListaComandosAltoNivel listaMatrix3D ):
 					comandoMatrix3D = new ComandoMatrix3D( tokenMatrix3D, tokenVarDimX, tokenVarDimY, tokenVarDimZ, expInicializacao, expCondicaoParada, blocoComandosMatrix );
 					listaMatrix3D.addComando( comandoMatrix3D );
 				}
+}
+
+void ternario( ListaComandosAltoNivel listaTernario ):
+{
+	Token tokenTernario;
+	Expressao expressao;
+	ListaComandosAltoNivel listaTernarioTrue = new ListaComandosAltoNivel();
+	ListaComandosAltoNivel listaTernarioFalse = new ListaComandosAltoNivel();
+	ComandoAltoNivel comandoCondicionalCompleto;
+}
+{
+  	<AP> expressao = iniciaExpressao() <FP> tokenTernario = <TERNARIO>
+  	<AC> programa(listaTernarioTrue) <FC> <DP>
+  	<AC> programa(listaTernarioFalse) <FC>
+  	{
+		comandoCondicionalCompleto = new ComandoCondicionalCompleto( expressao, listaTernarioTrue, listaTernarioFalse, tokenTernario );
+		listaTernario.addComando( comandoCondicionalCompleto );
+  	}   
 }

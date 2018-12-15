@@ -514,6 +514,7 @@ public class Compilador implements CompiladorConstants {
       case NUMERO:
       case PALAVRA:
       case EXIBELN:
+      case AP:
       case VAR:
         ;
         break;
@@ -569,6 +570,9 @@ public class Compilador implements CompiladorConstants {
       break;
     case MATRIX3D:
       matrix3D(listaComandosAltoNivel);
+      break;
+    case AP:
+      ternario(listaComandosAltoNivel);
       break;
     case COMENTLINHA:
       jj_consume_token(COMENTLINHA);
@@ -1068,6 +1072,27 @@ public class Compilador implements CompiladorConstants {
                                         listaMatrix3D.addComando( comandoMatrix3D );
   }
 
+  static final public void ternario(ListaComandosAltoNivel listaTernario) throws ParseException {
+        Token tokenTernario;
+        Expressao expressao;
+        ListaComandosAltoNivel listaTernarioTrue = new ListaComandosAltoNivel();
+        ListaComandosAltoNivel listaTernarioFalse = new ListaComandosAltoNivel();
+        ComandoAltoNivel comandoCondicionalCompleto;
+    jj_consume_token(AP);
+    expressao = iniciaExpressao();
+    jj_consume_token(FP);
+    tokenTernario = jj_consume_token(TERNARIO);
+    jj_consume_token(AC);
+    programa(listaTernarioTrue);
+    jj_consume_token(FC);
+    jj_consume_token(DP);
+    jj_consume_token(AC);
+    programa(listaTernarioFalse);
+    jj_consume_token(FC);
+                comandoCondicionalCompleto = new ComandoCondicionalCompleto( expressao, listaTernarioTrue, listaTernarioFalse, tokenTernario );
+                listaTernario.addComando( comandoCondicionalCompleto );
+  }
+
   static private boolean jj_initialized_once = false;
   /** Generated Token Manager. */
   static public CompiladorTokenManager token_source;
@@ -1091,10 +1116,10 @@ public class Compilador implements CompiladorConstants {
       jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x55454f00,0x55454f00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000,0x600,0x0,0x100,0x0,0x0,0x100000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x6000,0x6000,0x10000,0xd80000,0xd80000,0x80091c3,0x200000,0x180,0x180,0x600,0x600,0x800,0x3,0x1003,0x80011c3,0x180,0x180,0x40,0x80001c0,0x200001c,0x200001c,0x0,0x0,0x60000,0x780,0x60780,0x18,0x20000,0x0,0x20000,0x0,0x0,0x0,0x2000000,0x0,0x1c0,0x0,};
+      jj_la1_1 = new int[] {0x6000,0x6000,0x10000,0xd80000,0xd80000,0x100091c3,0x200000,0x180,0x180,0x600,0x600,0x800,0x3,0x1003,0x100011c3,0x180,0x180,0x40,0x100001c0,0x1200001c,0x1200001c,0x0,0x0,0x60000,0x780,0x60780,0x18,0x20000,0x0,0x20000,0x0,0x0,0x0,0x2000000,0x0,0x1c0,0x0,};
    }
    private static void jj_la1_init_2() {
-      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0xc,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc,0x0,0x0,0x8,0xc,0x8,0x8,0x2,0x2,0x2,0x0,0x2,0x0,0x0,0x2,0x0,0x0,0x0,0x2,0x0,0x2,0x0,0x0,};
+      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x18,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x18,0x0,0x0,0x10,0x18,0x10,0x10,0x4,0x4,0x4,0x0,0x4,0x0,0x0,0x4,0x0,0x0,0x0,0x4,0x0,0x4,0x0,0x0,};
    }
 
   /** Constructor with InputStream. */
@@ -1232,7 +1257,7 @@ public class Compilador implements CompiladorConstants {
   /** Generate ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[68];
+    boolean[] la1tokens = new boolean[69];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -1252,7 +1277,7 @@ public class Compilador implements CompiladorConstants {
         }
       }
     }
-    for (int i = 0; i < 68; i++) {
+    for (int i = 0; i < 69; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

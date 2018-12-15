@@ -1,0 +1,12 @@
+// Teste para operador ternario ( exp ) ? { BLOCO TRUE; } : { BLOCO FALSE }
+
+numero x;
+
+lecompleto "Digite um valor numerico para x:\n", x;
+
+exibe " Ternario "; 
+
+( NAO (25-25) ) ? { exibeln "Bloco verdadeiro"; } : { exibeln "Bloco falso"; }
+
+exibeln "Teste com operador ternario aninhado";
+( NAO ( 2*36 ) ) ? { ( NAO (25-25) ) ? { exibeln "Bloco verdadeiro"; } : { exibeln "Bloco falso"; } }  : {} 

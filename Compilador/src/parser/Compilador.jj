@@ -141,6 +141,11 @@ TOKEN [IGNORE_CASE] : {
 	<FIMMATRIX3D: "fim-matrix3D" > |
 	<MAX : "max" > |
 	<MIN : "min" > |
+	<FUNCAO: "funcao" > |
+	<FIMFUNCAO: "fim-funcao" > |
+	<PROCEDIMENTO: "procedimento" > |
+	<FIMPROCEDIMENTO: "fim-procedimento" > |
+	<MAIN: "cirocracia" > |
 	<COMENTLINHA : "//" (~["\n"])* ("\n")? >  
 }
 //TOKENS DE TIPOS 
@@ -459,9 +464,31 @@ void termo5(Expressao exp):
 //GRAMATICA COMPLETA
 
 void inicio(ListaComandosAltoNivel listaComandosAltoNivel):
-{}
 {
-	programa(listaComandosAltoNivel) { AcoesSemanticas.otimizarComandosCondicionais( listaComandosAltoNivel ); } <EOF>
+  Token tokenProcedimento, tokenAssinatura, tokenVar;
+  LinkedList<Token> listaParametros = new LinkedList<Token>();
+  TipoDado tipoParam;
+  ComandoAltoNivel comando;
+  ListaComandosAltoNivel listaCorpoMain = new ListaComandosAltoNivel();
+}
+{
+  // Por enquanto as declaracoes fora da main da nossa linguagem estao na main do JAVA
+	( comandoInstanciacao(listaCorpoMain) )*
+	  
+    tokenProcedimento = <PROCEDIMENTO> tokenAssinatura = <MAIN> <AP>
+    /*( <PALAVRA> { tipoParam =  TipoDado.PALAVRA; } tokenVar = <VAR> { Compilador.tabela.insereNaTabela( tokenVar, tipoParam); listaParametros.add( tokenVar );  }
+    											  ( ( <PALAVRA> { tipoParam =  TipoDado.PALAVRA; } | <NUMERO> { tipoParam =  TipoDado.NUMERO; } )?
+    											      <VIRGULA> <VAR> { Compilador.tabela.insereNaTabela( tokenVar, tipoParam); listaParametros.add( tokenVar );  }
+    											   )*
+ 	)?*/ <FP>
+	programa(listaCorpoMain) { AcoesSemanticas.otimizarComandosCondicionais( listaComandosAltoNivel ); }
+	<FIMPROCEDIMENTO>
+	{
+		comando = new Procedimento( tokenProcedimento, tokenAssinatura, listaParametros, listaCorpoMain );
+		listaComandosAltoNivel.addComando( comando );  
+	}
+	( comandoInstanciacao(listaCorpoMain) )*
+	<EOF>
 }
 
 void programa(ListaComandosAltoNivel listaComandosAltoNivel) :
@@ -474,8 +501,7 @@ void comando(ListaComandosAltoNivel listaComandosAltoNivel):
 {}
 {
 	(
-	    atribuicao(listaComandosAltoNivel) <PV>
-	  | declaracao(listaComandosAltoNivel) 
+		comandoInstanciacao(listaComandosAltoNivel) 
 	  | se(listaComandosAltoNivel)
 	  | enquanto(listaComandosAltoNivel)
 	  | le(listaComandosAltoNivel)
@@ -488,8 +514,15 @@ void comando(ListaComandosAltoNivel listaComandosAltoNivel):
 	  | duplo(listaComandosAltoNivel)
 	  | matrix3D( listaComandosAltoNivel )
 	  | ternario( listaComandosAltoNivel ) 
-	  | < COMENTLINHA > 
 	)	
+}
+
+void comandoInstanciacao( ListaComandosAltoNivel listaComandosAltoNivel ):
+{}
+{
+	  atribuicao(listaComandosAltoNivel) <PV>
+	| declaracao(listaComandosAltoNivel)
+	| < COMENTLINHA > 
 }
 
 void atribuicao(ListaComandosAltoNivel listaComandosAltoNivel):

@@ -1,0 +1,8 @@
+// Teste funcao main
+palavra x <- "Aqui vai o corpo da funcao";
+
+procedimento cirocracia()
+	numero s <- log(100);
+	exibeln x;
+	exibeln s;
+fim-procedimento

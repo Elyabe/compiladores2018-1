@@ -20,6 +20,26 @@ public class ListaComandosAltoNivel {
 		this.listaComandosAltoNivel.add(comando);
 	}
 	
+	public void addComandoIndice( ComandoAltoNivel comando, int pos )
+	{
+		this.listaComandosAltoNivel.add(pos, comando);
+	}
+	
+	public void addComandoInicio( ComandoAltoNivel comando )
+	{
+		this.listaComandosAltoNivel.addFirst(comando);
+	}
+	
+	public ComandoAltoNivel getComando(int indice)
+	{
+		return this.listaComandosAltoNivel.get(indice);
+	}
+	
+	public void removerComando( int indice )
+	{
+		this.listaComandosAltoNivel.remove(indice);	
+	}
+	
 	public LinkedList<ComandoAltoNivel> getListaComandosAltoNivel(){
 		return this.listaComandosAltoNivel;
 	}

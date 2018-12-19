@@ -14,6 +14,26 @@ public class ListaComandosPrimitivos {
 		this.listaComandosPrimitivos.add(comando);
 	}
 	
+	public void addComandoIndice( ComandoPrimitivo comando, int pos )
+	{
+		this.listaComandosPrimitivos.add(pos, comando);
+	}
+	
+	public void addComandoInicio( ComandoPrimitivo comando )
+	{
+		this.listaComandosPrimitivos.addFirst(comando);
+	}
+	
+	public ComandoPrimitivo getComando(int indice)
+	{
+		return this.listaComandosPrimitivos.get(indice);
+	}
+	
+	public void removerComando( int indice )
+	{
+		this.listaComandosPrimitivos.remove(indice);	
+	}
+	
 	public LinkedList<ComandoPrimitivo> getListaComandosPrimitivos(){
 		return this.listaComandosPrimitivos;
 	}

@@ -89,7 +89,7 @@ public class Expressao {
 	    				switch ( operando.getTipoElemento() )
 	    				{
 	    					case VAR:
-	    						referencia = Compilador.tabela.pesquisaTabela(operando.getLexema()). getReferencia();
+	    						referencia = Compilador.tabela.pesquisaTabela(operando.getLexema()).getReferencia(operando.getLexema());
 	    						separador = ( referencia < 4 ) ? '_' : ' ';
 	    						codigoDestinoExpressao += "dload" + separador + referencia + "\r\n";
 	    						
@@ -114,7 +114,7 @@ public class Expressao {
 	    				switch ( operando.getTipoElemento() )
 	    				{
 	    					case VAR:
-	    						referencia = Compilador.tabela.pesquisaTabela(operando.getLexema()). getReferencia();
+	    						referencia = Compilador.tabela.pesquisaTabela(operando.getLexema()).getReferencia(operando.getLexema());
 	    						separador = ( referencia < 4 ) ? '_' : ' ';
 	    						codigoDestinoExpressao += "aload" + separador + referencia + "\r\n";
 	    						break;

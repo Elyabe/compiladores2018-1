@@ -1,0 +1,9 @@
+// Teste de procedimento com ambientes/namespaces diferentes
+
+procedimento cirocracia()
+	numero x, y, z;
+	
+	x,y,z <== 0,0,1;
+	
+	exibeln 2*x, " ", 3*y, " ", 4*z;
+fim-procedimento

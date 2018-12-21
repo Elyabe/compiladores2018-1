@@ -33,7 +33,7 @@ import java.util.LinkedList;
 
 
 public class Compilador {
-	public static Tabela tabela = new Tabela();
+	public static Tabela tabela = new Tabela( Config.nomeArquivo );
 	// Argumentos para o jasmin gerar automaticamente o .class na pasta saida
 	public static String arquivo[] = { "-d", Config.pathSaida, Config.pathSaida + Config.nomeArquivo + Config.extensaoCodigoDestino };
 	 
@@ -446,7 +446,7 @@ void termo5(Expressao exp):
 				tabela.verificaVariavelDeclarada(tokenVar.image);
 				item = new Operando(tabela.tipoVariavel(tokenVar.image),TipoElemento.VAR, tokenVar, sinal);
 				AcoesSemanticas.incompatibilidadeTipoExpressao(item,exp,tokenVar);
-				tabela.pesquisaTabela(tokenVar.image).setIsUtilizada(true);
+				tabela.pesquisaSimboloTabela(tokenVar.image).setIsUtilizada(true);
 				exp.addListaExpInfixa(item);
 				exp.addListaExpPosFixa(item);
 			}
@@ -597,7 +597,7 @@ void atribuicao(ListaComandosAltoNivel listaComandosAltoNivel, Token Var ):
      <IGUAL> expressao( expressao )
 	 {
 		expressao.addListaExpPosFixa( operador );
-		listaComandosAltoNivel.addComando( new ComandoAtribuicao( tabela.pesquisaTabela(var.image), expressao, atrib ) );
+		listaComandosAltoNivel.addComando( new ComandoAtribuicao( tabela.pesquisaSimboloTabela(var.image), expressao, atrib ) );
 	 }  	 
    )
 }
@@ -622,9 +622,9 @@ void declaracao(ListaComandosAltoNivel listaComandosAltoNivel):
 	( 
 		atrib = <ATRIB> expressao=iniciaExpressao() 
 		{
-			AcoesSemanticas.incompatibilidadeTipoAtribuicao (tabela.pesquisaTabela(variavel.image), expressao, variavel);
-			comando = new ComandoAtribuicao(tabela.pesquisaTabela(variavel.image), expressao, atrib);
-			tabela.pesquisaTabela(variavel.image).setIsInicializada(true);			
+			AcoesSemanticas.incompatibilidadeTipoAtribuicao (tabela.pesquisaSimboloTabela(variavel.image), expressao, variavel);
+			comando = new ComandoAtribuicao(tabela.pesquisaSimboloTabela(variavel.image), expressao, atrib);
+			tabela.pesquisaSimboloTabela(variavel.image).setIsInicializada(true);			
 			AcoesSemanticas.faltaInicializacaoVariavel(expressao,variavel);			
 			listaComandosAltoNivel.addComando(comando);
 		}
@@ -637,9 +637,9 @@ void declaracao(ListaComandosAltoNivel listaComandosAltoNivel):
 		(
 			atrib = <ATRIB> expressao=iniciaExpressao()
 			{
-				AcoesSemanticas.incompatibilidadeTipoAtribuicao (tabela.pesquisaTabela(variavel.image), expressao, variavel);
-				comando = new ComandoAtribuicao(tabela.pesquisaTabela(variavel.image), expressao, atrib);
-				tabela.pesquisaTabela(variavel.image).setIsInicializada(true);
+				AcoesSemanticas.incompatibilidadeTipoAtribuicao (tabela.pesquisaSimboloTabela(variavel.image), expressao, variavel);
+				comando = new ComandoAtribuicao(tabela.pesquisaSimboloTabela(variavel.image), expressao, atrib);
+				tabela.pesquisaSimboloTabela(variavel.image).setIsInicializada(true);
 				AcoesSemanticas.faltaInicializacaoVariavel(expressao,variavel);
 				listaComandosAltoNivel.addComando(comando);
 			}
@@ -725,15 +725,15 @@ void le(ListaComandosAltoNivel listaComandosAltoNivel):
 	  )
 	t = <VAR>
 	{
-		comando = new ComandoEntrada(tabela.pesquisaTabela(t.image), le);
-		tabela.pesquisaTabela(t.image).setIsInicializada(true);
-		tabela.pesquisaTabela(t.image).setIsUtilizada(true);
+		comando = new ComandoEntrada(tabela.pesquisaSimboloTabela(t.image), le);
+		tabela.pesquisaSimboloTabela(t.image).setIsInicializada(true);
+		tabela.pesquisaSimboloTabela(t.image).setIsUtilizada(true);
 		listaComandosAltoNivel.addComando(comando);  
 	}
 	( <VIRGULA> t = <VAR>
 		{
-			comando = new ComandoEntrada(tabela.pesquisaTabela(t.image), le);
-			tabela.pesquisaTabela(t.image).setIsInicializada(true);
+			comando = new ComandoEntrada(tabela.pesquisaSimboloTabela(t.image), le);
+			tabela.pesquisaSimboloTabela(t.image).setIsInicializada(true);
 			listaComandosAltoNivel.addComando(comando);		
 		}
 	)* <PV>
@@ -892,17 +892,17 @@ void matrix3D(ListaComandosAltoNivel listaMatrix3D ):
 				tokenVarDimX = <VAR>
 				{
 				  if ( !tabela.verificaSimbolo( tokenVarDimX.image ) ) tabela.insereNaTabela( tokenVarDimX, TipoDado.NUMERO );
-				  tabela.pesquisaTabela( tokenVarDimX.image ).setIsInicializada(true);
+				  tabela.pesquisaSimboloTabela( tokenVarDimX.image ).setIsInicializada(true);
 				} <VIRGULA>
 				tokenVarDimY = <VAR>
 				{
 				  if ( !tabela.verificaSimbolo( tokenVarDimY.image ) ) tabela.insereNaTabela( tokenVarDimY, TipoDado.NUMERO );
-				  tabela.pesquisaTabela( tokenVarDimY.image ).setIsInicializada(true);
+				  tabela.pesquisaSimboloTabela( tokenVarDimY.image ).setIsInicializada(true);
 				} <VIRGULA>
 				tokenVarDimZ = <VAR>
 				{
 				  if ( !tabela.verificaSimbolo( tokenVarDimZ.image ) ) tabela.insereNaTabela( tokenVarDimZ, TipoDado.NUMERO );
-				  tabela.pesquisaTabela( tokenVarDimZ.image ).setIsInicializada(true);
+				  tabela.pesquisaSimboloTabela( tokenVarDimZ.image ).setIsInicializada(true);
 				} <SUB>
 				tokenCteInit = <NUM>
 				{

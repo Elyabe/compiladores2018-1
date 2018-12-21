@@ -13,6 +13,8 @@ public class Procedimento extends ComandoAltoNivel
 	private Token identificador;
 	private LinkedList<Token> listaParametros;
 	private ListaComandosAltoNivel listaCorpoProcedimento;
+	private int tamanhoTotalPilha;
+	private int qtdVariaveisLocais;
 	
 	public Procedimento( Token token, Token nome, LinkedList<Token> listaParametros, ListaComandosAltoNivel listaCorpoProcedimento)
 	{
@@ -20,6 +22,7 @@ public class Procedimento extends ComandoAltoNivel
 		this.identificador = nome;
 		this.listaParametros = listaParametros;
 		this.listaCorpoProcedimento = listaCorpoProcedimento;
+		this.tamanhoTotalPilha = this.qtdVariaveisLocais = 0;
 	}
 	
 	@Override
@@ -69,5 +72,26 @@ public class Procedimento extends ComandoAltoNivel
 			return "main";
 		return this.identificador.image;
 	}
+
+	public int getTamanhoTotalPilha() 
+	{
+		return tamanhoTotalPilha;
+	}
+
+	public void setTamanhoTotalPilha(int tamanhoTotalPilha) 
+	{
+		this.tamanhoTotalPilha = tamanhoTotalPilha;
+	}
+
+	public int getQtdVariaveisLocais() {
+		return qtdVariaveisLocais;
+	}
+
+	public void setQtdVariaveisLocais(int qtdVariaveisLocais) 
+	{
+		this.qtdVariaveisLocais = qtdVariaveisLocais;
+	}
+	
+	
 	
 }

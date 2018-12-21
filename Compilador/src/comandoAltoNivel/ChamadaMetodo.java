@@ -36,9 +36,9 @@ public class ChamadaMetodo extends ComandoAltoNivel
 	@Override
 	public String toString() 
 	{
-		return "CHAMADA METODO:" 
+		return "[ CHAMADA METODO:" 
 					+ this.getLexema() 
-					+ "\n";   
+					+ "]\n";   
 	}
 	
 }

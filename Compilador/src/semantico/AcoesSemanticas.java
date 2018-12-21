@@ -16,7 +16,7 @@ public class AcoesSemanticas {
 		imageMain = imageMain.substring(1, imageMain.length()-1);
 		
 		if (!Compilador.tabela.verificaSimbolo(imageMain) )
-		  	throw new ErroSemantico("Voce nao declarou a cirocracia" + imageMain );
+		  	throw new ErroSemantico("Deeemocraticameeente! Voce nao declarou o PROCEDIMENTO " + imageMain );
 	}
 	
 	public static void otimizarComandosCondicionais( ListaComandosAltoNivel listaComandosAltoNivel )
@@ -98,9 +98,16 @@ public class AcoesSemanticas {
 		ComandoAltoNivel comando = null;
 		for ( int k = 0; k < listaVar.size(); k++ )
 		{
-			comando = new ComandoAtribuicao(Compilador.tabela.pesquisaTabela( listaVar.get(k).image), listaExp.get(k), atrib);
-			listaComandosAltoNivel.addComando( comando );
-			Compilador.tabela.pesquisaTabela(listaVar.get(k).image).setIsInicializada(true);
+			Namespace namespace = Compilador.tabela.pesquisaTabela( listaVar.get(k).image);
+			if ( namespace instanceof Simbolo )
+			{
+				comando = new ComandoAtribuicao( (Simbolo)namespace, listaExp.get(k), atrib);
+				listaComandosAltoNivel.addComando( comando );
+//				Compilador.tabela.pesquisaTabela(listaVar.get(k).image).setIsInicializada(true);
+				((Simbolo) namespace).setIsInicializada(true);
+			} else 
+				throw new ErroSemantico( "ATRIBUICAO INVALIDA: " + namespace.getNome() + " nao eh uma variavel ");
+			
 		}
 	}
 
@@ -151,30 +158,42 @@ public class AcoesSemanticas {
 				Operando operandoAux = (Operando)itemAux;
 															//Verifica somente os itens que sao operando do tipo elemento VAR.
 				if(operandoAux.getTipoElemento() == TipoElemento.VAR){
-															//Consulta o simbolo, retornando seu status (True ou False).
-					if(!(Compilador.tabela.pesquisaTabela(operandoAux.getLexema()).getIsInicializada())) { 
-															//Erro, falta inicializacao de uma variavel se for False.
-						throw new ErroSemantico("Falta de inicializacao de uma variavel na linha : " + token.beginLine);
+					Namespace namespace = Compilador.tabela.pesquisaTabela(operandoAux.getLexema()); 
+					//Consulta o simbolo, retornando seu status (True ou False).
+					if ( namespace instanceof Simbolo && !((Simbolo)namespace).getIsInicializada() )
+					{
+							//Erro, falta inicializacao de uma variavel se for False.
+								throw new ErroSemantico("Falta de inicializacao de uma variavel na linha : " + token.beginLine);
 					}
+						
 				}
 			}
 		}
 	}
 	
-	public static void warnings() {
+	public static void warnings() 
+	{
 		//percorrer tabela de simbolos
 		Compilador.tabela.tab.forEach((key, value) -> {
-			//verificar se isInicializada == false, a variavel n�o foi inicializada
-			if(value.getIsInicializada() == false) {
-				System.out.println("Warning: Variavel declarada "+value.getNome()+" declarada, mas nao inicializada.");
-				qtdWarnings++;
+			Simbolo simbolo;
+			if ( value instanceof Simbolo )
+			{
+				simbolo = (Simbolo)value;
+				//verificar se isInicializada == false, a variavel n�o foi inicializada
+				if(simbolo.getIsInicializada() == false) 
+				{
+					System.out.println("Warning: Variavel declarada "+simbolo.getNome()+" declarada, mas nao inicializada.");
+					qtdWarnings++;
+				}
+				
+				//verificar se isInicializada == true isUtilizada == false, variavel foi inicializada porem nao foi utilizada
+				if(simbolo.getIsInicializada() == true && simbolo.getIsUtilizada() == false) 
+				{
+					System.out.println("Warning: Variavel "+value.getNome()+" declarada, inicializada, mas nao utilizada.");
+					qtdWarnings++;
+				}
 			}
 			
-			//verificar se isInicializada == true isUtilizada == false, variavel foi inicializada porem nao foi utilizada
-			if(value.getIsInicializada() == true && value.getIsUtilizada() == false) {
-				System.out.println("Warning: Variavel "+value.getNome()+" declarada, inicializada, mas nao utilizada.");
-				qtdWarnings++;
-			}
 		});
 			
 	}

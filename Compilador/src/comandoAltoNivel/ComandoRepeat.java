@@ -3,14 +3,7 @@ package comandoAltoNivel;
 import comandoPrimitivo.ListaComandosPrimitivos;
 import parser.Compilador;
 import parser.Token;
-import semantico.Expressao;
-import semantico.Item;
-import semantico.Operador;
-import semantico.Operando;
-import semantico.Sinal;
-import semantico.TipoDado;
-import semantico.TipoElemento;
-import semantico.TipoOperador;
+import semantico.*;
 
 public class ComandoRepeat extends ComandoAltoNivel{
 		private ListaComandosAltoNivel listaComandosAltoNivel;
@@ -36,7 +29,8 @@ public class ComandoRepeat extends ComandoAltoNivel{
 		Item item = new Operando(TipoDado.NUMERO,TipoElemento.CTE, zero, Sinal.POS); 
 		exp.addListaExpPosFixa(item); //add lista posfixa
 		//cria o primeiro atributo para o for
-		ComandoAtribuicao inicializacao = new ComandoAtribuicao(Compilador.tabela.pesquisaTabela(variavel.image),exp,this.token);
+		Namespace namespace = Compilador.tabela.pesquisaTabela( variavel.image);
+		ComandoAtribuicao inicializacao = new ComandoAtribuicao((Simbolo)namespace,exp,this.token);
 		
 		Operando op_var = new Operando(TipoDado.NUMERO, TipoElemento.VAR, variavel, Sinal.POS);
 		
@@ -52,7 +46,7 @@ public class ComandoRepeat extends ComandoAltoNivel{
 		exp2.addListaExpPosFixa(item2);
 		exp2.addListaExpPosFixa(new Operador(TipoOperador.SOMA, new Token(0,"+")));
 		
-		ComandoAtribuicao incremento = new ComandoAtribuicao(Compilador.tabela.pesquisaTabela(variavel.image),exp2,this.token);
+		ComandoAtribuicao incremento = new ComandoAtribuicao( Compilador.tabela.pesquisaSimboloTabela(variavel.image),exp2,this.token);
 		
 		//lista comandos alto nivel para a inicializacao
 		ListaComandosAltoNivel inicial = new ListaComandosAltoNivel();

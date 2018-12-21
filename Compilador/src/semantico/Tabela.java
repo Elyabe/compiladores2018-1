@@ -7,10 +7,19 @@ import tratamentoErro.*;
 
 import semantico.Simbolo;
 
-public class Tabela {
-	
-	public HashMap<String, Simbolo> tab = new HashMap<String, Simbolo>();
+public class Tabela extends Namespace 
+{
+	private TipoDado tipoRetornoNamespace;
+	public HashMap<String, Namespace> tab;
 	private int marcador = 1; // armazena a ultima referencia incluida na tabela
+	
+	public Tabela( String nome )
+	{
+		this.nome = nome;
+		this.tab = new HashMap<String, Namespace>();
+		this.marcador = 1;
+	}
+	
 	
 	public int getMarcador() {
 		return marcador;
@@ -28,8 +37,13 @@ public class Tabela {
 		return this.tab.size();
 	}
 	
-	public Simbolo pesquisaTabela(String chave) {
+	public Namespace pesquisaTabela(String chave) {
 		return this.tab.get(chave);
+	}
+	
+	public Simbolo pesquisaSimboloTabela(String chave )
+	{
+		return (Simbolo)pesquisaTabela(chave);
 	}
 	
 	public void imprimeTabela(){
@@ -69,7 +83,25 @@ public class Tabela {
 		 }
 	}
 	
-	public String toString() {
+	public TipoDado getTipo()
+	{
+		return this.tipoRetornoNamespace;
+	}
+	
+	@Override
+	public int getReferencia( String lexema )
+	{
+		return ((Simbolo)this.pesquisaTabela(lexema)).getReferencia();
+	}
+	
+	public String toString() 
+	{
 		return this.tab.toString();
+	}
+
+	@Override
+	public String getNome() 
+	{
+		return this.nome;
 	}
 }

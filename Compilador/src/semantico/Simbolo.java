@@ -2,14 +2,15 @@ package semantico;
 
 import parser.Token;
 
-public class Simbolo {
+public class Simbolo extends Namespace
+{
 	
-	private String nome;      // nome do identificador
+//	private String nome;      // nome do identificador
 	private TipoDado tipo;    // representa os tipos usados na linguagem
 	private int referencia;   //referencia usada na geracao do codigo destino
 	private Token token;
 	private boolean isInicializada;  // atributo para cuidar do erro semantico: falta de inicializacao de variavel
-	private boolean isUtilizada; //atributo utilizado para verificar o warning de utilização
+	private boolean isUtilizada; //atributo utilizado para verificar o warning de utilizaï¿½ï¿½o
 	
 	public Simbolo(Token token, TipoDado tipo) {
 		this.token = token;
@@ -53,6 +54,11 @@ public class Simbolo {
 
 	public int getReferencia() {
 		return referencia;
+	}
+	
+	public int getReferencia(String lexema)
+	{
+		return this.referencia;
 	}
 
 	public void setReferencia(int marcador) {

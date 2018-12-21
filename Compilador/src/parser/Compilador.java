@@ -13,7 +13,7 @@ import java.util.LinkedList;
 
 
 public class Compilador implements CompiladorConstants {
-        public static Tabela tabela = new Tabela();
+        public static Tabela tabela = new Tabela( Config.nomeArquivo );
         // Argumentos para o jasmin gerar automaticamente o .class na pasta saida
         public static String arquivo[] = { "-d", Config.pathSaida, Config.pathSaida + Config.nomeArquivo + Config.extensaoCodigoDestino };
 
@@ -463,7 +463,7 @@ public class Compilador implements CompiladorConstants {
                                 tabela.verificaVariavelDeclarada(tokenVar.image);
                                 item = new Operando(tabela.tipoVariavel(tokenVar.image),TipoElemento.VAR, tokenVar, sinal);
                                 AcoesSemanticas.incompatibilidadeTipoExpressao(item,exp,tokenVar);
-                                tabela.pesquisaTabela(tokenVar.image).setIsUtilizada(true);
+                                tabela.pesquisaSimboloTabela(tokenVar.image).setIsUtilizada(true);
                                 exp.addListaExpInfixa(item);
                                 exp.addListaExpPosFixa(item);
         break;
@@ -783,7 +783,7 @@ public class Compilador implements CompiladorConstants {
       jj_consume_token(IGUAL);
       expressao(expressao);
                 expressao.addListaExpPosFixa( operador );
-                listaComandosAltoNivel.addComando( new ComandoAtribuicao( tabela.pesquisaTabela(var.image), expressao, atrib ) );
+                listaComandosAltoNivel.addComando( new ComandoAtribuicao( tabela.pesquisaSimboloTabela(var.image), expressao, atrib ) );
       break;
     default:
       jj_la1[30] = jj_gen;
@@ -817,9 +817,9 @@ public class Compilador implements CompiladorConstants {
     case ATRIB:
       atrib = jj_consume_token(ATRIB);
       expressao = iniciaExpressao();
-                        AcoesSemanticas.incompatibilidadeTipoAtribuicao (tabela.pesquisaTabela(variavel.image), expressao, variavel);
-                        comando = new ComandoAtribuicao(tabela.pesquisaTabela(variavel.image), expressao, atrib);
-                        tabela.pesquisaTabela(variavel.image).setIsInicializada(true);
+                        AcoesSemanticas.incompatibilidadeTipoAtribuicao (tabela.pesquisaSimboloTabela(variavel.image), expressao, variavel);
+                        comando = new ComandoAtribuicao(tabela.pesquisaSimboloTabela(variavel.image), expressao, atrib);
+                        tabela.pesquisaSimboloTabela(variavel.image).setIsInicializada(true);
                         AcoesSemanticas.faltaInicializacaoVariavel(expressao,variavel);
                         listaComandosAltoNivel.addComando(comando);
       break;
@@ -844,9 +844,9 @@ public class Compilador implements CompiladorConstants {
       case ATRIB:
         atrib = jj_consume_token(ATRIB);
         expressao = iniciaExpressao();
-                                AcoesSemanticas.incompatibilidadeTipoAtribuicao (tabela.pesquisaTabela(variavel.image), expressao, variavel);
-                                comando = new ComandoAtribuicao(tabela.pesquisaTabela(variavel.image), expressao, atrib);
-                                tabela.pesquisaTabela(variavel.image).setIsInicializada(true);
+                                AcoesSemanticas.incompatibilidadeTipoAtribuicao (tabela.pesquisaSimboloTabela(variavel.image), expressao, variavel);
+                                comando = new ComandoAtribuicao(tabela.pesquisaSimboloTabela(variavel.image), expressao, atrib);
+                                tabela.pesquisaSimboloTabela(variavel.image).setIsInicializada(true);
                                 AcoesSemanticas.faltaInicializacaoVariavel(expressao,variavel);
                                 listaComandosAltoNivel.addComando(comando);
         break;
@@ -942,9 +942,9 @@ public class Compilador implements CompiladorConstants {
       throw new ParseException();
     }
     t = jj_consume_token(VAR);
-                comando = new ComandoEntrada(tabela.pesquisaTabela(t.image), le);
-                tabela.pesquisaTabela(t.image).setIsInicializada(true);
-                tabela.pesquisaTabela(t.image).setIsUtilizada(true);
+                comando = new ComandoEntrada(tabela.pesquisaSimboloTabela(t.image), le);
+                tabela.pesquisaSimboloTabela(t.image).setIsInicializada(true);
+                tabela.pesquisaSimboloTabela(t.image).setIsUtilizada(true);
                 listaComandosAltoNivel.addComando(comando);
     label_11:
     while (true) {
@@ -958,8 +958,8 @@ public class Compilador implements CompiladorConstants {
       }
       jj_consume_token(VIRGULA);
       t = jj_consume_token(VAR);
-                        comando = new ComandoEntrada(tabela.pesquisaTabela(t.image), le);
-                        tabela.pesquisaTabela(t.image).setIsInicializada(true);
+                        comando = new ComandoEntrada(tabela.pesquisaSimboloTabela(t.image), le);
+                        tabela.pesquisaSimboloTabela(t.image).setIsInicializada(true);
                         listaComandosAltoNivel.addComando(comando);
     }
     jj_consume_token(PV);
@@ -1145,15 +1145,15 @@ public class Compilador implements CompiladorConstants {
     jj_consume_token(AP);
     tokenVarDimX = jj_consume_token(VAR);
                                   if ( !tabela.verificaSimbolo( tokenVarDimX.image ) ) tabela.insereNaTabela( tokenVarDimX, TipoDado.NUMERO );
-                                  tabela.pesquisaTabela( tokenVarDimX.image ).setIsInicializada(true);
+                                  tabela.pesquisaSimboloTabela( tokenVarDimX.image ).setIsInicializada(true);
     jj_consume_token(VIRGULA);
     tokenVarDimY = jj_consume_token(VAR);
                                   if ( !tabela.verificaSimbolo( tokenVarDimY.image ) ) tabela.insereNaTabela( tokenVarDimY, TipoDado.NUMERO );
-                                  tabela.pesquisaTabela( tokenVarDimY.image ).setIsInicializada(true);
+                                  tabela.pesquisaSimboloTabela( tokenVarDimY.image ).setIsInicializada(true);
     jj_consume_token(VIRGULA);
     tokenVarDimZ = jj_consume_token(VAR);
                                   if ( !tabela.verificaSimbolo( tokenVarDimZ.image ) ) tabela.insereNaTabela( tokenVarDimZ, TipoDado.NUMERO );
-                                  tabela.pesquisaTabela( tokenVarDimZ.image ).setIsInicializada(true);
+                                  tabela.pesquisaSimboloTabela( tokenVarDimZ.image ).setIsInicializada(true);
     jj_consume_token(SUB);
     tokenCteInit = jj_consume_token(NUM);
                                   cteInicializacao = new Operando( TipoDado.NUMERO, TipoElemento.CTE, tokenCteInit, Sinal.POS );

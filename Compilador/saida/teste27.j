@@ -10,7 +10,7 @@ return
 .end method 
 
 .method public static imprimir()V
-.limit stack 12 
+.limit stack 13 
 .limit locals 12 
 getstatic java/lang/System/out Ljava/io/PrintStream; 
 ldc "Novo bloco de codigo aqui!"
@@ -28,7 +28,7 @@ return
 .end method 
 
 .method public static ler()V
-.limit stack 12 
+.limit stack 13 
 .limit locals 12 
 getstatic java/lang/System/out Ljava/io/PrintStream; 
 ldc "Entre com valor de z: "
@@ -49,7 +49,7 @@ return
 .end method 
 
 .method public static testar_junto()V
-.limit stack 12 
+.limit stack 13 
 .limit locals 12 
 invokestatic teste27.imprimir()V
 invokestatic teste27.ler()V
@@ -57,7 +57,7 @@ return
 .end method 
 
 .method public static main([Ljava/lang/String;)V
-.limit stack 12 
+.limit stack 13 
 .limit locals 12 
 invokestatic teste27.imprimir()V
 getstatic java/lang/System/out Ljava/io/PrintStream; 
@@ -92,6 +92,12 @@ dstore 7
 goto LABELINICIOENQUANTO_1
 
 LABELFALSE_0:
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+dload_3
+invokevirtual java/io/PrintStream/print(D)V 
+getstatic java/lang/System/out Ljava/io/PrintStream; 
+ldc "\n"
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V 
 return 
 .end method 
 

@@ -1,6 +1,8 @@
 package semantico;
 
 import java.util.LinkedList;
+
+import apoio.Config;
 import codigoDestino.*;
 import comandoPrimitivo.*;
 import parser.Compilador;
@@ -290,6 +292,12 @@ public class Expressao {
 								+ labelCOLOCATRUEmaiorIgual.geraCodigoDestino()
 								+ "dconst_1 \r\n"
 								+ labelSAIDAmaiorIgual.geraCodigoDestino();
+						break;
+					case PROCEDIMENTO:
+						codigoDestinoExpressao += "invokestatic " 
+								+ Config.nomeArquivo 
+								+ "(" + ")"
+								+ "V \r\n";
 						break;
 				}
 				

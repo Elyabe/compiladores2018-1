@@ -1,0 +1,38 @@
+// Teste construcao de outros procedimentos apos a main
+// DETALHE: Por enquanto, a partir de agora, nao serao permitidas variaveis globais
+// A main deve vir depois de todos os metodos que ela usa
+
+
+procedimento imprimir()
+	exibeln "Novo bloco de codigo aqui!";
+	exibeln "Esse codigo foi feito num outro procedimento";
+fim-procedimento
+
+// Le um numero e exibe na tela em seguida
+procedimento ler()
+	numero z;
+	lecompleto "Entre com valor de z: ", z;
+	exibeln z;
+fim-procedimento
+
+//Testa todos os procedimentos juntos
+procedimento testar_junto()
+	imprimir();
+	ler();
+fim-procedimento
+
+// Funcao principal
+procedimento cirocracia()
+	numero x;
+	palavra y;
+	
+	imprimir();
+	exibeln "\n***Teste variados com procedimentos***";
+	
+	para( x, y <== 3, "Entre com o valor "; x >= 0; x -= 1) 
+		// ler();
+		testar_junto();
+	fim-para
+	
+fim-procedimento
+

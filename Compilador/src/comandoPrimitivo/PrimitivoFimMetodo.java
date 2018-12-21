@@ -7,7 +7,7 @@ public class PrimitivoFimMetodo extends ComandoPrimitivo
 	@Override
 	public String geraCodigoDestino() 
 	{
-		return ".end method \r\n";
+		return ".end method \r\n\n";
 	}
 
 	@Override

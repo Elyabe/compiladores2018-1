@@ -464,32 +464,34 @@ void termo5(Expressao exp):
 //GRAMATICA COMPLETA
 
 void inicio(ListaComandosAltoNivel listaComandosAltoNivel):
+{}
+{	
+	( < COMENTLINHA > | procedimento(listaComandosAltoNivel) )*
+	{ AcoesSemanticas.verificarExistenciaMain(); }
+	<EOF>
+}
+
+void procedimento( ListaComandosAltoNivel listaComandosAltoNivel ):
 {
   Token tokenProcedimento, tokenAssinatura, tokenVar;
   LinkedList<Token> listaParametros = new LinkedList<Token>();
   TipoDado tipoParam;
   ComandoAltoNivel comando;
-  ListaComandosAltoNivel listaCorpoMain = new ListaComandosAltoNivel();
+  ListaComandosAltoNivel listaCorpoProcedimento = new ListaComandosAltoNivel();
 }
 {
-  // Por enquanto as declaracoes fora da main da nossa linguagem estao na main do JAVA
-	( comandoInstanciacao(listaCorpoMain) )*
-	  
-    tokenProcedimento = <PROCEDIMENTO> tokenAssinatura = <MAIN> <AP>
-    /*( <PALAVRA> { tipoParam =  TipoDado.PALAVRA; } tokenVar = <VAR> { Compilador.tabela.insereNaTabela( tokenVar, tipoParam); listaParametros.add( tokenVar );  }
-    											  ( ( <PALAVRA> { tipoParam =  TipoDado.PALAVRA; } | <NUMERO> { tipoParam =  TipoDado.NUMERO; } )?
-    											      <VIRGULA> <VAR> { Compilador.tabela.insereNaTabela( tokenVar, tipoParam); listaParametros.add( tokenVar );  }
-    											   )*
- 	)?*/ <FP>
-	programa(listaCorpoMain) { AcoesSemanticas.otimizarComandosCondicionais( listaComandosAltoNivel ); }
+	tokenProcedimento = <PROCEDIMENTO>
+	(tokenAssinatura = <VAR> | tokenAssinatura = <MAIN>) { Compilador.tabela.insereNaTabela( tokenAssinatura, TipoDado.PALAVRA ); }
+	<AP>
+ 	<FP>
+	programa(listaCorpoProcedimento) { AcoesSemanticas.otimizarComandosCondicionais( listaCorpoProcedimento ); }
 	<FIMPROCEDIMENTO>
 	{
-		comando = new Procedimento( tokenProcedimento, tokenAssinatura, listaParametros, listaCorpoMain );
+		comando = new Procedimento( tokenProcedimento, tokenAssinatura, listaParametros, listaCorpoProcedimento );
 		listaComandosAltoNivel.addComando( comando );  
 	}
-	( comandoInstanciacao(listaCorpoMain) )*
-	<EOF>
 }
+
 
 void programa(ListaComandosAltoNivel listaComandosAltoNivel) :
 {}
@@ -501,7 +503,8 @@ void comando(ListaComandosAltoNivel listaComandosAltoNivel):
 {}
 {
 	(
-		comandoInstanciacao(listaComandosAltoNivel) 
+		comandoInstanciacao(listaComandosAltoNivel)
+//	  | chamadaProcedimentoFuncao(listaComandosAltoNivel)
 	  | se(listaComandosAltoNivel)
 	  | enquanto(listaComandosAltoNivel)
 	  | le(listaComandosAltoNivel)
@@ -520,27 +523,51 @@ void comando(ListaComandosAltoNivel listaComandosAltoNivel):
 void comandoInstanciacao( ListaComandosAltoNivel listaComandosAltoNivel ):
 {}
 {
-	  atribuicao(listaComandosAltoNivel) <PV>
+	  atribuicaoChamada(listaComandosAltoNivel) <PV>
 	| declaracao(listaComandosAltoNivel)
 	| < COMENTLINHA > 
 }
 
-void atribuicao(ListaComandosAltoNivel listaComandosAltoNivel):
+void atribuicaoChamada(ListaComandosAltoNivel listaComandosAltoNivel):
 {
 	Token atrib, var;
+	LinkedList<Expressao > listaExp = new LinkedList<Expressao >();
+}
+{
+	var = <VAR>
+	{ tabela.verificaVariavelDeclarada(var.image); }
+   ( atribuicao( listaComandosAltoNivel, var ) 
+  	| chamadaProcedimentoFuncao( listaComandosAltoNivel, var ) 	
+   )
+}
+
+void chamadaProcedimentoFuncao( ListaComandosAltoNivel listaComandosAltoNivel, Token tokenAssinatura ):
+{
+  Token tokenVar;
+  LinkedList<Token> listaParametros = new LinkedList<Token>();
+  ComandoAltoNivel comando;
+}
+{
+	 <AP>  <FP>
+	 {
+		comando = new ChamadaMetodo( tokenAssinatura );
+		
+		listaComandosAltoNivel.addComando( comando );
+	 }
+}
+
+void atribuicao(ListaComandosAltoNivel listaComandosAltoNivel, Token Var ):
+{
+	Token atrib, var = Var;
 	TipoOperador tpOperador;
 	Item operando, operador;
 	ComandoAltoNivel comando = null;
 	Expressao expressao = null;
 	LinkedList<Token > listaVar = new LinkedList<Token >();
+	listaVar.add(Var);
 	LinkedList<Expressao > listaExp = new LinkedList<Expressao >();
 }
 {
-	var = <VAR>
-	{
-		tabela.verificaVariavelDeclarada(var.image);
-		listaVar.add(var);
-	}
    (     (
 	     atrib = <ATRIB> expressao = iniciaExpressao() { listaExp.add( expressao); } |
 	
@@ -605,7 +632,6 @@ void declaracao(ListaComandosAltoNivel listaComandosAltoNivel):
 	(
 		<VIRGULA> variavel = <VAR>
 		{
-			//System.out.println(variavel.image);
 			tabela.insereNaTabela(variavel, tipo);
 		}
 		(
@@ -621,7 +647,6 @@ void declaracao(ListaComandosAltoNivel listaComandosAltoNivel):
 	)* <PV>
 }
 
-//Inclusão do senao(else) como opcional apos a leitura da listaProgramaSe
 void  se(ListaComandosAltoNivel listaComandosAltoNivel):
 {
 	Token se,senao;
@@ -750,7 +775,7 @@ void para(ListaComandosAltoNivel listaComandosAltoNivel):
   	ListaComandosAltoNivel listaAtribuicaoPasso = new ListaComandosAltoNivel();
 }
 {
-  	tokenPara = <PARA> <AP> atribuicao(listaAtribuicaoInicio) <PV> expressao=iniciaExpressao() <PV> atribuicao(listaAtribuicaoPasso) <FP> programa(listaProgramaPara)< FIMPARA>
+  	tokenPara = <PARA> <AP> atribuicaoChamada(listaAtribuicaoInicio) <PV> expressao=iniciaExpressao() <PV> atribuicaoChamada(listaAtribuicaoPasso) <FP> programa(listaProgramaPara)< FIMPARA>
   	{
   	  	comando = new ComandoPara(listaAtribuicaoInicio, expressao, listaAtribuicaoPasso, listaProgramaPara, tokenPara);
   	  	AcoesSemanticas.faltaInicializacaoVariavel(expressao, tokenPara);

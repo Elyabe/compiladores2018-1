@@ -10,6 +10,15 @@ public class AcoesSemanticas {
 	
 	public static int qtdWarnings = 0;
 	
+	public static void verificarExistenciaMain()
+	{
+		String imageMain = Compilador.tokenImage[Compilador.MAIN];
+		imageMain = imageMain.substring(1, imageMain.length()-1);
+		
+		if (!Compilador.tabela.verificaSimbolo(imageMain) )
+		  	throw new ErroSemantico("Voce nao declarou a cirocracia" + imageMain );
+	}
+	
 	public static void otimizarComandosCondicionais( ListaComandosAltoNivel listaComandosAltoNivel )
 	{
 		int k;

@@ -9,7 +9,7 @@ import semantico.Simbolo;
 
 public class Tabela extends Namespace 
 {
-	private TipoDado tipoRetornoNamespace;
+	private TipoOperador tipoMetodo;
 	public HashMap<String, Namespace> tab;
 	private int marcador = 1; // armazena a ultima referencia incluida na tabela
 	
@@ -20,16 +20,15 @@ public class Tabela extends Namespace
 		this.marcador = 1;
 	}
 	
-	
 	public int getMarcador() {
 		return marcador;
 	}
 
-	public void insereSimbolo(Simbolo simbolo) {
-		this.tab.put(simbolo.getNome(), simbolo);
+	public void insereNamespace(Namespace namespace){
+		this.tab.put(namespace.getNome(), namespace);
 	}
 
-	public boolean verificaSimbolo(String chave) {
+	public boolean verificarNamespace(String chave) {
 		return this.tab.containsKey(chave);
 	}
 
@@ -37,13 +36,18 @@ public class Tabela extends Namespace
 		return this.tab.size();
 	}
 	
-	public Namespace pesquisaTabela(String chave) {
+	public Namespace pesquisarNamespaceTabela(String chave) {
 		return this.tab.get(chave);
 	}
 	
-	public Simbolo pesquisaSimboloTabela(String chave )
+	public Simbolo pesquisarSimboloTabela(String chave )
 	{
-		return (Simbolo)pesquisaTabela(chave);
+		return (Simbolo)this.tab.get(chave);
+	}
+	
+	public Tabela pesquisarTabela(String chave )
+	{
+		return (Tabela)pesquisarNamespaceTabela(chave);
 	}
 	
 	public void imprimeTabela(){
@@ -51,7 +55,7 @@ public class Tabela extends Namespace
 	}
 	
 	public TipoDado tipoVariavel(String chave) {		
-		return tab.get(chave).getTipo();
+		return ((Simbolo)tab.get(chave)).getTipo();
 	}
 	
 	public void incrementaMarcador(TipoDado tipo) {
@@ -63,7 +67,8 @@ public class Tabela extends Namespace
 		}
 	}
 	
-	public void insereNaTabela(Token variavel, TipoDado tipo) {
+	public void insereSimboloNaTabela(Token variavel, TipoDado tipo) 
+	{
 		 if(this.tab.containsKey(variavel.image) == false) {
 			  Simbolo simbolo = new Simbolo(variavel, tipo, getMarcador());
 			  simbolo.setToken(variavel);
@@ -71,11 +76,24 @@ public class Tabela extends Namespace
 		  	  
 		  	  simbolo.setReferencia(getMarcador());
 		  	  incrementaMarcador(tipo);
-		  	  insereSimbolo(simbolo);
+		  	  insereNamespace(simbolo);
 	  	  }else {
 	  		throw new ErroSemantico("Variavel "+ variavel + " Duplicada");
 	  	  }
 	 }
+	
+	public void insereNamespaceNaTabela(Token variavel, TipoOperador tipo) 
+	{
+		 if(this.tab.containsKey(variavel.image) == false) {
+			  Tabela tabela = new Tabela(variavel.image);
+
+			  tabela.setTipoMetodo(tipo);
+		  	  insereNamespace(tabela);
+	  	  }else {
+	  		throw new ErroSemantico("Variavel "+ variavel + " Duplicada");
+	  	  }
+	 }
+	
 	
 	public void verificaVariavelDeclarada(String variavel) {
 		 if(tab.containsKey(variavel) == false) {
@@ -83,15 +101,18 @@ public class Tabela extends Namespace
 		 }
 	}
 	
-	public TipoDado getTipo()
-	{
-		return this.tipoRetornoNamespace;
+	public TipoOperador getTipoMetodo(){
+		return this.tipoMetodo;
+	}
+	
+	public void setTipoMetodo( TipoOperador tipoMetodo ){
+		this.tipoMetodo = tipoMetodo;
 	}
 	
 	@Override
 	public int getReferencia( String lexema )
 	{
-		return ((Simbolo)this.pesquisaTabela(lexema)).getReferencia();
+		return ((Simbolo)this.pesquisarNamespaceTabela(lexema)).getReferencia();
 	}
 	
 	public String toString() 

@@ -23,14 +23,13 @@ public class ComandoRepeat extends ComandoAltoNivel{
 		//a nome da variavel tira a possibilidade do usuario declarar duas variaveis com o mesmo nome
 		//como o repeat eh uma funcao,nao eh possivel o usuario declarar com mesmo nome
 		
-		Compilador.tabela.insereNaTabela(variavel,TipoDado.NUMERO); //insere na tabela a variavel
+		Compilador.tabelaPrograma.insereSimboloNaTabela(variavel,TipoDado.NUMERO); //insere na tabela a variavel
 		Expressao exp = new Expressao(); 
 		Token zero = new Token(0,"0.0"); //cria um token para armazenar o numero que ira comecar a variavel
 		Item item = new Operando(TipoDado.NUMERO,TipoElemento.CTE, zero, Sinal.POS); 
 		exp.addListaExpPosFixa(item); //add lista posfixa
 		//cria o primeiro atributo para o for
-		Namespace namespace = Compilador.tabela.pesquisaTabela( variavel.image);
-		ComandoAtribuicao inicializacao = new ComandoAtribuicao((Simbolo)namespace,exp,this.token);
+		ComandoAtribuicao inicializacao = new ComandoAtribuicao(Compilador.tabelaPrograma.pesquisarSimboloTabela(variavel.image),exp,this.token);
 		
 		Operando op_var = new Operando(TipoDado.NUMERO, TipoElemento.VAR, variavel, Sinal.POS);
 		
@@ -46,7 +45,7 @@ public class ComandoRepeat extends ComandoAltoNivel{
 		exp2.addListaExpPosFixa(item2);
 		exp2.addListaExpPosFixa(new Operador(TipoOperador.SOMA, new Token(0,"+")));
 		
-		ComandoAtribuicao incremento = new ComandoAtribuicao( Compilador.tabela.pesquisaSimboloTabela(variavel.image),exp2,this.token);
+		ComandoAtribuicao incremento = new ComandoAtribuicao( Compilador.tabelaPrograma.pesquisarSimboloTabela(variavel.image),exp2,this.token);
 		
 		//lista comandos alto nivel para a inicializacao
 		ListaComandosAltoNivel inicial = new ListaComandosAltoNivel();

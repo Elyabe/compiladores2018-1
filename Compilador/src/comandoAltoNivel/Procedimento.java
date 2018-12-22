@@ -19,6 +19,7 @@ public class Procedimento extends ComandoAltoNivel
 	public Procedimento( Token token, Token nome, LinkedList<Token> listaParametros, ListaComandosAltoNivel listaCorpoProcedimento)
 	{
 		this.token = token;
+		this.namespace = token.image;
 		this.identificador = nome;
 		this.listaParametros = listaParametros;
 		this.listaCorpoProcedimento = listaCorpoProcedimento;
@@ -29,7 +30,7 @@ public class Procedimento extends ComandoAltoNivel
 	public ListaComandosPrimitivos geraListaComandosPrimitivos() 
 	{
 		ComandoPrimitivo assinaturaFuncao = new PrimitivoCabecalhoMetodo( this.getIdentificador(), this.determinarTiposParametros(), 
-																		"V", CodigoDestino.tamanhoTotalPilha, Compilador.tabela.getMarcador()+2);
+																		"V", CodigoDestino.tamanhoTotalPilha, Compilador.tabelaPrograma.pesquisarTabela( this.identificador.image ).getMarcador()+2);
 		ComandoPrimitivo retornoVazio = new PrimitivoReturn();
 		ComandoPrimitivo fimProcedimento = new PrimitivoFimMetodo();
 		
@@ -59,7 +60,7 @@ public class Procedimento extends ComandoAltoNivel
 		else 
 		{
 			for (Token param : listaParametros) 
-				 tiposParametros += TipoDado.getDescricao(Compilador.tabela.tipoVariavel( param.image ));	
+				 tiposParametros += TipoDado.getDescricao(Compilador.tabelaPrograma.pesquisarTabela(this.namespace).tipoVariavel( param.image ));	
 		}
 		
 		return tiposParametros;

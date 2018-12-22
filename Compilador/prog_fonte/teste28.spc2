@@ -1,9 +1,66 @@
 // Teste de procedimento com ambientes/namespaces diferentes
 
+procedimento hello_world()
+	numero a, x;
+	exibeln "*** procedimento hello_word() *** ";
+	exibeln "Hello, Igor";
+fim-procedimento
+
+procedimento teste_comandos_bloco()
+	numero x, t, quoc, resto;
+	palavra word <- "";
+	
+	exibeln "*** procedimento teste_comandos_blocos() *** ";
+	
+	matrix3d(z,x,y - 1 to 2 )
+		t <- x+y+z;
+		exibeln t;
+		quoc <- t/2;
+		( quoc*2 - t = 0 ) ? { word <- word & "1";} : { word <- word & "0";} 
+	fim-matrix3d
+	
+	exibeln "Resultado: " & word;
+	
+	exibeln "//Comando Para";
+	numero a;
+	para ( a <- min(0,10); a < 4; a += 1)
+		exibeln 2*a;
+	fim-para
+	
+	
+	x, y <==  ( 1 OU 0 ) XOU 0, NAO( 0 E 1 );
+	
+	exibeln "x=", x, " / y = ", y;
+	 
+	se ( x + y )
+		exibeln "ok";
+	senao
+		exibeln x + y;
+		exibeln "não ok";
+	fim-se	
+	
+	
+	( NAO 0 ) ? {exibeln "TRUE";} : {exibeln "FALSE";}
+	
+	seletor ( 2*x )
+		caso 2:
+			exibeln "Dobro";
+		fim-caso
+		caso 4:
+			exibeln "Quatro";
+		fim-caso
+	fim-seletor	
+	
+fim-procedimento
+
+// Procedimento principal
 procedimento cirocracia()
-	numero x, y, z;
+	numero t, h, z;
 	
-	x,y,z <== 0,0,1;
+	t,h,z <== 1,2**0,log(16)/log(2);
+	exibeln "***Procedimento" & " principal***";
+	exibeln 2*t, " ", 3*h, " ", 4*z;
 	
-	exibeln 2*x, " ", 3*y, " ", 4*z;
+	hello_world();
+	teste_comandos_bloco();
 fim-procedimento

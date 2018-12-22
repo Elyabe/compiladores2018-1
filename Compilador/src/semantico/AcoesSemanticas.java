@@ -10,13 +10,18 @@ public class AcoesSemanticas {
 	
 	public static int qtdWarnings = 0;
 	
-	public static void verificarExistenciaMain()
+	
+	
+	public static void verificarExistenciaMetodo( Token metodo )
 	{
-		String imageMain = Compilador.tokenImage[Compilador.MAIN];
-		imageMain = imageMain.substring(1, imageMain.length()-1);
-		
-		if (!Compilador.tabela.verificaSimbolo(imageMain) )
-		  	throw new ErroSemantico("Deeemocraticameeente! Voce nao declarou o PROCEDIMENTO " + imageMain );
+		if (!Compilador.tabelaPrograma.verificarNamespace(metodo.image) )
+		  	throw new ErroSemantico("Linha " + metodo.beginLine + ": Voce nao declarou o PROCEDIMENTO " + metodo.image );
+	}
+	
+	public static void verificarExistenciaMetodoMain()
+	{
+		if (!Compilador.tabelaPrograma.verificarNamespace(Compilador.imageMain) )
+		  	throw new ErroSemantico("Deeemocraticameeente! Voce nao declarou o PROCEDIMENTO " + Compilador.imageMain );
 	}
 	
 	public static void otimizarComandosCondicionais( ListaComandosAltoNivel listaComandosAltoNivel )
@@ -78,9 +83,9 @@ public class AcoesSemanticas {
 		}
 	}
 	
-	public static void adicionarQuebraLinha( ListaComandosAltoNivel listaExibe, Token tokenLn )
+	public static void adicionarQuebraLinha( ListaComandosAltoNivel listaExibe, String namespace, Token tokenLn )
 	{
-		Expressao expressao = new Expressao();
+		Expressao expressao = new Expressao( namespace );
 		Item stringNovaLinha = new Operando( TipoDado.PALAVRA, TipoElemento.CTE, new Token(0, "\"\\n\""), Sinal.POS  );
 		expressao.addListaExpInfixa( stringNovaLinha );
 		expressao.addListaExpPosFixa( stringNovaLinha );
@@ -93,12 +98,12 @@ public class AcoesSemanticas {
 	}
 	
 	
-	public static void gerarAtribuicoesMultiplas( ListaComandosAltoNivel listaComandosAltoNivel, LinkedList<Token> listaVar, LinkedList<Expressao> listaExp, Token atrib  )
+	public static void gerarAtribuicoesMultiplas( ListaComandosAltoNivel listaComandosAltoNivel, Tabela tabela, LinkedList<Token> listaVar, LinkedList<Expressao> listaExp, Token atrib  )
 	{
 		ComandoAltoNivel comando = null;
 		for ( int k = 0; k < listaVar.size(); k++ )
 		{
-			Namespace namespace = Compilador.tabela.pesquisaTabela( listaVar.get(k).image);
+			Namespace namespace = tabela.pesquisarNamespaceTabela( listaVar.get(k).image);
 			if ( namespace instanceof Simbolo )
 			{
 				comando = new ComandoAtribuicao( (Simbolo)namespace, listaExp.get(k), atrib);
@@ -149,7 +154,7 @@ public class AcoesSemanticas {
 		}
 	}
 	
-	public static void faltaInicializacaoVariavel (Expressao expressao, Token token) {
+	public static void faltaInicializacaoVariavel (Expressao expressao, Tabela tabela, Token token) {
 															//Tratamento, falta de inicializacao de uma variavel
 															//Percorre a lista a listaExpInfixa.
 		for(Item itemAux : expressao.getListaExpInfixa()) {
@@ -158,7 +163,7 @@ public class AcoesSemanticas {
 				Operando operandoAux = (Operando)itemAux;
 															//Verifica somente os itens que sao operando do tipo elemento VAR.
 				if(operandoAux.getTipoElemento() == TipoElemento.VAR){
-					Namespace namespace = Compilador.tabela.pesquisaTabela(operandoAux.getLexema()); 
+					Namespace namespace = tabela.pesquisarNamespaceTabela(operandoAux.getLexema()); 
 					//Consulta o simbolo, retornando seu status (True ou False).
 					if ( namespace instanceof Simbolo && !((Simbolo)namespace).getIsInicializada() )
 					{
@@ -171,10 +176,11 @@ public class AcoesSemanticas {
 		}
 	}
 	
+	//Estender AVISO DE WARNINGS para restante das namespaces
 	public static void warnings() 
 	{
 		//percorrer tabela de simbolos
-		Compilador.tabela.tab.forEach((key, value) -> {
+		Compilador.tabelaPrograma.tab.forEach((key, value) -> {
 			Simbolo simbolo;
 			if ( value instanceof Simbolo )
 			{

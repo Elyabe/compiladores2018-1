@@ -5,14 +5,14 @@ import java.util.LinkedList;
 import apoio.Config;
 import codigoDestino.*;
 import comandoPrimitivo.*;
-import parser.Compilador;
-import parser.Token;
+import parser.*;
 
 public class Expressao {
 
 	LinkedList<Item> listaExpInfixa;
 	LinkedList<Item> listaExpPosFixa;
 	private TipoDado tipoResultado;
+	private String namespace;
 	public int tam = 0;
 
 	static LinkedList<String> listaOperandoString =  new LinkedList<String>();
@@ -20,6 +20,13 @@ public class Expressao {
 //	TIPO da expressao: Tipo dos elementos que ela contem
 //	TIPO DO RESULTADO: O que ela deixa na pilha apos a aplicacao do operador, se existir
 	public Expressao() {
+		this.namespace = Compilador.imageMain;
+		this.listaExpInfixa = new LinkedList<Item>();
+		this.listaExpPosFixa = new LinkedList<Item>();
+	}
+	
+	public Expressao( String namespace ) {
+		this.namespace = namespace;
 		this.listaExpInfixa = new LinkedList<Item>();
 		this.listaExpPosFixa = new LinkedList<Item>();
 	}
@@ -89,7 +96,8 @@ public class Expressao {
 	    				switch ( operando.getTipoElemento() )
 	    				{
 	    					case VAR:
-	    						referencia = Compilador.tabela.pesquisaTabela(operando.getLexema()).getReferencia(operando.getLexema());
+	    						
+	    						referencia = Compilador.tabelaPrograma.pesquisarTabela(this.namespace).pesquisarSimboloTabela( operando.getLexema() ).getReferencia();
 	    						separador = ( referencia < 4 ) ? '_' : ' ';
 	    						codigoDestinoExpressao += "dload" + separador + referencia + "\r\n";
 	    						
@@ -114,7 +122,7 @@ public class Expressao {
 	    				switch ( operando.getTipoElemento() )
 	    				{
 	    					case VAR:
-	    						referencia = Compilador.tabela.pesquisaTabela(operando.getLexema()).getReferencia(operando.getLexema());
+	    						referencia = Compilador.tabelaPrograma.pesquisarTabela( this.namespace).pesquisarSimboloTabela(operando.getLexema()).getReferencia();
 	    						separador = ( referencia < 4 ) ? '_' : ' ';
 	    						codigoDestinoExpressao += "aload" + separador + referencia + "\r\n";
 	    						break;
@@ -161,13 +169,23 @@ public class Expressao {
 						break;
 					case OU:
 						PrimitivoLabel labelSAIDAou = new PrimitivoLabel("SAIDAou");
-	
-						codigoDestinoExpressao += "dconst_0 \r\n"	//Primeiro empilha 0 e compara com a expressao
-						+"dcmpg \r\n"								//se o resultado for igual, quer dizer que
-						+"ifeq " + labelSAIDAou.getLabel()			//a expressao eh falsa, portanto deve sair
-						+"pop2 \r\n"	
-						+"dconst_1 \r\n"							//Sendo a expressao verdadeira, basta desempilhar 
-						+ labelSAIDAou.geraCodigoDestino();			//a expressao e empilhar 1 como resultado valido
+						PrimitivoLabel labelComparaSegundo0ou = new PrimitivoLabel("ComparaSegundo0ou");
+						PrimitivoLabel labelCOLOCATRUEou = new PrimitivoLabel("COLOCATRUEou");
+						
+						codigoDestinoExpressao += "dconst_0 \r\n"	
+						+ "dcmpg \r\n"								
+						+ "ifeq " + labelComparaSegundo0ou.getLabel()	
+						+ "pop2 \r\n"
+						+ "goto " + labelCOLOCATRUEou.getLabel() 
+						+ labelComparaSegundo0ou.geraCodigoDestino()
+						+ "dconst_0 \r\n"
+						+ "dcmpg \r\n"								
+						+ "ifne " + labelCOLOCATRUEou.getLabel()	
+						+ "dconst_0 \r\n"
+						+ "goto " + labelSAIDAou.getLabel()
+						+ labelCOLOCATRUEou.geraCodigoDestino()
+						+ "dconst_1 \r\n"
+						+ labelSAIDAou.geraCodigoDestino();	
 						break;
 					case OUEXCLUSIVO:
 						PrimitivoLabel labelSAIDAouExclusivo = new PrimitivoLabel("SAIDAouExclusivo");

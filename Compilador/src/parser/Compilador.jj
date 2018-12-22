@@ -33,27 +33,30 @@ import java.util.LinkedList;
 
 
 public class Compilador {
-	public static Tabela tabela = new Tabela( Config.nomeArquivo );
+	public static Tabela tabelaPrograma = new Tabela( Config.nomeArquivo );
 	// Argumentos para o jasmin gerar automaticamente o .class na pasta saida
 	public static String arquivo[] = { "-d", Config.pathSaida, Config.pathSaida + Config.nomeArquivo + Config.extensaoCodigoDestino };
-	 
+	public static String imageMain = Compilador.tokenImage[Compilador.MAIN];
+	
 	public static void main(String args[])  throws ParseException  {
 		Compilador compilador = null;
+		imageMain = imageMain.substring(1, imageMain.length()-1);
+		
 		try {
 			// Leitura do arquivo com o codigo fonte
 			compilador = new Compilador(new FileInputStream(Config.pathProgFonte + Config.nomeArquivo + Config.extensaoFonte));
-
+			
 			// Primeira passagem
 			ListaComandosAltoNivel listaComandosAltoNivel = new ListaComandosAltoNivel();
 			Compilador.inicio(listaComandosAltoNivel);
-
+		
 			System.out.println("***** Primeira Passagem *****\n"
 								+ "Lista de Comandos Alto Nivel:\n"
 								+ listaComandosAltoNivel);
 
 			// Exibicao da tabela de simbolos
 			System.out.println("\n\n***** Tabela de Simbolos *****\n"
-								+ tabela);
+								+ tabelaPrograma );
 
 			//Warnings
 			AcoesSemanticas.warnings();
@@ -146,7 +149,7 @@ TOKEN [IGNORE_CASE] : {
 	<PROCEDIMENTO: "procedimento" > |
 	<FIMPROCEDIMENTO: "fim-procedimento" > |
 	<MAIN: "cirocracia" > |
-	<COMENTLINHA : "//" (~["\n"])* ("\n")? >  
+	<COMENTLINHA : "//" (~["\n"])* ("\n")? >   
 }
 //TOKENS DE TIPOS 
 TOKEN [IGNORE_CASE] : {
@@ -201,68 +204,68 @@ TOKEN : {
 
 //Gramatica de expressoes:
 
-Expressao iniciaExpressao():
+Expressao iniciaExpressao(Tabela tabela):
 {
-	Expressao exp = new Expressao();
+	Expressao exp = new Expressao( tabela.getNome() );
 }
 {
-	expressao(exp)
+	expressao(exp, tabela)
 	{
 	    exp.otimizarPosFixaConst1();
-        exp.otimizaPosfixa();
-        exp.otimizarNegacao();
+		exp.otimizaPosfixa();
+		exp.otimizarNegacao();
         exp.otimizarOperacoesConstantes();
 		return exp;
 	}	
 }
 
-void expressao(Expressao exp):
+void expressao(Expressao exp, Tabela tabela):
 {
 	Token t ;
 	Item item = null;
 }
 {
-	termo(exp)
+	termo(exp, tabela)
 	( ( t = <OU> { item = new Operador(TipoOperador.OU,t); } |
 	    t = < OUEXCLUSIVO > {  item = new Operador(TipoOperador.OUEXCLUSIVO,t); }
 	   ) 
 		{
 			exp.addListaExpInfixa(item);
 		}
-		termo(exp)
+		termo(exp, tabela)
 		{
 			exp.addListaExpPosFixa(item);	 	
 		}
 	)*	 	
 }
 
-void termo(Expressao exp):
+void termo(Expressao exp, Tabela tabela):
 {
 	Token t;
 	Item item = null;
 }
 {
-	termo1(exp)
+	termo1(exp, tabela)
 	(t = <E>
 		{
 			item = new Operador(TipoOperador.E,t);
 			exp.addListaExpInfixa(item);
 		}
-		termo1(exp)
+		termo1(exp, tabela)
 		{
 			exp.addListaExpPosFixa(item);
 		}
 	)* 
 }
 
-void  termo1(Expressao exp):
+void  termo1(Expressao exp, Tabela tabela):
 {
 	Token t;
 	Item item = null;
 	TipoOperador operador;
 }
 {
-	negacao(exp)
+	negacao(exp, tabela)
 	(	  
 	    (
 	         t = <IGUAL> { operador = TipoOperador.IGUAL; } 
@@ -274,7 +277,7 @@ void  termo1(Expressao exp):
 			item = new Operador(operador,t);
 			exp.addListaExpInfixa(item);
 		}
-		negacao(exp)
+		negacao(exp, tabela)
 		{
 			item = new Operador(operador,t);
 			exp.addListaExpPosFixa(item);
@@ -282,19 +285,19 @@ void  termo1(Expressao exp):
 	)?
 }
 
-void negacao( Expressao exp ) :
+void negacao( Expressao exp, Tabela tabela ) :
 {
 	Token t;
 	Item item = null;
 }
 {
-	termo2(exp) |
+	termo2(exp, tabela) |
 	(t = <NEGACAO>
 		{
 			item = new Operador(TipoOperador.NEGACAO,t);
 			exp.addListaExpInfixa(item);
 		}
-		negacao(exp)
+		negacao(exp, tabela)
 		{
 			exp.addListaExpPosFixa(item);
 		}
@@ -302,33 +305,34 @@ void negacao( Expressao exp ) :
 }
 
 
-void termo2(Expressao exp):
+void termo2(Expressao exp, Tabela tabela):
 {
 	Token t;
 	Item item = null;
 }
 {
-	termo3(exp)
+	termo3(exp, tabela)
 	( t = <CONCAT>
 		{
 			item = new Operador(TipoOperador.CONCAT,t);
 			exp.addListaExpInfixa(item);
 		}
-		termo3(exp)
+		termo3(exp, tabela)
 		{
 			item = new Operador(TipoOperador.CONCAT,t);
 			exp.addListaExpPosFixa(item);
 		}
 	)*
-} 
-void termo3(Expressao exp):
+}
+
+void termo3(Expressao exp, Tabela tabela):
 {
 	Token t;
 	TipoOperador operador;
 	Item item = null;
 }
 {
-	termo4(exp)
+	termo4(exp, tabela)
 	(
 		(
 		    t = <SOMA> {operador = TipoOperador.SOMA;} 
@@ -338,7 +342,7 @@ void termo3(Expressao exp):
 			item = new Operador(operador,t);
 			exp.addListaExpInfixa(item);
 		}
-		termo4(exp)
+		termo4(exp, tabela)
 		{
 			item = new Operador(operador,t);
 			exp.addListaExpPosFixa(item);
@@ -346,14 +350,14 @@ void termo3(Expressao exp):
 	)*
 }
 
-void termo4(Expressao exp):
+void termo4(Expressao exp, Tabela tabela):
 {
 	Token t;
 	TipoOperador operador;
 	Item item = null;
 }
 {
-	pot(exp)
+	pot(exp, tabela)
 	(
 		(
 		   t = <MUL> {operador = TipoOperador.MUL;} 
@@ -363,7 +367,7 @@ void termo4(Expressao exp):
 			item = new Operador(operador,t);
 			exp.addListaExpInfixa(item);
 		}
-		pot(exp)
+		pot(exp, tabela)
 		{
 			item = new Operador(operador,t);
 			exp.addListaExpPosFixa(item);
@@ -371,20 +375,20 @@ void termo4(Expressao exp):
 	)*
 }
 
-void pot(Expressao exp) :
+void pot(Expressao exp, Tabela tabela) :
 {
 	Token t;
 	TipoOperador operador;
 	Item item = null;}
 {
-	log(exp)
+	log(exp, tabela)
 	(
 	  t=<POT> { operador = TipoOperador.POT; }
 	  {  
 	        item = new Operador(operador, t);
             exp.addListaExpInfixa(item);
 	  } 
-	  pot(exp)
+	  pot(exp, tabela)
 	  {
 	    	item = new Operador(operador, t);
             exp.addListaExpPosFixa(item);
@@ -392,20 +396,20 @@ void pot(Expressao exp) :
 	)?
 }
 
-void log(Expressao exp) :
+void log(Expressao exp, Tabela tabela) :
 {
 	Token t;
 	TipoOperador operador;
 	Item item = null;
 }
 {
-  	termo5(exp) |
+  	termo5(exp, tabela) |
 	(
-	  t = <LOG> <AP> expressao(exp) <FP>  { operador = TipoOperador.LOG; } |
+	  t = <LOG> <AP> expressao(exp,tabela) <FP>  { operador = TipoOperador.LOG; } |
 	  (
 	    t = <MAX> { operador = TipoOperador.MAX; } |
 	    t = <MIN> { operador = TipoOperador.MIN; }
-	   ) <AP> expressao(exp) <VIRGULA> expressao(exp) <FP> 
+	   ) <AP> expressao(exp, tabela) <VIRGULA> expressao(exp, tabela) <FP> 
 	) 
   	{
         item = new Operador(operador, t);
@@ -414,7 +418,7 @@ void log(Expressao exp) :
     }
 }
 
-void termo5(Expressao exp):
+void termo5(Expressao exp, Tabela tabela):
 {
 	Token tokenVar, tokenEntrada;
 	Item item = null;
@@ -426,7 +430,7 @@ void termo5(Expressao exp):
 		item = new Operador(TipoOperador.AP, tokenEntrada);
 		exp.addListaExpInfixa(item);
 	}
-	expressao(exp)
+	expressao(exp, tabela)
 	tokenEntrada = <FP>
 	{
 		item = new Operador(TipoOperador.FP, tokenEntrada);
@@ -446,7 +450,7 @@ void termo5(Expressao exp):
 				tabela.verificaVariavelDeclarada(tokenVar.image);
 				item = new Operando(tabela.tipoVariavel(tokenVar.image),TipoElemento.VAR, tokenVar, sinal);
 				AcoesSemanticas.incompatibilidadeTipoExpressao(item,exp,tokenVar);
-				tabela.pesquisaSimboloTabela(tokenVar.image).setIsUtilizada(true);
+				tabela.pesquisarSimboloTabela(tokenVar.image).setIsUtilizada(true);
 				exp.addListaExpInfixa(item);
 				exp.addListaExpPosFixa(item);
 			}
@@ -467,7 +471,7 @@ void inicio(ListaComandosAltoNivel listaComandosAltoNivel):
 {}
 {	
 	( < COMENTLINHA > | procedimento(listaComandosAltoNivel) )*
-	{ AcoesSemanticas.verificarExistenciaMain(); }
+	{ AcoesSemanticas.verificarExistenciaMetodoMain(); }
 	<EOF>
 }
 
@@ -481,10 +485,10 @@ void procedimento( ListaComandosAltoNivel listaComandosAltoNivel ):
 }
 {
 	tokenProcedimento = <PROCEDIMENTO>
-	(tokenAssinatura = <VAR> | tokenAssinatura = <MAIN>) { Compilador.tabela.insereNaTabela( tokenAssinatura, TipoDado.PALAVRA ); }
+	(tokenAssinatura = <VAR> | tokenAssinatura = <MAIN>) { Compilador.tabelaPrograma.insereNamespaceNaTabela( tokenAssinatura, TipoOperador.PROCEDIMENTO ); }
 	<AP>
  	<FP>
-	programa(listaCorpoProcedimento) { AcoesSemanticas.otimizarComandosCondicionais( listaCorpoProcedimento ); }
+	programa(listaCorpoProcedimento, Compilador.tabelaPrograma.pesquisarTabela( tokenAssinatura.image ) ) { AcoesSemanticas.otimizarComandosCondicionais( listaCorpoProcedimento ); }
 	<FIMPROCEDIMENTO>
 	{
 		comando = new Procedimento( tokenProcedimento, tokenAssinatura, listaParametros, listaCorpoProcedimento );
@@ -493,55 +497,53 @@ void procedimento( ListaComandosAltoNivel listaComandosAltoNivel ):
 }
 
 
-void programa(ListaComandosAltoNivel listaComandosAltoNivel) :
+void programa(ListaComandosAltoNivel listaComandosAltoNivel, Tabela tabela) :
 {}
 {
-	(comando(listaComandosAltoNivel))*
+	(comando(listaComandosAltoNivel, tabela))*
 }
 
-void comando(ListaComandosAltoNivel listaComandosAltoNivel):
+void comando(ListaComandosAltoNivel listaComandosAltoNivel, Tabela tabela):
 {}
 {
 	(
-		comandoInstanciacao(listaComandosAltoNivel)
+		comandoInstanciacao(listaComandosAltoNivel, tabela)
 //	  | chamadaProcedimentoFuncao(listaComandosAltoNivel)
-	  | se(listaComandosAltoNivel)
-	  | enquanto(listaComandosAltoNivel)
-	  | le(listaComandosAltoNivel)
-	  | exibe(listaComandosAltoNivel)
-	  | para(listaComandosAltoNivel)
-	  | seletor(listaComandosAltoNivel)
-	  | fazerEnquanto(listaComandosAltoNivel)
-	  | repeat(listaComandosAltoNivel)
-	  | seRepete(listaComandosAltoNivel)
-	  | duplo(listaComandosAltoNivel)
-	  | matrix3D( listaComandosAltoNivel )
-	  | ternario( listaComandosAltoNivel ) 
+	  | se(listaComandosAltoNivel, tabela)
+	  | enquanto(listaComandosAltoNivel, tabela)
+	  | le(listaComandosAltoNivel, tabela)
+	  | exibe(listaComandosAltoNivel, tabela)
+	  | para(listaComandosAltoNivel, tabela)
+	  | seletor(listaComandosAltoNivel, tabela)
+	  | fazerEnquanto(listaComandosAltoNivel, tabela)
+	  | repeat(listaComandosAltoNivel, tabela)
+	  | seRepete(listaComandosAltoNivel, tabela)
+	  | duplo(listaComandosAltoNivel, tabela)
+	  | matrix3D( listaComandosAltoNivel, tabela)
+	  | ternario( listaComandosAltoNivel, tabela) 
 	)	
 }
 
-void comandoInstanciacao( ListaComandosAltoNivel listaComandosAltoNivel ):
+void comandoInstanciacao( ListaComandosAltoNivel listaComandosAltoNivel, Tabela tabela ):
 {}
 {
-	  atribuicaoChamada(listaComandosAltoNivel) <PV>
-	| declaracao(listaComandosAltoNivel)
+	  atribuicaoChamada(listaComandosAltoNivel, tabela) <PV>
+	| declaracao(listaComandosAltoNivel, tabela)
 	| < COMENTLINHA > 
 }
 
-void atribuicaoChamada(ListaComandosAltoNivel listaComandosAltoNivel):
+void atribuicaoChamada(ListaComandosAltoNivel listaComandosAltoNivel, Tabela tabela):
 {
 	Token atrib, var;
 	LinkedList<Expressao > listaExp = new LinkedList<Expressao >();
 }
 {
-	var = <VAR>
-	{ tabela.verificaVariavelDeclarada(var.image); }
-   ( atribuicao( listaComandosAltoNivel, var ) 
-  	| chamadaProcedimentoFuncao( listaComandosAltoNivel, var ) 	
-   )
+	var = <VAR> ( 	atribuicao( listaComandosAltoNivel, var, tabela ) 
+  					| chamadaProcedimentoFuncao( listaComandosAltoNivel, var, tabela ) 	
+   				)
 }
 
-void chamadaProcedimentoFuncao( ListaComandosAltoNivel listaComandosAltoNivel, Token tokenAssinatura ):
+void chamadaProcedimentoFuncao( ListaComandosAltoNivel listaComandosAltoNivel, Token tokenAssinatura, Tabela tabela ):
 {
   Token tokenVar;
   LinkedList<Token> listaParametros = new LinkedList<Token>();
@@ -550,13 +552,13 @@ void chamadaProcedimentoFuncao( ListaComandosAltoNivel listaComandosAltoNivel, T
 {
 	 <AP>  <FP>
 	 {
+		AcoesSemanticas.verificarExistenciaMetodo( tokenAssinatura );
 		comando = new ChamadaMetodo( tokenAssinatura );
-		
 		listaComandosAltoNivel.addComando( comando );
 	 }
 }
 
-void atribuicao(ListaComandosAltoNivel listaComandosAltoNivel, Token Var ):
+void atribuicao(ListaComandosAltoNivel listaComandosAltoNivel, Token Var, Tabela tabela ):
 {
 	Token atrib, var = Var;
 	TipoOperador tpOperador;
@@ -569,16 +571,16 @@ void atribuicao(ListaComandosAltoNivel listaComandosAltoNivel, Token Var ):
 }
 {
    (     (
-	     atrib = <ATRIB> expressao = iniciaExpressao() { listaExp.add( expressao); } |
+	     atrib = <ATRIB> expressao = iniciaExpressao(tabela) { listaExp.add( expressao); } |
 	
 	     ( < VIRGULA > var = < VAR > {  tabela.verificaVariavelDeclarada(var.image); listaVar.add(var); } )* 
 		 atrib = < ATRIBMULT >
-		               expressao = iniciaExpressao() { listaExp.add( expressao ); }
-		 ( < VIRGULA > expressao = iniciaExpressao() {  listaExp.add( expressao ); } )*
+		               expressao = iniciaExpressao(tabela) { listaExp.add( expressao ); }
+		 ( < VIRGULA > expressao = iniciaExpressao(tabela) {  listaExp.add( expressao ); } )*
    	 )
 	 {
 		 AcoesSemanticas.verificarParesAtribuicaoMultipla( listaVar, listaExp, atrib );  
-		 AcoesSemanticas.gerarAtribuicoesMultiplas( listaComandosAltoNivel, listaVar, listaExp, atrib );
+		 AcoesSemanticas.gerarAtribuicoesMultiplas( listaComandosAltoNivel, tabela, listaVar, listaExp, atrib );
 	 } |
 		
 	 ( atrib =  <SOMA> { tpOperador = TipoOperador.SOMA; } |
@@ -589,20 +591,20 @@ void atribuicao(ListaComandosAltoNivel listaComandosAltoNivel, Token Var ):
 	 {
 	   operador = new Operador( tpOperador, atrib );
        operando = new Operando( tabela.tipoVariavel(var.image), TipoElemento.VAR, var, Sinal.POS );
-       expressao = new Expressao();
+       expressao = new Expressao(tabela.getNome());
        expressao.addListaExpInfixa( operando );
        expressao.addListaExpInfixa( operador );
        expressao.addListaExpPosFixa( operando );
 	 } 
-     <IGUAL> expressao( expressao )
+     <IGUAL> expressao( expressao, tabela )
 	 {
 		expressao.addListaExpPosFixa( operador );
-		listaComandosAltoNivel.addComando( new ComandoAtribuicao( tabela.pesquisaSimboloTabela(var.image), expressao, atrib ) );
+		listaComandosAltoNivel.addComando( new ComandoAtribuicao( tabela.pesquisarSimboloTabela(var.image), expressao, atrib ) );
 	 }  	 
    )
 }
 
-void declaracao(ListaComandosAltoNivel listaComandosAltoNivel):
+void declaracao(ListaComandosAltoNivel listaComandosAltoNivel, Tabela tabela):
 {   
 	Token atrib, variavel;
 	TipoDado tipo = null;
@@ -617,37 +619,37 @@ void declaracao(ListaComandosAltoNivel listaComandosAltoNivel):
 	
 	variavel = <VAR> 
 	{
-		tabela.insereNaTabela(variavel, tipo);
+		tabela.insereSimboloNaTabela(variavel, tipo);
 	}
 	( 
-		atrib = <ATRIB> expressao=iniciaExpressao() 
+		atrib = <ATRIB> expressao=iniciaExpressao(tabela) 
 		{
-			AcoesSemanticas.incompatibilidadeTipoAtribuicao (tabela.pesquisaSimboloTabela(variavel.image), expressao, variavel);
-			comando = new ComandoAtribuicao(tabela.pesquisaSimboloTabela(variavel.image), expressao, atrib);
-			tabela.pesquisaSimboloTabela(variavel.image).setIsInicializada(true);			
-			AcoesSemanticas.faltaInicializacaoVariavel(expressao,variavel);			
+			AcoesSemanticas.incompatibilidadeTipoAtribuicao (tabela.pesquisarSimboloTabela(variavel.image), expressao, variavel);
+			comando = new ComandoAtribuicao(tabela.pesquisarSimboloTabela(variavel.image), expressao, atrib);
+			tabela.pesquisarSimboloTabela(variavel.image).setIsInicializada(true);			
+			AcoesSemanticas.faltaInicializacaoVariavel(expressao,tabela, variavel);			
 			listaComandosAltoNivel.addComando(comando);
 		}
 	)?
 	(
 		<VIRGULA> variavel = <VAR>
 		{
-			tabela.insereNaTabela(variavel, tipo);
+			tabela.insereSimboloNaTabela(variavel, tipo);
 		}
 		(
-			atrib = <ATRIB> expressao=iniciaExpressao()
+			atrib = <ATRIB> expressao=iniciaExpressao(tabela)
 			{
-				AcoesSemanticas.incompatibilidadeTipoAtribuicao (tabela.pesquisaSimboloTabela(variavel.image), expressao, variavel);
-				comando = new ComandoAtribuicao(tabela.pesquisaSimboloTabela(variavel.image), expressao, atrib);
-				tabela.pesquisaSimboloTabela(variavel.image).setIsInicializada(true);
-				AcoesSemanticas.faltaInicializacaoVariavel(expressao,variavel);
+				AcoesSemanticas.incompatibilidadeTipoAtribuicao (tabela.pesquisarSimboloTabela(variavel.image), expressao, variavel);
+				comando = new ComandoAtribuicao(tabela.pesquisarSimboloTabela(variavel.image), expressao, atrib);
+				tabela.pesquisarSimboloTabela(variavel.image).setIsInicializada(true);
+				AcoesSemanticas.faltaInicializacaoVariavel(expressao,tabela,variavel);
 				listaComandosAltoNivel.addComando(comando);
 			}
 		)?
 	)* <PV>
 }
 
-void  se(ListaComandosAltoNivel listaComandosAltoNivel):
+void  se(ListaComandosAltoNivel listaComandosAltoNivel, Tabela tabela):
 {
 	Token se,senao;
 	ListaComandosAltoNivel listaProgramaSe =  new ListaComandosAltoNivel();	
@@ -656,13 +658,13 @@ void  se(ListaComandosAltoNivel listaComandosAltoNivel):
 	ComandoAltoNivel  comando = null;
 }
 {
-	se = <SE> <AP> expressao = iniciaExpressao() <FP> programa(listaProgramaSe)
+	se = <SE> <AP> expressao = iniciaExpressao(tabela) <FP> programa(listaProgramaSe, tabela)
 	{
 		comando = new ComandoCondicionalSimples(expressao, listaProgramaSe, se);
-		AcoesSemanticas.faltaInicializacaoVariavel(expressao,se);
+		AcoesSemanticas.faltaInicializacaoVariavel(expressao,tabela,se);
 	}  
 	(
-	  senao = <SENAO> programa(listaProgramaSenao)
+	  senao = <SENAO> programa(listaProgramaSenao, tabela)
 	  {
 	    comando = new ComandoCondicionalCompleto(expressao, listaProgramaSe, listaProgramaSenao, se);
 	  }
@@ -673,7 +675,7 @@ void  se(ListaComandosAltoNivel listaComandosAltoNivel):
 	}	
 }
 
-void  fazerEnquanto(ListaComandosAltoNivel listaComandosAltoNivel):
+void  fazerEnquanto(ListaComandosAltoNivel listaComandosAltoNivel, Tabela tabela):
 {
 	Token fazer;
 	ListaComandosAltoNivel listaProgramaFazerEnquanto = new ListaComandosAltoNivel();
@@ -681,15 +683,15 @@ void  fazerEnquanto(ListaComandosAltoNivel listaComandosAltoNivel):
 	ComandoAltoNivel comando = null;
 }
 {
-	fazer = <FACA>programa(listaProgramaFazerEnquanto)<FAZERENQUANTO><AP>expressao = iniciaExpressao()<FP>< PV>
+	fazer = <FACA>programa(listaProgramaFazerEnquanto, tabela)<FAZERENQUANTO><AP>expressao = iniciaExpressao(tabela)<FP>< PV>
 	{
 		comando = new ComandoFazerEnquanto(expressao, listaProgramaFazerEnquanto, fazer);
-		AcoesSemanticas.faltaInicializacaoVariavel(expressao, fazer);
+		AcoesSemanticas.faltaInicializacaoVariavel(expressao,tabela, fazer);
 		listaComandosAltoNivel.addComando(comando);
 	}
 }
 
-void  enquanto(ListaComandosAltoNivel listaComandosAltoNivel):
+void  enquanto(ListaComandosAltoNivel listaComandosAltoNivel, Tabela tabela):
 {
 	Token enq;
 	ListaComandosAltoNivel listaProgramaEnquanto = new ListaComandosAltoNivel();
@@ -697,16 +699,16 @@ void  enquanto(ListaComandosAltoNivel listaComandosAltoNivel):
 	ComandoAltoNivel comando = null;
 }
 {
-	enq = <ENQUANTO> <AP> expressao = iniciaExpressao() <FP> programa(listaProgramaEnquanto)
+	enq = <ENQUANTO> <AP> expressao = iniciaExpressao(tabela) <FP> programa(listaProgramaEnquanto, tabela)
 	{
 		comando = new ComandoEnquanto(expressao, listaProgramaEnquanto, enq);
-		AcoesSemanticas.faltaInicializacaoVariavel(expressao,enq);
+		AcoesSemanticas.faltaInicializacaoVariavel(expressao,tabela,enq);
 		listaComandosAltoNivel.addComando(comando);  
 	}
 	<FIMENQUANTO>
 }
  
-void le(ListaComandosAltoNivel listaComandosAltoNivel):
+void le(ListaComandosAltoNivel listaComandosAltoNivel, Tabela tabela):
 {
 	Token le, t;
 	ComandoAltoNivel comando = null;
@@ -715,7 +717,7 @@ void le(ListaComandosAltoNivel listaComandosAltoNivel):
 	  (   le = <LEITURA> |
 		  le = <LEITURACOMPLETA> t = <STRING> <VIRGULA> 
 		  {
-			Expressao expressao = new Expressao();
+			Expressao expressao = new Expressao(tabela.getNome());
 			Item string = new Operando( TipoDado.PALAVRA, TipoElemento.CTE, t, Sinal.POS );
 			expressao.addListaExpInfixa( string );
 			expressao.addListaExpPosFixa( string );
@@ -725,21 +727,21 @@ void le(ListaComandosAltoNivel listaComandosAltoNivel):
 	  )
 	t = <VAR>
 	{
-		comando = new ComandoEntrada(tabela.pesquisaSimboloTabela(t.image), le);
-		tabela.pesquisaSimboloTabela(t.image).setIsInicializada(true);
-		tabela.pesquisaSimboloTabela(t.image).setIsUtilizada(true);
+		comando = new ComandoEntrada(tabela.pesquisarSimboloTabela(t.image), le);
+		tabela.pesquisarSimboloTabela(t.image).setIsInicializada(true);
+		tabela.pesquisarSimboloTabela(t.image).setIsUtilizada(true);
 		listaComandosAltoNivel.addComando(comando);  
 	}
 	( <VIRGULA> t = <VAR>
 		{
-			comando = new ComandoEntrada(tabela.pesquisaSimboloTabela(t.image), le);
-			tabela.pesquisaSimboloTabela(t.image).setIsInicializada(true);
+			comando = new ComandoEntrada(tabela.pesquisarSimboloTabela(t.image), le);
+			tabela.pesquisarSimboloTabela(t.image).setIsInicializada(true);
 			listaComandosAltoNivel.addComando(comando);		
 		}
 	)* <PV>
 }
  
-void exibe(ListaComandosAltoNivel listaExibe):
+void exibe(ListaComandosAltoNivel listaExibe, Tabela tabela):
 {
 	Token exibe;
 	boolean novaLinha = false;
@@ -747,25 +749,25 @@ void exibe(ListaComandosAltoNivel listaExibe):
 	ComandoSaida comando = null;
 }
 {
-	( exibe = <EXIBE> | exibe = <EXIBELN> { novaLinha = true; })  expressao = iniciaExpressao()
+	( exibe = <EXIBE> | exibe = <EXIBELN> { novaLinha = true; })  expressao = iniciaExpressao(tabela)
 	{
 		comando = new ComandoSaida(expressao, exibe);
-		AcoesSemanticas.faltaInicializacaoVariavel(expressao,exibe);
+		AcoesSemanticas.faltaInicializacaoVariavel(expressao,tabela,exibe);
 		listaExibe.addComando(comando); 
 	}
-	( <VIRGULA> expressao = iniciaExpressao()
+	( <VIRGULA> expressao = iniciaExpressao(tabela)
 		{
 			comando = new ComandoSaida(expressao, exibe);
-			AcoesSemanticas.faltaInicializacaoVariavel(expressao,exibe);
+			AcoesSemanticas.faltaInicializacaoVariavel(expressao,tabela,exibe);
 			listaExibe.addComando(comando);   
 		}
 	)* <PV>
 	{
-		if ( novaLinha ) AcoesSemanticas.adicionarQuebraLinha( listaExibe, exibe );
+		if ( novaLinha ) AcoesSemanticas.adicionarQuebraLinha( listaExibe, tabela.getNome(), exibe );
 	}
 }
 
-void para(ListaComandosAltoNivel listaComandosAltoNivel):
+void para(ListaComandosAltoNivel listaComandosAltoNivel, Tabela tabela):
 {
   	Token tokenPara;
   	ListaComandosAltoNivel listaProgramaPara = new ListaComandosAltoNivel();
@@ -775,15 +777,19 @@ void para(ListaComandosAltoNivel listaComandosAltoNivel):
   	ListaComandosAltoNivel listaAtribuicaoPasso = new ListaComandosAltoNivel();
 }
 {
-  	tokenPara = <PARA> <AP> atribuicaoChamada(listaAtribuicaoInicio) <PV> expressao=iniciaExpressao() <PV> atribuicaoChamada(listaAtribuicaoPasso) <FP> programa(listaProgramaPara)< FIMPARA>
+  	tokenPara = <PARA> <AP> atribuicaoChamada(listaAtribuicaoInicio, tabela) <PV>
+  										 expressao=iniciaExpressao( tabela ) <PV>
+  										 atribuicaoChamada(listaAtribuicaoPasso, tabela)
+  					   <FP> programa(listaProgramaPara, tabela)
+  			   <FIMPARA>
   	{
   	  	comando = new ComandoPara(listaAtribuicaoInicio, expressao, listaAtribuicaoPasso, listaProgramaPara, tokenPara);
-  	  	AcoesSemanticas.faltaInicializacaoVariavel(expressao, tokenPara);
+  	  	AcoesSemanticas.faltaInicializacaoVariavel(expressao,tabela, tokenPara);
   	  	listaComandosAltoNivel.addComando(comando);
  	}
 }
 
-void seletor(ListaComandosAltoNivel listaComandosAltoNivel):
+void seletor(ListaComandosAltoNivel listaComandosAltoNivel, Tabela tabela):
 {
   	Token tokenSeletor, tokenEntrada;
   	Item itemCaso = null;
@@ -795,14 +801,14 @@ void seletor(ListaComandosAltoNivel listaComandosAltoNivel):
   	
 }
 {
- 	tokenSeletor = <SELETOR> <AP> expressaoSeletor = iniciaExpressao() <FP>
+ 	tokenSeletor = <SELETOR> <AP> expressaoSeletor = iniciaExpressao(tabela) <FP>
  	(<CASO>
  	(
  	   	tokenEntrada = <NUM> {itemCaso = new Operando(TipoDado.NUMERO,TipoElemento.CTE, tokenEntrada, Sinal.POS);}
 		|<SOMA> tokenEntrada = <NUM> {itemCaso = new Operando(TipoDado.NUMERO,TipoElemento.CTE, tokenEntrada, Sinal.POS);}
 		|<SUB> tokenEntrada = <NUM> {itemCaso = new Operando(TipoDado.NUMERO,TipoElemento.CTE, tokenEntrada, Sinal.NEG);}
 	)
- 	<DP> programa(listaPrograma)
+ 	<DP> programa(listaPrograma, tabela)
  	{
  	  listaComandosAltoNivelCasos.add(listaPrograma);
  	  listaOpcaoCasos.add(itemCaso);
@@ -812,13 +818,13 @@ void seletor(ListaComandosAltoNivel listaComandosAltoNivel):
  	<FIMCASO>)+
  	{
  	  comando = new ComandoSeletor(expressaoSeletor, listaComandosAltoNivelCasos, listaOpcaoCasos, token);
- 	  AcoesSemanticas.faltaInicializacaoVariavel(expressaoSeletor, tokenSeletor);
+ 	  AcoesSemanticas.faltaInicializacaoVariavel(expressaoSeletor,tabela, tokenSeletor);
   	  listaComandosAltoNivel.addComando(comando);
  	}
  	<FIMSELETOR> 	 
 }
 
-void repeat(ListaComandosAltoNivel listaComandosAltoNivel):
+void repeat(ListaComandosAltoNivel listaComandosAltoNivel, Tabela tabela):
 {
   	Token tokenRepeat, tokenNumero;
   	ListaComandosAltoNivel listaProgramaRepeat = new ListaComandosAltoNivel();
@@ -831,7 +837,7 @@ void repeat(ListaComandosAltoNivel listaComandosAltoNivel):
   {
       item = new Operando(TipoDado.NUMERO,TipoElemento.CTE, tokenNumero, Sinal.POS);
   }
-  <FP> programa(listaProgramaRepeat)< FIMREPEAT>
+  <FP> programa(listaProgramaRepeat, tabela)< FIMREPEAT>
   {
       comando = new ComandoRepeat(listaProgramaRepeat, tokenRepeat, item);
   	  listaComandosAltoNivel.addComando(comando);
@@ -839,7 +845,7 @@ void repeat(ListaComandosAltoNivel listaComandosAltoNivel):
 }
 
 
-void  seRepete(ListaComandosAltoNivel listaComandosAltoNivel):
+void  seRepete(ListaComandosAltoNivel listaComandosAltoNivel, Tabela tabela):
 {
 	Token se_repete, token_repete_n;
 	Expressao exp = null;
@@ -848,27 +854,26 @@ void  seRepete(ListaComandosAltoNivel listaComandosAltoNivel):
 	ComandoAltoNivel comando = null;
 }
 {  	
-	se_repete = <SEREPETE> <AP> exp = iniciaExpressao() <VIRGULA>  token_repete_n = <NUM> {
-	  
+	se_repete = <SEREPETE> <AP> exp = iniciaExpressao(tabela) <VIRGULA>  token_repete_n = <NUM>
+	{
 		item = new Operando(TipoDado.NUMERO,TipoElemento.CTE, token_repete_n, Sinal.POS);
-		
-	} <FP> programa(lista_escopo_SeRepete)
+	} <FP> programa(lista_escopo_SeRepete, tabela)
 	{	  	
 		comando = new ComandoSeRepete(exp, token_repete_n, item, lista_escopo_SeRepete);
-		AcoesSemanticas.faltaInicializacaoVariavel(exp, se_repete);
+		AcoesSemanticas.faltaInicializacaoVariavel(exp, tabela, se_repete);
 		listaComandosAltoNivel.addComando(comando);  
 	}
 	<FIMSEREPETE>
 }
 
-void duplo(ListaComandosAltoNivel listaComandosAltoNivel):
+void duplo(ListaComandosAltoNivel listaComandosAltoNivel, Tabela tabela):
 {
 	Token tokenDuplo;
 	ListaComandosAltoNivel listaProgramaDuplo = new ListaComandosAltoNivel();
 	ComandoAltoNivel comando = null;
 }
 {
-  	tokenDuplo = <DUPLO> programa(listaProgramaDuplo) 
+  	tokenDuplo = <DUPLO> programa(listaProgramaDuplo, tabela) 
   	{
     	comando = new ComandoDuplo(listaProgramaDuplo, tokenDuplo);
 		listaComandosAltoNivel.addComando(comando);
@@ -877,32 +882,32 @@ void duplo(ListaComandosAltoNivel listaComandosAltoNivel):
 }
 
 // Tarefa 18
-void matrix3D(ListaComandosAltoNivel listaMatrix3D ):
+void matrix3D(ListaComandosAltoNivel listaMatrix3D, Tabela tabela ):
 {
   	Token tokenMatrix3D, tokenVarDimX, tokenVarDimY, tokenVarDimZ, tokenCteInit, tokenCteLimSup;
   	ComandoAltoNivel comandoMatrix3D = null;
   	Item cteInicializacao = null;
 	Item cteLimiteSuperior = null;
-	Expressao expInicializacao = new Expressao();
-	Expressao expCondicaoParada = new Expressao();
+	Expressao expInicializacao = new Expressao(tabela.getNome());
+	Expressao expCondicaoParada = new Expressao(tabela.getNome());
   	ListaComandosAltoNivel blocoComandosMatrix = new ListaComandosAltoNivel();
 }
 {
 	tokenMatrix3D = <MATRIX3D> <AP>
 				tokenVarDimX = <VAR>
 				{
-				  if ( !tabela.verificaSimbolo( tokenVarDimX.image ) ) tabela.insereNaTabela( tokenVarDimX, TipoDado.NUMERO );
-				  tabela.pesquisaSimboloTabela( tokenVarDimX.image ).setIsInicializada(true);
+				  if ( !tabela.verificarNamespace( tokenVarDimX.image ) ) tabela.insereSimboloNaTabela( tokenVarDimX, TipoDado.NUMERO );
+				  tabela.pesquisarSimboloTabela( tokenVarDimX.image ).setIsInicializada(true);
 				} <VIRGULA>
 				tokenVarDimY = <VAR>
 				{
-				  if ( !tabela.verificaSimbolo( tokenVarDimY.image ) ) tabela.insereNaTabela( tokenVarDimY, TipoDado.NUMERO );
-				  tabela.pesquisaSimboloTabela( tokenVarDimY.image ).setIsInicializada(true);
+				  if ( !tabela.verificarNamespace( tokenVarDimY.image ) ) tabela.insereSimboloNaTabela( tokenVarDimY, TipoDado.NUMERO );
+				  tabela.pesquisarSimboloTabela( tokenVarDimY.image ).setIsInicializada(true);
 				} <VIRGULA>
 				tokenVarDimZ = <VAR>
 				{
-				  if ( !tabela.verificaSimbolo( tokenVarDimZ.image ) ) tabela.insereNaTabela( tokenVarDimZ, TipoDado.NUMERO );
-				  tabela.pesquisaSimboloTabela( tokenVarDimZ.image ).setIsInicializada(true);
+				  if ( !tabela.verificarNamespace( tokenVarDimZ.image ) ) tabela.insereSimboloNaTabela( tokenVarDimZ, TipoDado.NUMERO );
+				  tabela.pesquisarSimboloTabela( tokenVarDimZ.image ).setIsInicializada(true);
 				} <SUB>
 				tokenCteInit = <NUM>
 				{
@@ -915,14 +920,14 @@ void matrix3D(ListaComandosAltoNivel listaMatrix3D ):
 				  cteLimiteSuperior = new Operando( TipoDado.NUMERO, TipoElemento.CTE, tokenCteLimSup, Sinal.POS );
 				  expCondicaoParada.addListaExpInfixa( cteLimiteSuperior );
 				  expCondicaoParada.addListaExpPosFixa( cteLimiteSuperior );
-				} <FP> programa( blocoComandosMatrix ) <FIMMATRIX3D>
+				} <FP> programa( blocoComandosMatrix, tabela ) <FIMMATRIX3D>
 				{
-					comandoMatrix3D = new ComandoMatrix3D( tokenMatrix3D, tokenVarDimX, tokenVarDimY, tokenVarDimZ, expInicializacao, expCondicaoParada, blocoComandosMatrix );
+					comandoMatrix3D = new ComandoMatrix3D( tabela.getNome(), tokenMatrix3D, tokenVarDimX, tokenVarDimY, tokenVarDimZ, expInicializacao, expCondicaoParada, blocoComandosMatrix );
 					listaMatrix3D.addComando( comandoMatrix3D );
 				}
 }
 
-void ternario( ListaComandosAltoNivel listaTernario ):
+void ternario( ListaComandosAltoNivel listaTernario , Tabela tabela):
 {
 	Token tokenTernario;
 	Expressao expressao;
@@ -931,9 +936,9 @@ void ternario( ListaComandosAltoNivel listaTernario ):
 	ComandoAltoNivel comandoCondicionalCompleto;
 }
 {
-  	<AP> expressao = iniciaExpressao() <FP> tokenTernario = <TERNARIO>
-  	<AC> programa(listaTernarioTrue) <FC> <DP>
-  	<AC> programa(listaTernarioFalse) <FC>
+  	<AP> expressao = iniciaExpressao(tabela) <FP> tokenTernario = <TERNARIO>
+  	<AC> programa(listaTernarioTrue, tabela) <FC> <DP>
+  	<AC> programa(listaTernarioFalse, tabela) <FC>
   	{
 		comandoCondicionalCompleto = new ComandoCondicionalCompleto( expressao, listaTernarioTrue, listaTernarioFalse, tokenTernario );
 		listaTernario.addComando( comandoCondicionalCompleto );

@@ -109,12 +109,6 @@ public class Tabela extends Namespace
 		this.tipoMetodo = tipoMetodo;
 	}
 	
-	@Override
-	public int getReferencia( String lexema )
-	{
-		return ((Simbolo)this.pesquisarNamespaceTabela(lexema)).getReferencia();
-	}
-	
 	public String toString() 
 	{
 		return this.tab.toString();

@@ -170,6 +170,8 @@ TOKEN : {
 	< DIV: "/" > |
 	< POT : "**" >|
 	< LOG: "log" > |
+	< PISO: "piso" > |
+	< TETO: "teto" > |
 	< OU: "OU" > |
 	< OUEXCLUSIVO: "XOU" > |
 	< NEGACAO : "NAO" > |
@@ -405,7 +407,11 @@ void log(Expressao exp, Tabela tabela) :
 {
   	termo5(exp, tabela) |
 	(
-	  t = <LOG> <AP> expressao(exp,tabela) <FP>  { operador = TipoOperador.LOG; } |
+	  ( t = <LOG> { operador = TipoOperador.LOG; }  |
+	  	t = <PISO> { operador = TipoOperador.PISO; } |
+	  	t = <TETO> { operador = TipoOperador.TETO; }
+	   ) 
+	  	<AP> expressao(exp,tabela) <FP>  |
 	  (
 	    t = <MAX> { operador = TipoOperador.MAX; } |
 	    t = <MIN> { operador = TipoOperador.MIN; }

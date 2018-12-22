@@ -167,6 +167,12 @@ public class Expressao {
 					case MIN:
 						codigoDestinoExpressao += "invokestatic java/lang/Double/min(DD)D \r\n";
 						break;
+					case PISO:
+						codigoDestinoExpressao += "invokestatic java/lang/Math/floor(D)D \r\n";
+						break;
+					case TETO:
+						codigoDestinoExpressao += "invokestatic java/lang/Math/ceil(DD)D \r\n";
+						break;
 					case OU:
 						PrimitivoLabel labelSAIDAou = new PrimitivoLabel("SAIDAou");
 						PrimitivoLabel labelComparaSegundo0ou = new PrimitivoLabel("ComparaSegundo0ou");

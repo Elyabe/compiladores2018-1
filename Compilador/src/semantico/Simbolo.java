@@ -5,7 +5,6 @@ import parser.Token;
 public class Simbolo extends Namespace
 {
 	
-//	private String nome;      // nome do identificador
 	private TipoDado tipo;    // representa os tipos usados na linguagem
 	private int referencia;   //referencia usada na geracao do codigo destino
 	private Token token;
@@ -56,11 +55,6 @@ public class Simbolo extends Namespace
 		return referencia;
 	}
 	
-	public int getReferencia(String lexema)
-	{
-		return this.referencia;
-	}
-
 	public void setReferencia(int marcador) {
 		this.referencia = marcador;
 	}

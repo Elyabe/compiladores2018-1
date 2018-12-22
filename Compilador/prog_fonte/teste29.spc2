@@ -1,0 +1,33 @@
+// Teste das funcoes piso e teto
+// Autor: Elyabe Alves 
+
+// Le um numero inteiro e exibe a conversao em binario
+procedimento conversaoDecimalBinario()
+	numero num , quociente;
+	palavra binario <- "";
+	lecompleto "Informe o numero que deseja converter para binario: ", num;
+	
+	// O numero eh no minimo 2
+	enquanto ( num >= 2 )
+		quociente <- piso(num/2);
+		
+		// Calcula o resto e com base nisso define se o digito eh 0 ou 1
+		( num - quociente*2) ? {binario <- "1" & binario;} : { binario <- "0" & binario;}
+		
+		// Atualiza o valor a ser convertido
+		num <- quociente;
+		
+		exibeln num;
+	fim-enquanto
+	
+	// Converte ultimo digito
+	( num ) ? {binario <- "1" & binario;} : { binario <- "0" & binario;}
+	
+	exibeln "Numero em binario: " & binario;
+fim-procedimento
+
+
+//PROCEDIMENTO PRINCIPAL
+procedimento cirocracia()
+	conversaoDecimalBinario();
+fim-procedimento

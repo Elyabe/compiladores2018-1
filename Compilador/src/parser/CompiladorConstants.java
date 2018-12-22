@@ -95,53 +95,57 @@ public interface CompiladorConstants {
   /** RegularExpression Id. */
   int LOG = 49;
   /** RegularExpression Id. */
-  int OU = 50;
+  int PISO = 50;
   /** RegularExpression Id. */
-  int OUEXCLUSIVO = 51;
+  int TETO = 51;
   /** RegularExpression Id. */
-  int NEGACAO = 52;
+  int OU = 52;
   /** RegularExpression Id. */
-  int E = 53;
+  int OUEXCLUSIVO = 53;
   /** RegularExpression Id. */
-  int ATRIB = 54;
+  int NEGACAO = 54;
   /** RegularExpression Id. */
-  int ATRIBMULT = 55;
+  int E = 55;
   /** RegularExpression Id. */
-  int IGUAL = 56;
+  int ATRIB = 56;
   /** RegularExpression Id. */
-  int DIFERENTE = 57;
+  int ATRIBMULT = 57;
   /** RegularExpression Id. */
-  int CONCAT = 58;
+  int IGUAL = 58;
   /** RegularExpression Id. */
-  int MENOR = 59;
+  int DIFERENTE = 59;
   /** RegularExpression Id. */
-  int MAIORIGUAL = 60;
+  int CONCAT = 60;
   /** RegularExpression Id. */
-  int TO = 61;
+  int MENOR = 61;
   /** RegularExpression Id. */
-  int EXIBELN = 62;
+  int MAIORIGUAL = 62;
   /** RegularExpression Id. */
-  int TERNARIO = 63;
+  int TO = 63;
   /** RegularExpression Id. */
-  int CHAR = 64;
+  int EXIBELN = 64;
   /** RegularExpression Id. */
-  int AP = 65;
+  int TERNARIO = 65;
   /** RegularExpression Id. */
-  int FP = 66;
+  int CHAR = 66;
   /** RegularExpression Id. */
-  int AC = 67;
+  int AP = 67;
   /** RegularExpression Id. */
-  int FC = 68;
+  int FP = 68;
   /** RegularExpression Id. */
-  int PV = 69;
+  int AC = 69;
   /** RegularExpression Id. */
-  int DP = 70;
+  int FC = 70;
   /** RegularExpression Id. */
-  int VIRGULA = 71;
+  int PV = 71;
   /** RegularExpression Id. */
-  int STRING = 72;
+  int DP = 72;
   /** RegularExpression Id. */
-  int VAR = 73;
+  int VIRGULA = 73;
+  /** RegularExpression Id. */
+  int STRING = 74;
+  /** RegularExpression Id. */
+  int VAR = 75;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -200,6 +204,8 @@ public interface CompiladorConstants {
     "\"/\"",
     "\"**\"",
     "\"log\"",
+    "\"piso\"",
+    "\"teto\"",
     "\"OU\"",
     "\"XOU\"",
     "\"NAO\"",

@@ -19,6 +19,8 @@ public enum TipoOperador
 	MAIORIGUAL,
 	MAX,
 	MIN,
+	PISO,
+	TETO,
 	PROCEDIMENTO,
 	AP,
 	FP;

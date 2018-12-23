@@ -1,0 +1,34 @@
+// Testes de procedimentos com parametros
+// Autor : Elyabe Alves
+
+procedimento boasVindas( palavra nome )
+	exibeln "Bem vindo(a), " & nome & "!";
+fim-procedimento
+
+procedimento verificarPermissaoXVideos( numero idade, palavra nome )
+	se ( idade >= 18 )
+		exibeln "Permitido, safadão!";
+		boasVindas( nome );
+	senao 
+		exibeln "Oh oh, volte e veja Dora Aventureira, " & nome & "!";
+	fim-se
+fim-procedimento
+
+procedimento testaMultiplosParametros( numero a, b, palavra p1, p2 )
+	exibeln "A media aritmetica eh ", (a+b)/2;
+	exibeln p1 & p2; 
+fim-procedimento
+
+// PROCEDIMENTO PRINCIPAL
+procedimento cirocracia( palavra s, numero x )
+	palavra nome;
+	numero idade;
+	
+	lecompleto "Informe seu nome: ", nome;
+	lecompleto "Informe sua idade: ", idade;
+	 	
+	verificarPermissaoXVideos( idade, nome );
+	
+	testaMultiplosParametros( 12, 8, "Testa", " Parametros" );
+	
+fim-procedimento

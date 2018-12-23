@@ -22,6 +22,9 @@ public class AcoesSemanticas {
 	{
 		if (!Compilador.tabelaPrograma.verificarNamespace(Compilador.imageMain) )
 		  	throw new ErroSemantico("Deeemocraticameeente! Voce nao declarou o PROCEDIMENTO " + Compilador.imageMain );
+			
+		/*if ( Compilador.tabelaPrograma.pesquisarTabela( Compilador.imageMain ).getMarcador() > 1 )
+			throw new ErroSintatico( "O PROCEDIMENTO " + Compilador.imageMain + " **** ");*/
 	}
 	
 	public static void otimizarComandosCondicionais( ListaComandosAltoNivel listaComandosAltoNivel )
@@ -103,6 +106,7 @@ public class AcoesSemanticas {
 		ComandoAltoNivel comando = null;
 		for ( int k = 0; k < listaVar.size(); k++ )
 		{
+			tabela.verificaVariavelDeclarada( listaVar.get(k).image );
 			Namespace namespace = tabela.pesquisarNamespaceTabela( listaVar.get(k).image);
 			if ( namespace instanceof Simbolo )
 			{

@@ -493,6 +493,23 @@ void procedimento( ListaComandosAltoNivel listaComandosAltoNivel ):
 	tokenProcedimento = <PROCEDIMENTO>
 	(tokenAssinatura = <VAR> | tokenAssinatura = <MAIN>) { Compilador.tabelaPrograma.insereNamespaceNaTabela( tokenAssinatura, TipoOperador.PROCEDIMENTO ); }
 	<AP>
+	( ( <PALAVRA> { tipoParam =  TipoDado.PALAVRA; }  |  <NUMERO> { tipoParam =  TipoDado.NUMERO; } )
+    	tokenVar = <VAR>
+    	{
+    	  Compilador.tabelaPrograma.pesquisarTabela( tokenAssinatura.image ).insereSimboloNaTabela( tokenVar, tipoParam);
+    	  Compilador.tabelaPrograma.pesquisarTabela( tokenAssinatura.image ).pesquisarSimboloTabela( tokenVar.image ).setIsInicializada(true);
+    	  listaParametros.add( tokenVar );
+    	}
+	  (
+	       <VIRGULA> ( <PALAVRA> { tipoParam =  TipoDado.PALAVRA; } | <NUMERO> { tipoParam =  TipoDado.NUMERO; } )?
+	      tokenVar = <VAR>
+	      {
+	        Compilador.tabelaPrograma.pesquisarTabela( tokenAssinatura.image ).insereSimboloNaTabela( tokenVar, tipoParam);
+	        Compilador.tabelaPrograma.pesquisarTabela( tokenAssinatura.image ).pesquisarSimboloTabela( tokenVar.image ).setIsInicializada(true);
+	        listaParametros.add( tokenVar );
+	      }
+	  )*
+ 	)?
  	<FP>
 	programa(listaCorpoProcedimento, Compilador.tabelaPrograma.pesquisarTabela( tokenAssinatura.image ) ) { AcoesSemanticas.otimizarComandosCondicionais( listaCorpoProcedimento ); }
 	<FIMPROCEDIMENTO>
@@ -552,14 +569,18 @@ void atribuicaoChamada(ListaComandosAltoNivel listaComandosAltoNivel, Tabela tab
 void chamadaProcedimentoFuncao( ListaComandosAltoNivel listaComandosAltoNivel, Token tokenAssinatura, Tabela tabela ):
 {
   Token tokenVar;
-  LinkedList<Token> listaParametros = new LinkedList<Token>();
+  LinkedList<Expressao> listaParametros = new LinkedList<Expressao>();
   ComandoAltoNivel comando;
+  Expressao expressaoParam;
 }
 {
-	 <AP>  <FP>
+	 <AP> ( expressaoParam = iniciaExpressao( tabela ) { listaParametros.add( expressaoParam ); }
+				( <VIRGULA> expressaoParam = iniciaExpressao( tabela ) { listaParametros.add( expressaoParam ); } )*
+		   )?
+	 <FP>
 	 {
 		AcoesSemanticas.verificarExistenciaMetodo( tokenAssinatura );
-		comando = new ChamadaMetodo( tokenAssinatura );
+		comando = new ChamadaMetodo( tokenAssinatura, listaParametros );
 		listaComandosAltoNivel.addComando( comando );
 	 }
 }

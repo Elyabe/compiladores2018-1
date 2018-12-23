@@ -2,6 +2,7 @@ package semantico;
 
 import java.util.HashMap;
 
+import parser.Compilador;
 import parser.Token;
 import tratamentoErro.*;
 
@@ -17,7 +18,7 @@ public class Tabela extends Namespace
 	{
 		this.nome = nome;
 		this.tab = new HashMap<String, Namespace>();
-		this.marcador = 1;
+		this.marcador = ( this.nome == Compilador.imageMain ) ? 1:0 ;
 	}
 	
 	public int getMarcador() {

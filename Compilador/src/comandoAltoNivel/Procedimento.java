@@ -19,7 +19,7 @@ public class Procedimento extends ComandoAltoNivel
 	public Procedimento( Token token, Token nome, LinkedList<Token> listaParametros, ListaComandosAltoNivel listaCorpoProcedimento)
 	{
 		this.token = token;
-		this.namespace = token.image;
+		this.namespace = nome.image;
 		this.identificador = nome;
 		this.listaParametros = listaParametros;
 		this.listaCorpoProcedimento = listaCorpoProcedimento;

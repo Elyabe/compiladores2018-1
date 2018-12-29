@@ -36,7 +36,7 @@ public class ComandoSeletor extends ComandoAltoNivel{
 			//Entao foi criado uma expressao para poder compara-las 
 			
 			Item itemIgual = new Operador(TipoOperador.IGUAL, null);
-			Expressao expressaoCaso = new Expressao();
+			Expressao expressaoCaso = new Expressao( this.expressao.getNamespace() );
 			expressaoCaso.addListaExpPosFixa(itemOpcaoCasos.get(i));
 			expressaoCaso.addListaExpPosFixa(itemIgual);	
 			

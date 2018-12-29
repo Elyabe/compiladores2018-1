@@ -4,37 +4,47 @@ import semantico.TipoDado;
 
 public class PrimitivoReturn extends ComandoPrimitivo
 {
+	private String codigoDestinoExpressao;
 	private String tipoRetorno;
+	
 	
 	public PrimitivoReturn( TipoDado tipoRetorno )
 	{
-		switch (tipoRetorno ) 
-		{
-			case NUMERO:
-				this.tipoRetorno = "d";
-				break;
-			case PALAVRA:
-				this.tipoRetorno = "a";
-				break;
-		}
+		this.tipoRetorno = TipoDado.determinarPrefixoRetorno( tipoRetorno );
+		this.codigoDestinoExpressao = new String();
+	}
+	
+	public PrimitivoReturn( TipoDado tipoRetorno, String codigoDestExpressao )
+	{
+		this.tipoRetorno = TipoDado.determinarPrefixoRetorno( tipoRetorno );
+		this.codigoDestinoExpressao = codigoDestExpressao;
 	}
 	
 	public PrimitivoReturn() 
 	{
-		this.tipoRetorno = "";
+		this.tipoRetorno = new String();
+		this.codigoDestinoExpressao = new String();
 	}
 
 	@Override
 	public String geraCodigoDestino() 
 	{
-		return this.tipoRetorno + "return \r\n";
+		return  this.codigoDestinoExpressao 
+				+ this.tipoRetorno 
+				+ "return \r\n";
 	}
 
 	@Override
 	public String toString() 
 	{
-		return this.geraCodigoDestino();
+		return "[" 
+				+ this.codigoDestinoExpressao 
+				+ "/"
+				+ this.tipoRetorno 
+				+ "] \r\n";
 	}
+	
+	
 	
 	
 }

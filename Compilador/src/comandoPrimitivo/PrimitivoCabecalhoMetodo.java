@@ -27,8 +27,8 @@ public class PrimitivoCabecalhoMetodo extends ComandoPrimitivo
 				+ this.identificador 
 				+ "(" + this.tipoParametros + ")"
 				+ this.tipoRetorno + "\r\n"
-				+ ".limit stack " + (CodigoDestino.tamanhoTotalPilha + 2) + " \r\n" 
-				+ ".limit locals " + (this.quantidadeVariaveisLocais + 2) + " \r\n";
+				+ ".limit stack " + this.tamanhoMaximoPilha + " \r\n" 
+				+ ".limit locals " + this.quantidadeVariaveisLocais + " \r\n";
 	}
 
 	@Override

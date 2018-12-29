@@ -67,85 +67,87 @@ public interface CompiladorConstants {
   /** RegularExpression Id. */
   int FIMFUNCAO = 35;
   /** RegularExpression Id. */
-  int PROCEDIMENTO = 36;
+  int RETORNE = 36;
   /** RegularExpression Id. */
-  int FIMPROCEDIMENTO = 37;
+  int PROCEDIMENTO = 37;
   /** RegularExpression Id. */
-  int MAIN = 38;
+  int FIMPROCEDIMENTO = 38;
   /** RegularExpression Id. */
-  int COMENTLINHA = 39;
+  int MAIN = 39;
   /** RegularExpression Id. */
-  int NUMERO = 40;
+  int COMENTLINHA = 40;
   /** RegularExpression Id. */
-  int PALAVRA = 41;
+  int NUMERO = 41;
   /** RegularExpression Id. */
-  int DIGIT = 42;
+  int PALAVRA = 42;
   /** RegularExpression Id. */
-  int NUM = 43;
+  int DIGIT = 43;
   /** RegularExpression Id. */
-  int SOMA = 44;
+  int NUM = 44;
   /** RegularExpression Id. */
-  int SUB = 45;
+  int SOMA = 45;
   /** RegularExpression Id. */
-  int MUL = 46;
+  int SUB = 46;
   /** RegularExpression Id. */
-  int DIV = 47;
+  int MUL = 47;
   /** RegularExpression Id. */
-  int POT = 48;
+  int DIV = 48;
   /** RegularExpression Id. */
-  int LOG = 49;
+  int POT = 49;
   /** RegularExpression Id. */
-  int PISO = 50;
+  int LOG = 50;
   /** RegularExpression Id. */
-  int TETO = 51;
+  int PISO = 51;
   /** RegularExpression Id. */
-  int OU = 52;
+  int TETO = 52;
   /** RegularExpression Id. */
-  int OUEXCLUSIVO = 53;
+  int OU = 53;
   /** RegularExpression Id. */
-  int NEGACAO = 54;
+  int OUEXCLUSIVO = 54;
   /** RegularExpression Id. */
-  int E = 55;
+  int NEGACAO = 55;
   /** RegularExpression Id. */
-  int ATRIB = 56;
+  int E = 56;
   /** RegularExpression Id. */
-  int ATRIBMULT = 57;
+  int ATRIB = 57;
   /** RegularExpression Id. */
-  int IGUAL = 58;
+  int ATRIBMULT = 58;
   /** RegularExpression Id. */
-  int DIFERENTE = 59;
+  int IGUAL = 59;
   /** RegularExpression Id. */
-  int CONCAT = 60;
+  int DIFERENTE = 60;
   /** RegularExpression Id. */
-  int MENOR = 61;
+  int CONCAT = 61;
   /** RegularExpression Id. */
-  int MAIORIGUAL = 62;
+  int MENOR = 62;
   /** RegularExpression Id. */
-  int TO = 63;
+  int MAIORIGUAL = 63;
   /** RegularExpression Id. */
-  int EXIBELN = 64;
+  int TO = 64;
   /** RegularExpression Id. */
-  int TERNARIO = 65;
+  int EXIBELN = 65;
   /** RegularExpression Id. */
-  int CHAR = 66;
+  int TERNARIO = 66;
   /** RegularExpression Id. */
-  int AP = 67;
+  int CHAR = 67;
   /** RegularExpression Id. */
-  int FP = 68;
+  int AP = 68;
   /** RegularExpression Id. */
-  int AC = 69;
+  int FP = 69;
   /** RegularExpression Id. */
-  int FC = 70;
+  int AC = 70;
   /** RegularExpression Id. */
-  int PV = 71;
+  int FC = 71;
   /** RegularExpression Id. */
-  int DP = 72;
+  int PV = 72;
   /** RegularExpression Id. */
-  int VIRGULA = 73;
+  int DP = 73;
   /** RegularExpression Id. */
-  int STRING = 74;
+  int VIRGULA = 74;
   /** RegularExpression Id. */
-  int VAR = 75;
+  int STRING = 75;
+  /** RegularExpression Id. */
+  int VAR = 76;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -190,6 +192,7 @@ public interface CompiladorConstants {
     "\"min\"",
     "\"funcao\"",
     "\"fim-funcao\"",
+    "\"retorne\"",
     "\"procedimento\"",
     "\"fim-procedimento\"",
     "\"cirocracia\"",

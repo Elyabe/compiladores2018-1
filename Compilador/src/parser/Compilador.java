@@ -96,7 +96,7 @@ public class Compilador implements CompiladorConstants {
             exp.otimizarPosFixaConst1();
                 exp.otimizaPosfixa();
                 exp.otimizarNegacao();
-        exp.otimizarOperacoesConstantes();
+//        exp.otimizarOperacoesConstantes();
                 {if (true) return exp;}
     throw new Error("Missing return statement in function");
   }
@@ -439,6 +439,8 @@ public class Compilador implements CompiladorConstants {
         Token tokenVar, tokenEntrada;
         Item item = null;
         Sinal sinal = Sinal.POS;
+        LinkedList<Expressao> listaParam = new LinkedList<Expressao>();
+        Expressao expParam;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case AP:
       tokenEntrada = jj_consume_token(AP);
@@ -485,15 +487,42 @@ public class Compilador implements CompiladorConstants {
         break;
       case VAR:
         tokenVar = jj_consume_token(VAR);
-                                tabela.verificaVariavelDeclarada(tokenVar.image);
-                                item = new Operando(tabela.tipoVariavel(tokenVar.image),TipoElemento.VAR, tokenVar, sinal);
-                                AcoesSemanticas.incompatibilidadeTipoExpressao(item,exp,tokenVar);
-                                tabela.pesquisarSimboloTabela(tokenVar.image).setIsUtilizada(true);
-                                exp.addListaExpInfixa(item);
-                                exp.addListaExpPosFixa(item);
+                                              item = new Operando(tabela.tipoVariavel(tokenVar.image),TipoElemento.VAR, tokenVar, sinal);
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case AP:
+          jj_consume_token(AP);
+          expParam = iniciaExpressao(tabela);
+                                                                       listaParam.add( expParam );
+          label_6:
+          while (true) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+            case VIRGULA:
+              ;
+              break;
+            default:
+              jj_la1[18] = jj_gen;
+              break label_6;
+            }
+            jj_consume_token(VIRGULA);
+            expParam = iniciaExpressao(tabela);
+                                                                                       listaParam.add( expParam );
+          }
+          jj_consume_token(FP);
+                                          item = new ChamadaFuncao( TipoOperador.FUNCAO, tokenVar, tokenVar, listaParam );
+                                          //tabela.pesquisarSimboloTabela(tokenVar.image).setIsUtilizada(true);
+
+          break;
+        default:
+          jj_la1[19] = jj_gen;
+          ;
+        }
+//					tabela.verificaVariavelDeclarada(tokenVar.image);
+//					AcoesSemanticas.incompatibilidadeTipoExpressao(item,exp,tokenVar);
+                                        exp.addListaExpInfixa(item);
+                                        exp.addListaExpPosFixa(item);
         break;
       default:
-        jj_la1[18] = jj_gen;
+        jj_la1[20] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -506,7 +535,7 @@ public class Compilador implements CompiladorConstants {
                 exp.addListaExpPosFixa(item);
       break;
     default:
-      jj_la1[19] = jj_gen;
+      jj_la1[21] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -514,16 +543,17 @@ public class Compilador implements CompiladorConstants {
 
 //GRAMATICA COMPLETA
   static final public void inicio(ListaComandosAltoNivel listaComandosAltoNivel) throws ParseException {
-    label_6:
+    label_7:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case FUNCAO:
       case PROCEDIMENTO:
       case COMENTLINHA:
         ;
         break;
       default:
-        jj_la1[20] = jj_gen;
-        break label_6;
+        jj_la1[22] = jj_gen;
+        break label_7;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case COMENTLINHA:
@@ -532,8 +562,11 @@ public class Compilador implements CompiladorConstants {
       case PROCEDIMENTO:
         procedimento(listaComandosAltoNivel);
         break;
+      case FUNCAO:
+        funcao(listaComandosAltoNivel);
+        break;
       default:
-        jj_la1[21] = jj_gen;
+        jj_la1[23] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -557,7 +590,7 @@ public class Compilador implements CompiladorConstants {
       tokenAssinatura = jj_consume_token(MAIN);
       break;
     default:
-      jj_la1[22] = jj_gen;
+      jj_la1[24] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -576,7 +609,7 @@ public class Compilador implements CompiladorConstants {
                                                                         tipoParam =  TipoDado.NUMERO;
         break;
       default:
-        jj_la1[23] = jj_gen;
+        jj_la1[25] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -584,15 +617,15 @@ public class Compilador implements CompiladorConstants {
           Compilador.tabelaPrograma.pesquisarTabela( tokenAssinatura.image ).insereSimboloNaTabela( tokenVar, tipoParam);
           Compilador.tabelaPrograma.pesquisarTabela( tokenAssinatura.image ).pesquisarSimboloTabela( tokenVar.image ).setIsInicializada(true);
           listaParametros.add( tokenVar );
-      label_7:
+      label_8:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case VIRGULA:
           ;
           break;
         default:
-          jj_la1[24] = jj_gen;
-          break label_7;
+          jj_la1[26] = jj_gen;
+          break label_8;
         }
         jj_consume_token(VIRGULA);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -608,13 +641,13 @@ public class Compilador implements CompiladorConstants {
                                                                                      tipoParam =  TipoDado.NUMERO;
             break;
           default:
-            jj_la1[25] = jj_gen;
+            jj_la1[27] = jj_gen;
             jj_consume_token(-1);
             throw new ParseException();
           }
           break;
         default:
-          jj_la1[26] = jj_gen;
+          jj_la1[28] = jj_gen;
           ;
         }
         tokenVar = jj_consume_token(VAR);
@@ -624,7 +657,7 @@ public class Compilador implements CompiladorConstants {
       }
       break;
     default:
-      jj_la1[27] = jj_gen;
+      jj_la1[29] = jj_gen;
       ;
     }
     jj_consume_token(FP);
@@ -635,8 +668,116 @@ public class Compilador implements CompiladorConstants {
                 listaComandosAltoNivel.addComando( comando );
   }
 
+  static final public void funcao(ListaComandosAltoNivel listaComandosAltoNivel) throws ParseException {
+  Token tokenFuncao, tokenAssinatura, tokenVar;
+  LinkedList<Token> listaParametros = new LinkedList<Token>();
+  TipoDado tipoParam, tipoRetorno;
+  ComandoAltoNivel comando;
+  ListaComandosAltoNivel listaCorpoProcedimento = new ListaComandosAltoNivel();
+    tokenFuncao = jj_consume_token(FUNCAO);
+    tokenAssinatura = jj_consume_token(VAR);
+                                  Compilador.tabelaPrograma.insereNamespaceNaTabela( tokenAssinatura, TipoOperador.FUNCAO );
+    jj_consume_token(AP);
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case NUMERO:
+    case PALAVRA:
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case PALAVRA:
+        jj_consume_token(PALAVRA);
+                        tipoParam =  TipoDado.PALAVRA;
+        break;
+      case NUMERO:
+        jj_consume_token(NUMERO);
+                                                                        tipoParam =  TipoDado.NUMERO;
+        break;
+      default:
+        jj_la1[30] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      tokenVar = jj_consume_token(VAR);
+          Compilador.tabelaPrograma.pesquisarTabela( tokenAssinatura.image ).insereSimboloNaTabela( tokenVar, tipoParam);
+          Compilador.tabelaPrograma.pesquisarTabela( tokenAssinatura.image ).pesquisarSimboloTabela( tokenVar.image ).setIsInicializada(true);
+          listaParametros.add( tokenVar );
+      label_9:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case VIRGULA:
+          ;
+          break;
+        default:
+          jj_la1[31] = jj_gen;
+          break label_9;
+        }
+        jj_consume_token(VIRGULA);
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case NUMERO:
+        case PALAVRA:
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          case PALAVRA:
+            jj_consume_token(PALAVRA);
+                                       tipoParam =  TipoDado.PALAVRA;
+            break;
+          case NUMERO:
+            jj_consume_token(NUMERO);
+                                                                                     tipoParam =  TipoDado.NUMERO;
+            break;
+          default:
+            jj_la1[32] = jj_gen;
+            jj_consume_token(-1);
+            throw new ParseException();
+          }
+          break;
+        default:
+          jj_la1[33] = jj_gen;
+          ;
+        }
+        tokenVar = jj_consume_token(VAR);
+                Compilador.tabelaPrograma.pesquisarTabela( tokenAssinatura.image ).insereSimboloNaTabela( tokenVar, tipoParam);
+                Compilador.tabelaPrograma.pesquisarTabela( tokenAssinatura.image ).pesquisarSimboloTabela( tokenVar.image ).setIsInicializada(true);
+                listaParametros.add( tokenVar );
+      }
+      break;
+    default:
+      jj_la1[34] = jj_gen;
+      ;
+    }
+    jj_consume_token(FP);
+    jj_consume_token(DP);
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case NUMERO:
+      jj_consume_token(NUMERO);
+                               tipoRetorno = TipoDado.NUMERO;
+      break;
+    case PALAVRA:
+      jj_consume_token(PALAVRA);
+                                                                              tipoRetorno = TipoDado.PALAVRA;
+      break;
+    default:
+      jj_la1[35] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+                Compilador.tabelaPrograma.pesquisarTabela( tokenAssinatura.image ).setTipoRetorno( tipoRetorno );
+    programa(listaCorpoProcedimento, Compilador.tabelaPrograma.pesquisarTabela( tokenAssinatura.image ));
+                                                                                                                AcoesSemanticas.otimizarComandosCondicionais( listaCorpoProcedimento );
+    jj_consume_token(FIMFUNCAO);
+                comando = new Funcao( tokenFuncao, tokenAssinatura, listaParametros, listaCorpoProcedimento, tipoRetorno );
+                listaComandosAltoNivel.addComando( comando );
+  }
+
+  static final public void retorne(ListaComandosAltoNivel listaComandosAltoNivel, Tabela tabela) throws ParseException {
+  Token tokenRetorne;
+  Expressao expressao;
+  ComandoAltoNivel comandoRetorne;
+    tokenRetorne = jj_consume_token(RETORNE);
+    expressao = iniciaExpressao(tabela);
+                comandoRetorne = new ComandoRetorne( tokenRetorne, expressao );
+                listaComandosAltoNivel.addComando( comandoRetorne );
+  }
+
   static final public void programa(ListaComandosAltoNivel listaComandosAltoNivel, Tabela tabela) throws ParseException {
-    label_8:
+    label_10:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case EXIBE:
@@ -651,6 +792,7 @@ public class Compilador implements CompiladorConstants {
       case SEREPETE:
       case DUPLO:
       case MATRIX3D:
+      case RETORNE:
       case COMENTLINHA:
       case NUMERO:
       case PALAVRA:
@@ -660,8 +802,8 @@ public class Compilador implements CompiladorConstants {
         ;
         break;
       default:
-        jj_la1[28] = jj_gen;
-        break label_8;
+        jj_la1[36] = jj_gen;
+        break label_10;
       }
       comando(listaComandosAltoNivel, tabela);
     }
@@ -713,8 +855,12 @@ public class Compilador implements CompiladorConstants {
     case AP:
       ternario(listaComandosAltoNivel, tabela);
       break;
+    case RETORNE:
+      retorne(listaComandosAltoNivel, tabela);
+      jj_consume_token(PV);
+      break;
     default:
-      jj_la1[29] = jj_gen;
+      jj_la1[37] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -734,7 +880,7 @@ public class Compilador implements CompiladorConstants {
       jj_consume_token(COMENTLINHA);
       break;
     default:
-      jj_la1[30] = jj_gen;
+      jj_la1[38] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -758,7 +904,7 @@ public class Compilador implements CompiladorConstants {
       chamadaProcedimentoFuncao(listaComandosAltoNivel, var, tabela);
       break;
     default:
-      jj_la1[31] = jj_gen;
+      jj_la1[39] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -785,15 +931,15 @@ public class Compilador implements CompiladorConstants {
     case VAR:
       expressaoParam = iniciaExpressao(tabela);
                                                              listaParametros.add( expressaoParam );
-      label_9:
+      label_11:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case VIRGULA:
           ;
           break;
         default:
-          jj_la1[32] = jj_gen;
-          break label_9;
+          jj_la1[40] = jj_gen;
+          break label_11;
         }
         jj_consume_token(VIRGULA);
         expressaoParam = iniciaExpressao(tabela);
@@ -801,7 +947,7 @@ public class Compilador implements CompiladorConstants {
       }
       break;
     default:
-      jj_la1[33] = jj_gen;
+      jj_la1[41] = jj_gen;
       ;
     }
     jj_consume_token(FP);
@@ -814,7 +960,7 @@ public class Compilador implements CompiladorConstants {
         Token atrib, var = Var;
         TipoOperador tpOperador;
         Item operando, operador;
-        ComandoAltoNivel comando = null;
+//	ComandoAltoNivel comando = null;
         Expressao expressao = null;
         LinkedList<Token > listaVar = new LinkedList<Token >();
         listaVar.add(Var);
@@ -831,15 +977,15 @@ public class Compilador implements CompiladorConstants {
         break;
       case ATRIBMULT:
       case VIRGULA:
-        label_10:
+        label_12:
         while (true) {
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case VIRGULA:
             ;
             break;
           default:
-            jj_la1[34] = jj_gen;
-            break label_10;
+            jj_la1[42] = jj_gen;
+            break label_12;
           }
           jj_consume_token(VIRGULA);
           var = jj_consume_token(VAR);
@@ -848,15 +994,15 @@ public class Compilador implements CompiladorConstants {
         atrib = jj_consume_token(ATRIBMULT);
         expressao = iniciaExpressao(tabela);
                                                                      listaExp.add( expressao );
-        label_11:
+        label_13:
         while (true) {
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case VIRGULA:
             ;
             break;
           default:
-            jj_la1[35] = jj_gen;
-            break label_11;
+            jj_la1[43] = jj_gen;
+            break label_13;
           }
           jj_consume_token(VIRGULA);
           expressao = iniciaExpressao(tabela);
@@ -864,7 +1010,7 @@ public class Compilador implements CompiladorConstants {
         }
         break;
       default:
-        jj_la1[36] = jj_gen;
+        jj_la1[44] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -893,7 +1039,7 @@ public class Compilador implements CompiladorConstants {
                            tpOperador = TipoOperador.DIV;
         break;
       default:
-        jj_la1[37] = jj_gen;
+        jj_la1[45] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -909,7 +1055,7 @@ public class Compilador implements CompiladorConstants {
                 listaComandosAltoNivel.addComando( new ComandoAtribuicao( tabela.pesquisarSimboloTabela(var.image), expressao, atrib ) );
       break;
     default:
-      jj_la1[38] = jj_gen;
+      jj_la1[46] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -930,7 +1076,7 @@ public class Compilador implements CompiladorConstants {
                        tipo = TipoDado.PALAVRA;
       break;
     default:
-      jj_la1[39] = jj_gen;
+      jj_la1[47] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -947,18 +1093,18 @@ public class Compilador implements CompiladorConstants {
                         listaComandosAltoNivel.addComando(comando);
       break;
     default:
-      jj_la1[40] = jj_gen;
+      jj_la1[48] = jj_gen;
       ;
     }
-    label_12:
+    label_14:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case VIRGULA:
         ;
         break;
       default:
-        jj_la1[41] = jj_gen;
-        break label_12;
+        jj_la1[49] = jj_gen;
+        break label_14;
       }
       jj_consume_token(VIRGULA);
       variavel = jj_consume_token(VAR);
@@ -974,7 +1120,7 @@ public class Compilador implements CompiladorConstants {
                                 listaComandosAltoNivel.addComando(comando);
         break;
       default:
-        jj_la1[42] = jj_gen;
+        jj_la1[50] = jj_gen;
         ;
       }
     }
@@ -1001,7 +1147,7 @@ public class Compilador implements CompiladorConstants {
             comando = new ComandoCondicionalCompleto(expressao, listaProgramaSe, listaProgramaSenao, se);
       break;
     default:
-      jj_la1[43] = jj_gen;
+      jj_la1[51] = jj_gen;
       ;
     }
     jj_consume_token(FIMSE);
@@ -1060,7 +1206,7 @@ public class Compilador implements CompiladorConstants {
                     listaComandosAltoNivel.addComando( comando );
       break;
     default:
-      jj_la1[44] = jj_gen;
+      jj_la1[52] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1069,15 +1215,15 @@ public class Compilador implements CompiladorConstants {
                 tabela.pesquisarSimboloTabela(t.image).setIsInicializada(true);
                 tabela.pesquisarSimboloTabela(t.image).setIsUtilizada(true);
                 listaComandosAltoNivel.addComando(comando);
-    label_13:
+    label_15:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case VIRGULA:
         ;
         break;
       default:
-        jj_la1[45] = jj_gen;
-        break label_13;
+        jj_la1[53] = jj_gen;
+        break label_15;
       }
       jj_consume_token(VIRGULA);
       t = jj_consume_token(VAR);
@@ -1102,7 +1248,7 @@ public class Compilador implements CompiladorConstants {
                                                 novaLinha = true;
       break;
     default:
-      jj_la1[46] = jj_gen;
+      jj_la1[54] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1110,15 +1256,15 @@ public class Compilador implements CompiladorConstants {
                 comando = new ComandoSaida(expressao, exibe);
                 AcoesSemanticas.faltaInicializacaoVariavel(expressao,tabela,exibe);
                 listaExibe.addComando(comando);
-    label_14:
+    label_16:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case VIRGULA:
         ;
         break;
       default:
-        jj_la1[47] = jj_gen;
-        break label_14;
+        jj_la1[55] = jj_gen;
+        break label_16;
       }
       jj_consume_token(VIRGULA);
       expressao = iniciaExpressao(tabela);
@@ -1164,7 +1310,7 @@ public class Compilador implements CompiladorConstants {
     jj_consume_token(AP);
     expressaoSeletor = iniciaExpressao(tabela);
     jj_consume_token(FP);
-    label_15:
+    label_17:
     while (true) {
       jj_consume_token(CASO);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1183,7 +1329,7 @@ public class Compilador implements CompiladorConstants {
                                              itemCaso = new Operando(TipoDado.NUMERO,TipoElemento.CTE, tokenEntrada, Sinal.NEG);
         break;
       default:
-        jj_la1[48] = jj_gen;
+        jj_la1[56] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1198,8 +1344,8 @@ public class Compilador implements CompiladorConstants {
         ;
         break;
       default:
-        jj_la1[49] = jj_gen;
-        break label_15;
+        jj_la1[57] = jj_gen;
+        break label_17;
       }
     }
           comando = new ComandoSeletor(expressaoSeletor, listaComandosAltoNivelCasos, listaOpcaoCasos, token);
@@ -1325,7 +1471,7 @@ public class Compilador implements CompiladorConstants {
   static public Token jj_nt;
   static private int jj_ntk;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[50];
+  static final private int[] jj_la1 = new int[58];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
@@ -1335,13 +1481,13 @@ public class Compilador implements CompiladorConstants {
       jj_la1_init_2();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x55454f00,0x55454f00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000,0x600,0x0,0x100,0x0,0x0,0x100000,};
+      jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x55454f00,0x55454f00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000,0x600,0x0,0x100,0x0,0x0,0x100000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x300000,0x300000,0x800000,0x6c000000,0x6c000000,0x4e3803,0x10000000,0x3000,0x3000,0xc000,0xc000,0x10000,0xe0000,0x3,0xe0003,0xe3803,0x3000,0x3000,0x800,0x3800,0x90,0x90,0x40,0x300,0x0,0x300,0x300,0x300,0x380,0x380,0x380,0x300f000,0x0,0x4e3803,0x0,0x0,0x3000000,0xf000,0x300f000,0x300,0x1000000,0x0,0x1000000,0x0,0x0,0x0,0x0,0x0,0x3800,0x0,};
+      jj_la1_1 = new int[] {0x600000,0x600000,0x1000000,0xd8000000,0xd8000000,0x9c7003,0x20000000,0x6000,0x6000,0x18000,0x18000,0x20000,0x1c0000,0x3,0x1c0003,0x1c7003,0x6000,0x6000,0x0,0x0,0x1000,0x7000,0x124,0x124,0x80,0x600,0x0,0x600,0x600,0x600,0x600,0x0,0x600,0x600,0x600,0x600,0x710,0x710,0x700,0x601e000,0x0,0x9c7003,0x0,0x0,0x6000000,0x1e000,0x601e000,0x600,0x2000000,0x0,0x2000000,0x0,0x0,0x0,0x0,0x0,0x7000,0x0,};
    }
    private static void jj_la1_init_2() {
-      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0xc08,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc08,0x0,0x0,0x800,0xc08,0x0,0x0,0x800,0x0,0x200,0x0,0x0,0x0,0x809,0x809,0x800,0x208,0x200,0xc08,0x200,0x200,0x200,0x0,0x200,0x0,0x0,0x200,0x0,0x0,0x0,0x200,0x1,0x200,0x0,0x0,};
+      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x1810,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1810,0x0,0x0,0x400,0x10,0x1000,0x1810,0x0,0x0,0x1000,0x0,0x400,0x0,0x0,0x0,0x0,0x400,0x0,0x0,0x0,0x0,0x1012,0x1012,0x1000,0x410,0x400,0x1810,0x400,0x400,0x400,0x0,0x400,0x0,0x0,0x400,0x0,0x0,0x0,0x400,0x2,0x400,0x0,0x0,};
    }
 
   /** Constructor with InputStream. */
@@ -1362,7 +1508,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 50; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 58; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -1376,7 +1522,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 50; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 58; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -1393,7 +1539,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 50; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 58; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -1403,7 +1549,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 50; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 58; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -1419,7 +1565,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 50; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 58; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -1428,7 +1574,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 50; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 58; i++) jj_la1[i] = -1;
   }
 
   static private Token jj_consume_token(int kind) throws ParseException {
@@ -1479,12 +1625,12 @@ public class Compilador implements CompiladorConstants {
   /** Generate ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[76];
+    boolean[] la1tokens = new boolean[77];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 50; i++) {
+    for (int i = 0; i < 58; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -1499,7 +1645,7 @@ public class Compilador implements CompiladorConstants {
         }
       }
     }
-    for (int i = 0; i < 76; i++) {
+    for (int i = 0; i < 77; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

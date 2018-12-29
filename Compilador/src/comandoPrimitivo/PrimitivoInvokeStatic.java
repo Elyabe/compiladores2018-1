@@ -1,20 +1,21 @@
 package comandoPrimitivo;
 
 import apoio.*;
+import parser.Compilador;
 import semantico.*;
 
 public class PrimitivoInvokeStatic extends ComandoPrimitivo 
 {
 	private String nomeMetodo;
-	private TipoOperador tipoMetodo;
+	private TipoDado tipoRetorno;
 	private String expressaoParam;
 	private String tiposParametros;
 	
 	
-	public PrimitivoInvokeStatic( String metodo, TipoOperador tipoMetodo, String expressaoParam, String tiposParam ) 
+	public PrimitivoInvokeStatic( String metodo, TipoDado tipoRetorno, String expressaoParam, String tiposParam ) 
 	{
 		this.nomeMetodo = metodo;
-		this.tipoMetodo = tipoMetodo;
+		this.tipoRetorno = tipoRetorno;
 		this.expressaoParam = expressaoParam;
 		this.tiposParametros = tiposParam;
 	}
@@ -22,7 +23,6 @@ public class PrimitivoInvokeStatic extends ComandoPrimitivo
 	public PrimitivoInvokeStatic( String metodo, String expressaoParam, String tiposParam  ) 
 	{
 		this.nomeMetodo = metodo;
-		this.tipoMetodo = TipoOperador.PROCEDIMENTO;
 		this.expressaoParam = expressaoParam;
 		this.tiposParametros = tiposParam;
 	}
@@ -35,7 +35,7 @@ public class PrimitivoInvokeStatic extends ComandoPrimitivo
 				+ Config.nomeArquivo + "." 
 				+ this.nomeMetodo
 				+ "(" +  this.tiposParametros   +")"
-				+ TipoDado.getDescricao(this.tipoMetodo) + "\n";
+				+ TipoDado.getDescricao( Compilador.tabelaPrograma.pesquisarTabela(this.nomeMetodo).getTipoMetodo(), this.tipoRetorno ) + "\n";
 	}
 
 	@Override

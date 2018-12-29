@@ -11,14 +11,24 @@ import semantico.Simbolo;
 public class Tabela extends Namespace 
 {
 	private TipoOperador tipoMetodo;
+	private TipoDado tipoRetorno;
 	public HashMap<String, Namespace> tab;
 	private int marcador = 1; // armazena a ultima referencia incluida na tabela
+	
+	public Tabela( String nome, TipoOperador tipo )
+	{
+		this.nome = nome;
+		this.tab = new HashMap<String, Namespace>();
+		this.marcador = ( this.nome == Compilador.imageMain ) ? 1:0 ;
+		this.tipoMetodo = tipo;
+	}
 	
 	public Tabela( String nome )
 	{
 		this.nome = nome;
 		this.tab = new HashMap<String, Namespace>();
 		this.marcador = ( this.nome == Compilador.imageMain ) ? 1:0 ;
+		this.tipoMetodo = TipoOperador.PROCEDIMENTO;
 	}
 	
 	public int getMarcador() {
@@ -56,7 +66,15 @@ public class Tabela extends Namespace
 	}
 	
 	public TipoDado tipoVariavel(String chave) {		
-		return ((Simbolo)tab.get(chave)).getTipo();
+		Namespace namespace = this.tab.get(chave);
+		TipoDado tipo = null;
+		
+		if ( namespace instanceof Simbolo )
+			tipo = ((Simbolo)namespace).getTipo();
+		else if ( namespace instanceof Tabela )
+			tipo = ((Tabela)namespace).getTipoRetorno();
+		
+		return tipo;
 	}
 	
 	public void incrementaMarcador(TipoDado tipo) {
@@ -95,7 +113,6 @@ public class Tabela extends Namespace
 	  	  }
 	 }
 	
-	
 	public void verificaVariavelDeclarada(String variavel) {
 		 if(tab.containsKey(variavel) == false) {
 		  	  	throw new ErroSemantico ("Variavel "+ variavel + " nao declarada");
@@ -108,6 +125,16 @@ public class Tabela extends Namespace
 	
 	public void setTipoMetodo( TipoOperador tipoMetodo ){
 		this.tipoMetodo = tipoMetodo;
+	}
+	
+	public void setTipoRetorno( TipoDado tipoRetorno )
+	{
+		this.tipoRetorno = tipoRetorno;
+	}
+	
+	public TipoDado getTipoRetorno()
+	{
+		return this.tipoRetorno;
 	}
 	
 	public String toString() 

@@ -146,6 +146,7 @@ TOKEN [IGNORE_CASE] : {
 	<MIN : "min" > |
 	<FUNCAO: "funcao" > |
 	<FIMFUNCAO: "fim-funcao" > |
+	<RETORNE: "retorne" > |
 	<PROCEDIMENTO: "procedimento" > |
 	<FIMPROCEDIMENTO: "fim-procedimento" > |
 	<MAIN: "cirocracia" > |
@@ -216,7 +217,7 @@ Expressao iniciaExpressao(Tabela tabela):
 	    exp.otimizarPosFixaConst1();
 		exp.otimizaPosfixa();
 		exp.otimizarNegacao();
-        exp.otimizarOperacoesConstantes();
+//        exp.otimizarOperacoesConstantes();
 		return exp;
 	}	
 }
@@ -429,6 +430,8 @@ void termo5(Expressao exp, Tabela tabela):
 	Token tokenVar, tokenEntrada;
 	Item item = null;
 	Sinal sinal = Sinal.POS;
+	LinkedList<Expressao> listaParam = new LinkedList<Expressao>();
+	Expressao expParam;
 }
 {
 	tokenEntrada = <AP>
@@ -450,17 +453,20 @@ void termo5(Expressao exp, Tabela tabela):
 				exp.addListaExpInfixa(item);
 				exp.addListaExpPosFixa(item);
 			}
-		
-			|  tokenVar = <VAR>
-			{
-				tabela.verificaVariavelDeclarada(tokenVar.image);
-				item = new Operando(tabela.tipoVariavel(tokenVar.image),TipoElemento.VAR, tokenVar, sinal);
-				AcoesSemanticas.incompatibilidadeTipoExpressao(item,exp,tokenVar);
-				tabela.pesquisarSimboloTabela(tokenVar.image).setIsUtilizada(true);
-				exp.addListaExpInfixa(item);
-				exp.addListaExpPosFixa(item);
-			}
-	    )
+			|  tokenVar = <VAR> { item = new Operando(tabela.tipoVariavel(tokenVar.image),TipoElemento.VAR, tokenVar, sinal); }
+			   ( <AP> expParam = iniciaExpressao(tabela) { listaParam.add( expParam ); }
+			   		(<VIRGULA> expParam = iniciaExpressao(tabela){ listaParam.add( expParam ); } )* <FP>
+			   		{
+			   		  item = new ChamadaFuncao( TipoOperador.FUNCAO, tokenVar, tokenVar, listaParam );
+			   		  //tabela.pesquisarSimboloTabela(tokenVar.image).setIsUtilizada(true);
+			   		}
+			   )?				{
+//					tabela.verificaVariavelDeclarada(tokenVar.image);
+//					AcoesSemanticas.incompatibilidadeTipoExpressao(item,exp,tokenVar);
+					exp.addListaExpInfixa(item);
+					exp.addListaExpPosFixa(item);
+				}
+		)
 	| tokenEntrada = <STRING>
 	{
 		item = new Operando(TipoDado.PALAVRA,TipoElemento.CTE, tokenEntrada, Sinal.POS);
@@ -476,7 +482,11 @@ void termo5(Expressao exp, Tabela tabela):
 void inicio(ListaComandosAltoNivel listaComandosAltoNivel):
 {}
 {	
-	( < COMENTLINHA > | procedimento(listaComandosAltoNivel) )*
+	(
+	  < COMENTLINHA > |
+	  procedimento(listaComandosAltoNivel) |
+	  funcao(listaComandosAltoNivel)
+	 )*
 	{ AcoesSemanticas.verificarExistenciaMetodoMain(); }
 	<EOF>
 }
@@ -519,6 +529,61 @@ void procedimento( ListaComandosAltoNivel listaComandosAltoNivel ):
 	}
 }
 
+void funcao( ListaComandosAltoNivel listaComandosAltoNivel ):
+{
+  Token tokenFuncao, tokenAssinatura, tokenVar;
+  LinkedList<Token> listaParametros = new LinkedList<Token>();
+  TipoDado tipoParam, tipoRetorno;
+  ComandoAltoNivel comando;
+  ListaComandosAltoNivel listaCorpoProcedimento = new ListaComandosAltoNivel();
+}
+{
+	tokenFuncao = <FUNCAO>
+	tokenAssinatura = <VAR> { Compilador.tabelaPrograma.insereNamespaceNaTabela( tokenAssinatura, TipoOperador.FUNCAO ); }
+	<AP>
+	( ( <PALAVRA> { tipoParam =  TipoDado.PALAVRA; }  |  <NUMERO> { tipoParam =  TipoDado.NUMERO; } )
+    	tokenVar = <VAR>
+    	{
+    	  Compilador.tabelaPrograma.pesquisarTabela( tokenAssinatura.image ).insereSimboloNaTabela( tokenVar, tipoParam);
+    	  Compilador.tabelaPrograma.pesquisarTabela( tokenAssinatura.image ).pesquisarSimboloTabela( tokenVar.image ).setIsInicializada(true);
+    	  listaParametros.add( tokenVar );
+    	}
+	  (
+	       <VIRGULA> ( <PALAVRA> { tipoParam =  TipoDado.PALAVRA; } | <NUMERO> { tipoParam =  TipoDado.NUMERO; } )?
+	      tokenVar = <VAR>
+	      {
+	        Compilador.tabelaPrograma.pesquisarTabela( tokenAssinatura.image ).insereSimboloNaTabela( tokenVar, tipoParam);
+	        Compilador.tabelaPrograma.pesquisarTabela( tokenAssinatura.image ).pesquisarSimboloTabela( tokenVar.image ).setIsInicializada(true);
+	        listaParametros.add( tokenVar );
+	      }
+	  )*
+ 	)?
+ 	<FP> <DP> ( <NUMERO> { tipoRetorno = TipoDado.NUMERO; } | <PALAVRA> { tipoRetorno = TipoDado.PALAVRA; } )
+ 	{
+		Compilador.tabelaPrograma.pesquisarTabela( tokenAssinatura.image ).setTipoRetorno( tipoRetorno );
+ 	}
+	programa(listaCorpoProcedimento, Compilador.tabelaPrograma.pesquisarTabela( tokenAssinatura.image ) ) { AcoesSemanticas.otimizarComandosCondicionais( listaCorpoProcedimento ); }
+	<FIMFUNCAO>
+	{
+		comando = new Funcao( tokenFuncao, tokenAssinatura, listaParametros, listaCorpoProcedimento, tipoRetorno );
+		listaComandosAltoNivel.addComando( comando );  
+	}
+}
+
+void retorne( ListaComandosAltoNivel listaComandosAltoNivel, Tabela tabela ):
+{
+  Token tokenRetorne;
+  Expressao expressao;
+  ComandoAltoNivel comandoRetorne;
+}
+{
+	tokenRetorne = <RETORNE> expressao  = iniciaExpressao( tabela )
+	{
+		comandoRetorne = new ComandoRetorne( tokenRetorne, expressao );
+		listaComandosAltoNivel.addComando( comandoRetorne );
+	}
+}
+
 
 void programa(ListaComandosAltoNivel listaComandosAltoNivel, Tabela tabela) :
 {}
@@ -543,7 +608,8 @@ void comando(ListaComandosAltoNivel listaComandosAltoNivel, Tabela tabela):
 	  | seRepete(listaComandosAltoNivel, tabela)
 	  | duplo(listaComandosAltoNivel, tabela)
 	  | matrix3D( listaComandosAltoNivel, tabela)
-	  | ternario( listaComandosAltoNivel, tabela) 
+	  | ternario( listaComandosAltoNivel, tabela)
+	  | retorne( listaComandosAltoNivel, tabela ) <PV>
 	)	
 }
 
@@ -590,7 +656,7 @@ void atribuicao(ListaComandosAltoNivel listaComandosAltoNivel, Token Var, Tabela
 	Token atrib, var = Var;
 	TipoOperador tpOperador;
 	Item operando, operador;
-	ComandoAltoNivel comando = null;
+//	ComandoAltoNivel comando = null;
 	Expressao expressao = null;
 	LinkedList<Token > listaVar = new LinkedList<Token >();
 	listaVar.add(Var);

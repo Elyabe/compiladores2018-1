@@ -7,14 +7,15 @@ import codigoDestino.CodigoDestino;
 import comandoPrimitivo.*;
 import parser.*;
 import semantico.TipoDado;
+import semantico.TipoOperador;
 
 public class Procedimento extends ComandoAltoNivel 
 {
-	private Token identificador;
-	private LinkedList<Token> listaParametros;
-	private ListaComandosAltoNivel listaCorpoProcedimento;
-	private int tamanhoTotalPilha;
-	private int qtdVariaveisLocais;
+	protected Token identificador;
+	protected LinkedList<Token> listaParametros;
+	protected ListaComandosAltoNivel listaCorpoProcedimento;
+	protected int tamanhoTotalPilha;
+	protected int qtdVariaveisLocais;
 	
 	public Procedimento( Token token, Token nome, LinkedList<Token> listaParametros, ListaComandosAltoNivel listaCorpoProcedimento)
 	{
@@ -30,7 +31,9 @@ public class Procedimento extends ComandoAltoNivel
 	public ListaComandosPrimitivos geraListaComandosPrimitivos() 
 	{
 		ComandoPrimitivo assinaturaFuncao = new PrimitivoCabecalhoMetodo( this.getIdentificador(), this.determinarTiposParametros(), 
-																		"V", CodigoDestino.tamanhoTotalPilha, Compilador.tabelaPrograma.pesquisarTabela( this.identificador.image ).getMarcador()+2);
+																		TipoDado.getDescricao( TipoOperador.PROCEDIMENTO, null), 
+																		CodigoDestino.tamanhoTotalPilha+4, 
+																		Compilador.tabelaPrograma.pesquisarTabela( this.identificador.image ).getMarcador()+2);
 		ComandoPrimitivo retornoVazio = new PrimitivoReturn();
 		ComandoPrimitivo fimProcedimento = new PrimitivoFimMetodo();
 		
@@ -39,6 +42,7 @@ public class Procedimento extends ComandoAltoNivel
 		listaComandosPrimitivos.addComandoInicio( assinaturaFuncao );
 		listaComandosPrimitivos.addComando( retornoVazio );
 		listaComandosPrimitivos.addComando( fimProcedimento );
+		
 		return listaComandosPrimitivos;
 	}
 
@@ -53,8 +57,8 @@ public class Procedimento extends ComandoAltoNivel
 	
 	public String determinarTiposParametros()
 	{
-		String tiposParametros = "";
-		// Se for a main e tiver parametro, o argumento deve ser vetor de  strings (AINDA NAO USAMOS ISSO)
+		String tiposParametros = new String();
+		// Se for a main e tiver parametro, o argumento deve ser vetor de  strings (ISSO ainda nao eh usado)
 		if ( this.identificador.kind == Compilador.MAIN )
 			tiposParametros = "[" + TipoDado.getDescricao(TipoDado.PALAVRA);
 		else 

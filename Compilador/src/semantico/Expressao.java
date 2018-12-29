@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import apoio.Config;
 import codigoDestino.*;
+import comandoAltoNivel.ChamadaFuncao;
 import comandoPrimitivo.*;
 import parser.*;
 
@@ -45,9 +46,19 @@ public class Expressao {
 		return this.listaExpPosFixa;
 	}
 
+	public String getNamespace()
+	{
+		return this.namespace;
+	}
+	
 	// o tipo da expressao eh igual ao tipo do primeiro elemento posfixo (que deve ser um operando)
 	public TipoDado getTipo() {
-		return ((Operando)(this.listaExpPosFixa.getFirst())).tipoDado;
+		Item item =  this.listaExpPosFixa.getFirst();
+		if ( item instanceof Operando  )
+			return ((Operando)item).tipoDado;
+		else if ( item instanceof ChamadaFuncao )
+			return Compilador.tabelaPrograma.pesquisarTabela( ((ChamadaFuncao)item).getNomeFuncao().image ).getTipoRetorno();
+		else return null;
 	}
 	
 	public TipoDado getTipoResultado() {
@@ -67,7 +78,10 @@ public class Expressao {
 	public void addListaExpPosFixa(Item item) 
 	{
 		this.listaExpPosFixa.add(item);
-		if ( item instanceof Operador && ((Operador)item).tipoOperador != TipoOperador.CONCAT )
+		// Nesta ordem verifica primeiro se é funcao
+		if ( item instanceof ChamadaFuncao )
+			this.tipoResultado = this.getTipo();
+		else if ( item instanceof Operador && ((Operador)item).tipoOperador != TipoOperador.CONCAT )
 			this.tipoResultado = TipoDado.NUMERO;
 		else
 			this.tipoResultado = this.getTipo();
@@ -79,7 +93,7 @@ public class Expressao {
 
 	public String geraCodigoDestino(){
 
-		String codigoDestinoExpressao = "";
+		String codigoDestinoExpressao = new String();
 		int referencia;
 		
 		for(Item item : this.listaExpPosFixa) 
@@ -175,7 +189,7 @@ public class Expressao {
 						break;
 					case OU:
 						PrimitivoLabel labelSAIDAou = new PrimitivoLabel("SAIDAou");
-						PrimitivoLabel labelComparaSegundo0ou = new PrimitivoLabel("ComparaSegundo0ou");
+						PrimitivoLabel labelComparaSegundo0ou = new PrimitivoLabel("COMPARASEGUNDO0ou");
 						PrimitivoLabel labelCOLOCATRUEou = new PrimitivoLabel("COLOCATRUEou");
 						
 						codigoDestinoExpressao += "dconst_0 \r\n"	
@@ -194,11 +208,11 @@ public class Expressao {
 						+ labelSAIDAou.geraCodigoDestino();	
 						break;
 					case OUEXCLUSIVO:
-						PrimitivoLabel labelSAIDAouExclusivo = new PrimitivoLabel("SAIDAouExclusivo");
-						PrimitivoLabel labelComparaSegundo0 = new PrimitivoLabel("ComparaSegundo0");
-						PrimitivoLabel labelComparaSegundo1 = new PrimitivoLabel("ComparaSegundo1");
-						PrimitivoLabel labelCOLOCATRUEXOR = new PrimitivoLabel("COLOCATRUEXOR");
-						PrimitivoLabel labelCOLOCAFALSEXOR = new PrimitivoLabel("COLOCAFALSEXOR");
+						PrimitivoLabel labelSAIDAouExclusivo = new PrimitivoLabel("SAIDAouexclusivo");
+						PrimitivoLabel labelComparaSegundo0 = new PrimitivoLabel("COMPARASEGUNDO0ouexclusivo");
+						PrimitivoLabel labelComparaSegundo1 = new PrimitivoLabel("COMPARASEGUNDO1ouexclusivo");
+						PrimitivoLabel labelCOLOCATRUEXOR = new PrimitivoLabel("COLOCATRUEouexclusivo");
+						PrimitivoLabel labelCOLOCAFALSEXOR = new PrimitivoLabel("COLOCAFALSEouexclusivo");
 						
 						codigoDestinoExpressao += "dconst_0 \r\n"	
 						+ "dcmpg \r\n"								
@@ -222,8 +236,8 @@ public class Expressao {
 						break;
 					case E:
 						PrimitivoLabel labelSAIDAe = new PrimitivoLabel("SAIDAe");
-						PrimitivoLabel labelTestaSegundo1e = new PrimitivoLabel("TestaSegundo1e");
-						PrimitivoLabel labelColocaTrueE = new PrimitivoLabel("ColocaTrueE");
+						PrimitivoLabel labelTestaSegundo1e = new PrimitivoLabel("TESTASEGUNDO1e");
+						PrimitivoLabel labelColocaTrueE = new PrimitivoLabel("COLOCATRUEe");
 						codigoDestinoExpressao += "dconst_0 \r\n"			
 								+ "dcmpg \r\n"								 
 								+ "ifne " + labelTestaSegundo1e.getLabel()	
@@ -317,11 +331,17 @@ public class Expressao {
 								+ "dconst_1 \r\n"
 								+ labelSAIDAmaiorIgual.geraCodigoDestino();
 						break;
-					case PROCEDIMENTO:
+					case FUNCAO:
+						ChamadaFuncao funcao = (ChamadaFuncao)operador;
+						for (Expressao exp : funcao.getListaParam() ) 
+							codigoDestinoExpressao += exp.geraCodigoDestino();
+
 						codigoDestinoExpressao += "invokestatic " 
-								+ Config.nomeArquivo 
-								+ "(" + ")"
-								+ "V \r\n";
+								+ Config.nomeArquivo + "." 
+								+ funcao.getNomeFuncao()
+								+ "(" + TipoDado.getDescricao( funcao.getListaParam() )   + ")"
+								+ TipoDado.getDescricao( Compilador.tabelaPrograma.pesquisarTabela( funcao.getNomeFuncao().image ).getTipoRetorno() )
+								+ "\r\n";
 						break;
 				}
 				

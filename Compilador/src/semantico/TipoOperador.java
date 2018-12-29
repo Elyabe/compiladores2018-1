@@ -22,6 +22,7 @@ public enum TipoOperador
 	PISO,
 	TETO,
 	PROCEDIMENTO,
+	FUNCAO,
 	AP,
 	FP;
 }

@@ -1,0 +1,106 @@
+/* Suporte a funcoes com passagem de parametros
+	Autor : Elyabe Alves
+	Observacoes:
+	Main deve ser após todas as funcoes que ela utiliza : Nao trabalha com prototipos ainda
+*/
+
+// Retorna  o dobro de um numero real
+// x : Numero cujo dobro deve ser calculado
+funcao dobro( numero x ) : numero
+	x *= 2;
+	retorne x;
+fim-funcao
+
+procedimento qtdDigitos( numero n )
+	exibeln "O numero ", n, " possui ", piso(log(n)) + 1, " digitos"; 
+fim-procedimento 
+
+
+// Determinado o dígito hexadecimal do valor
+// resto: Valor correspondente em decimal
+funcao determinarDigito( numero resto ) : palavra
+	palavra numHexa;
+	
+	numHexa <- "";
+	seletor ( resto )
+			caso 0:
+				numHexa <- "0";
+			fim-caso
+			caso 1:
+				numHexa <- "1";
+			fim-caso
+			caso 2:
+				numHexa <- "2";
+			fim-caso
+			caso 3:
+				numHexa <- "3";
+			fim-caso
+			caso 4:
+				numHexa <- "4";
+			fim-caso
+			caso 5:
+				numHexa <- "5";
+			fim-caso
+			caso 6:
+				numHexa <- "6";
+			fim-caso
+			caso 7:
+				numHexa <- "7";
+			fim-caso
+			caso 8:
+				numHexa <- "8";
+			fim-caso
+			caso 9:
+				numHexa <- "9";
+			fim-caso
+			caso 10:
+				numHexa <- "A";
+			fim-caso
+			caso 11:
+				numHexa <- "B";
+			fim-caso
+			caso 12:
+				numHexa <- "C";
+			fim-caso
+			caso 13:
+				numHexa <- "D";
+			fim-caso
+			caso 14:
+				numHexa <- "E";
+			fim-caso
+			caso 15:
+				numHexa <- "F";
+			fim-caso
+		fim-seletor
+		
+		retorne numHexa;
+fim-funcao
+
+// Converte um numero de decimal para hexadecimal
+funcao converterDecimalHexadecimal( numero num ) : palavra
+	palavra numHexa <- "";
+	numero quociente, resto;
+
+	enquanto( num >= 16 )
+		quociente <- piso( num/16 );
+		resto <- num - quociente*16;
+		
+		numHexa <- determinarDigito(resto) & numHexa;
+
+		num <- quociente;
+	fim-enquanto
+	
+	numHexa <- determinarDigito(num) & numHexa;
+	retorne numHexa;
+fim-funcao
+
+// PROCEDIMENTO PRINCIPAL
+procedimento cirocracia()
+	numero s <- dobro( 4.5/2 );
+
+	exibeln log( dobro(s) + log(10) );
+	lecompleto "Digite o numero que deseja converter: ", s;
+	exibeln converterDecimalHexadecimal( s );
+	qtdDigitos( s );
+	
+fim-procedimento

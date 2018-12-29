@@ -10,34 +10,31 @@ import semantico.*;
 
 public class ChamadaMetodo extends ComandoAltoNivel 
 {
-	private TipoOperador tipoMetodo;
 	private LinkedList<Expressao> listaParametros;
-	
-	public ChamadaMetodo( Token token, TipoOperador tipoMetodo, LinkedList<Expressao> listaParametros) 
-	{
-		this.token = token;
-		this.listaParametros = listaParametros;
-		this.tipoMetodo = tipoMetodo;
-	}
 	
 	public ChamadaMetodo( Token token, LinkedList<Expressao> listaParametros ) 
 	{
 		this.token = token;
 		this.listaParametros = listaParametros;
-		this.tipoMetodo = TipoOperador.PROCEDIMENTO;
 	}
 	
 	@Override
 	public ListaComandosPrimitivos geraListaComandosPrimitivos() 
 	{
+		TipoOperador tipoMetodo = Compilador.tabelaPrograma.pesquisarTabela(token.image).getTipoMetodo();
+		TipoDado tipoRetorno = Compilador.tabelaPrograma.pesquisarTabela(token.image).getTipoRetorno();
 		ListaComandosPrimitivos listaComandosPrimitivos = new ListaComandosPrimitivos();
+		ComandoPrimitivo invocarMetodo = null ;
 		String expressaoParametros = "";
 		
 		for (Expressao expressao : listaParametros){
 			expressaoParametros += expressao.geraCodigoDestino();
 		}
 		
-		ComandoPrimitivo invocarMetodo = new PrimitivoInvokeStatic( this.getLexema(), expressaoParametros, this.determinarTiposParametros() );
+		if ( tipoMetodo == TipoOperador.FUNCAO )
+			invocarMetodo = new PrimitivoInvokeStatic( this.getLexema(), tipoRetorno, expressaoParametros, this.determinarTiposParametros() );
+		else if ( tipoMetodo == TipoOperador.PROCEDIMENTO )
+			invocarMetodo = new PrimitivoInvokeStatic( this.getLexema(), expressaoParametros, this.determinarTiposParametros() );
 		
 		listaComandosPrimitivos.addComando( invocarMetodo );
 		
